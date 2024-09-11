@@ -1,32 +1,32 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { experimentalStyled as styled } from '@mui/material/styles';
-import Box from '@mui/material/Box';
-import Paper from '@mui/material/Paper';
-import Grid from '@mui/material/Grid';
+import CloseIcon from '@mui/icons-material/Close';
+import ModeEditOutlineOutlinedIcon from '@mui/icons-material/ModeEditOutlineOutlined';
+import PersonAddIcon from '@mui/icons-material/PersonAdd';
+import SearchIcon from '@mui/icons-material/Search';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 import {
-  FormControl,
-  TextField,
   Autocomplete,
-  Stack,
-  Input,
   Button,
+  FormControl,
+  Input,
+  Stack,
+  TextField,
   Typography,
 } from '@mui/material';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import PersonAddIcon from '@mui/icons-material/PersonAdd';
-import ModeEditOutlineOutlinedIcon from '@mui/icons-material/ModeEditOutlineOutlined';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import Switch from '@mui/material/Switch';
-import FormGroup from '@mui/material/FormGroup';
+import Box from '@mui/material/Box';
 import FormControlLabel from '@mui/material/FormControlLabel';
-import DenseTable from 'src/modules/Categories/Component/ProductDetailTableGrid';
-import { submitFormData } from '../api/AddSalesapi';
-import CloseIcon from '@mui/icons-material/Close';
+import FormGroup from '@mui/material/FormGroup';
+import Grid from '@mui/material/Grid';
+import InputAdornment from '@mui/material/InputAdornment';
+import Paper from '@mui/material/Paper';
+import Switch from '@mui/material/Switch';
+import { experimentalStyled as styled } from '@mui/material/styles';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { debounce } from 'lodash';
+import React, { useCallback, useEffect, useState } from 'react';
 import AppGrid from 'src/components/App/AppGrid';
-import FormHelperText from '@mui/material/FormHelperText';
+import { submitFormData } from '../api/AddSalesapi';
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: '#fff',
   ...theme.typography.body2,
@@ -53,6 +53,7 @@ export default function AddOrders() {
           customer: null,
           walkInCustomer: true,
           items: [],
+          quantity: '',
           orderDiscount: '',
           shipping: '',
           selectedFile: null,
@@ -69,21 +70,15 @@ export default function AddOrders() {
   const [products, setProducts] = useState([]);
   const [addedProducts, setAddedProducts] = useState([]);
   const [customer, setCustomer] = useState([]);
-
-  const handleDateChange = (date) => {
-    setSelectedDate(date);
-    setFormState((prevState) => ({ ...prevState, selectedDate: date }));
-  };
-
-  const handleChange = (e) => {
-    const { name, value, type, checked, files } = e.target;
-    const newValue = type === 'checkbox' ? checked : type === 'file' ? files[0] : value;
-    setFormState((prevState) => ({
-      ...prevState,
-      [name]: newValue,
-    }));
-  };
-
+  const Biller = [{ title: 'Unleash POS LLC' }];
+  const Warehouse = [{ title: 'Unleash POS LLC' }];
+  const salestatus = [{ title: 'Pending' }, { title: 'Completed' }, { title: 'Allocated' }];
+  const PaymentStatus = [
+    { title: 'Pending' },
+    { title: 'Due' },
+    { title: 'Partial' },
+    { title: 'Paid' },
+  ];
   const fetchProducts = useCallback(
     debounce(async (search) => {
       if (search) {
@@ -129,7 +124,19 @@ export default function AddOrders() {
     }
   };
 
-  // console.log('Customers', customer);
+  const handleDateChange = (date) => {
+    setSelectedDate(date);
+    setFormState((prevState) => ({ ...prevState, selectedDate: date }));
+  };
+
+  const handleChange = (e) => {
+    const { name, value, type, checked, files } = e.target;
+    const newValue = type === 'checkbox' ? checked : type === 'file' ? files[0] : value;
+    setFormState((prevState) => ({
+      ...prevState,
+      [name]: newValue,
+    }));
+  };
 
   const handleInputChange = (event, search) => {
     if (search !== '') {
@@ -140,8 +147,9 @@ export default function AddOrders() {
   };
 
   const handleAddProduct = (product) => {
+    const newProduct = { ...product, quantity: 1 };
     setAddedProducts((prev) => {
-      const updatedProducts = [...prev, product];
+      const updatedProducts = [...prev, newProduct];
       setFormState((prevState) => ({
         ...prevState,
         items: updatedProducts,
@@ -149,6 +157,7 @@ export default function AddOrders() {
       return updatedProducts;
     });
   };
+
   const handleRemoveProduct = (index) => {
     setAddedProducts((prev) => {
       const updatedProducts = prev.filter((_, i) => i !== index);
@@ -159,22 +168,94 @@ export default function AddOrders() {
       return updatedProducts;
     });
   };
+
+  const handleQuantityChange = (e, index) => {
+    const value = parseInt(e.target.value, 10);
+    setAddedProducts((prev) => {
+      const updatedProducts = [...prev];
+      updatedProducts[index].quantity = value; // Update the quantity
+      setFormState((prevState) => ({
+        ...prevState,
+        quantuity: updatedProducts,
+      }));
+      return updatedProducts;
+    });
+  };
+
   useEffect(() => {
     localStorage.setItem('form-Data', JSON.stringify(formState));
     // fetchCustomer();
   }, [formState]);
 
+  const handleAutocompleteChange = (name) => (event, newValue) => {
+    setFormState((prevState) => ({
+      ...prevState,
+      [name]: newValue ? newValue.title : '', // Store only the title or an empty string
+    }));
+  };
+
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    setSelectedFile(file);
+    setFormState((prevState) => ({ ...prevState, selectedFile: file }));
+  };
+
   const columns1 = [
     { name: 'Product (Code - Name)', label: 'Product (Code - Name)' },
     { name: 'Serial No', label: 'Serial No' },
     { name: 'Price', label: 'Price' },
-    { name: 'Quantity', label: 'Quantity' },
+    {
+      name: 'Quantity',
+      label: 'Quantity',
+      options: {
+        customBodyRenderLite: (dataIndex) => {
+          return (
+            <TextField
+              type="text"
+              value={addedProducts[dataIndex]?.quantity || ''}
+              onChange={(e) => handleQuantityChange(e, dataIndex)}
+              inputProps={{
+                min: 1,
+                style: { textAlign: 'center' }, // Center the text
+              }}
+              InputLabelProps={{
+                shrink: true, // Ensure the label doesn't overlap with the text
+              }}
+              sx={{
+                width: '80px', // Adjust the width if necessary
+                '& input': {
+                  textAlign: 'center', // Center the text inside the input
+                },
+              }}
+            />
+          );
+        },
+      },
+    },
     { name: 'Discount', label: 'Discount' },
     { name: 'Product Tax', label: 'Product Tax' },
     { name: 'State Tax', label: 'State Tax' },
     { name: 'County Tax', label: 'County Tax' },
     { name: 'City Tax', label: 'City Tax' },
-    { name: 'Subtotal', label: 'Subtotal' },
+    {
+      name: 'Subtotal',
+      label: 'Subtotal',
+      options: {
+        customBodyRenderLite: (dataIndex) => {
+          const product = addedProducts[dataIndex];
+          const price = product?.price || 0;
+          const quantity = product?.quantity || 1;
+          const discount = product?.discount || 0;
+          const productTax = product?.productTax || 0;
+          const stateTax = product?.state_tax || 0;
+          const countyTax = product?.county_tax || 0;
+          const cityTax = product?.city_tax || 0;
+          const totalTax = productTax + stateTax + countyTax + cityTax;
+          const subtotal = price * quantity + totalTax - discount;
+          return `$${subtotal.toFixed(2)}`;
+        },
+      },
+    },
     {
       name: 'Actions',
       label: 'Actions',
@@ -202,41 +283,15 @@ export default function AddOrders() {
     'Product (Code - Name)': item.name,
     'Serial No': item.product_code,
     Price: item.price,
-    Quantity: item.quantity,
-    Discount: item.discount,
-    'Product Tax': item.productTax,
-    'State Tax': item.state_tax,
-    'County Tax': item.county_tax,
-    'City Tax': item.city_tax,
-    Subtotal: item.subtotal,
+    Quantity: item.quantity || '$0.00',
+    Discount: item.discount || '$0.00',
+    'Product Tax': item.productTax || '$0.00',
+    'State Tax': item.state_tax || '$0.00',
+    'County Tax': item.county_tax || '$0.00',
+    'City Tax': item.city_tax || '$0.00',
+    Subtotal: item.subtotal || '$0.00',
   }));
 
-  const handleAutocompleteChange = (name) => (event, newValue) => {
-    setFormState((prevState) => ({
-      ...prevState,
-      [name]: newValue ? newValue.title : '', // Store only the title or an empty string
-    }));
-  };
-
-  const handleFileChange = (event) => {
-    const file = event.target.files[0];
-    setSelectedFile(file);
-    setFormState((prevState) => ({ ...prevState, selectedFile: file }));
-  };
-
-  React.useEffect(() => {
-    localStorage.setItem('form-Data', JSON.stringify(formState));
-  }, [formState]);
-
-  const Biller = [{ title: 'Unleash POS LLC' }];
-  const Warehouse = [{ title: 'Unleash POS LLC' }];
-  const salestatus = [{ title: 'Pending' }, { title: 'Completed' }, { title: 'Allocated' }];
-  const PaymentStatus = [
-    { title: 'Pending' },
-    { title: 'Due' },
-    { title: 'Partial' },
-    { title: 'Paid' },
-  ];
   const prepareFormData = () => {
     const formData = new FormData();
     formData.append('selectedDate', formState.selectedDate);
@@ -301,7 +356,7 @@ export default function AddOrders() {
               <Autocomplete
                 options={Biller}
                 clearOnEscape
-                value={Biller.find((option) => option.title === formState.biller) || null} 
+                value={Biller.find((option) => option.title === formState.biller) || null}
                 onChange={handleAutocompleteChange('biller')}
                 getOptionLabel={(option) => `${option.title}`}
                 renderInput={(params) => <TextField {...params} label="Biller" />}
@@ -377,7 +432,20 @@ export default function AddOrders() {
                     clearOnEscape
                     options={formState.items || []}
                     getOptionLabel={(option) => option.name || ''}
-                    renderInput={(params) => <TextField {...params} label="Select Product" />}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Select Product"
+                        InputProps={{
+                          ...params.InputProps,
+                          startAdornment: (
+                            <InputAdornment position="start">
+                              <SearchIcon />
+                            </InputAdornment>
+                          ),
+                        }}
+                      />
+                    )}
                     onInputChange={handleInputChange}
                     onChange={(event, newValue) => {
                       if (newValue) handleAddProduct(newValue);
@@ -547,7 +615,7 @@ export default function AddOrders() {
 
           <Grid item xs={2} sm={4} md={12}>
             <AppGrid
-              data={Data}
+              data={[]}
               columns={columns2}
               options={{
                 selectableRows: false,

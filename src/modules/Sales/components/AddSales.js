@@ -54,7 +54,8 @@ export default function AddOrders() {
           customer: null,
           walkInCustomer: true,
           items: [],
-          quantity: '',
+          totalQuantity: '',
+          Total: '',
           orderDiscount: '',
           shipping: '',
           selectedFile: null,
@@ -71,6 +72,7 @@ export default function AddOrders() {
   const [products, setProducts] = useState([]);
   const [addedProducts, setAddedProducts] = useState([]);
   const [customer, setCustomer] = useState([]);
+  const [Total, setSubToTal] = useState([]);
   const Biller = [{ title: 'Unleash POS LLC' }];
   const Warehouse = [{ title: 'Unleash POS LLC' }];
   const salestatus = [{ title: 'Pending' }, { title: 'Completed' }, { title: 'Allocated' }];
@@ -89,27 +91,17 @@ export default function AddOrders() {
             `https://dev.unleashpos.com/api/v1/products?api-key=kccw48o08c8kk0448scwcg8swgg8g04w4ccwsgos&name=${search}&limit=${limit}`,
           );
           const data = await response.json();
-          setFormState((prevState) => ({
-            ...prevState,
-            items: data.data || [],
-          }));
+          setProducts(data.data || []); // Update products state
         } catch (error) {
           console.error('Error fetching products:', error);
-          setFormState((prevState) => ({
-            ...prevState,
-            items: [],
-          }));
+          setProducts([]); // Clear products state in case of error
         }
       } else {
-        setFormState((prevState) => ({
-          ...prevState,
-          items: [],
-        }));
+        setProducts([]); // Clear products state if no search term
       }
     }, 300),
     [],
   );
-
   const fetchCustomer = async () => {
     try {
       const response = await fetch(
@@ -148,37 +140,86 @@ export default function AddOrders() {
   };
 
   const handleAddProduct = (product) => {
-    const newProduct = { ...product, quantity: 1 };
     setAddedProducts((prev) => {
-      const updatedProducts = [...prev, newProduct];
-      setFormState((prevState) => ({
-        ...prevState,
-        items: updatedProducts,
-      }));
-      return updatedProducts;
+      const existingProductIndex = prev.findIndex((p) => p.name === product.name);
+      if (existingProductIndex === -1) {
+        const newProduct = { ...product, quantity: 1 };
+        newProduct.subtotal = calculateProductSubtotal(newProduct);
+        const updatedProducts = [...prev, newProduct];
+
+        const total = calculateTotal(updatedProducts);
+
+        setFormState((prevState) => ({
+          ...prevState,
+          items: updatedProducts,
+          Total: total,
+        }));
+        return updatedProducts;
+      } else {
+        // Product already exists, so increment its quantity by 1
+        const updatedProducts = [...prev];
+        updatedProducts[existingProductIndex].quantity += 1;
+        updatedProducts[existingProductIndex].subtotal = calculateProductSubtotal(
+          updatedProducts[existingProductIndex],
+        );
+        const total = calculateTotal(updatedProducts); // Recalculate total after updating the quantity
+        setFormState((prevState) => ({
+          ...prevState,
+          items: updatedProducts,
+          Total: total,
+        }));
+        return updatedProducts;
+      }
     });
   };
 
   const handleRemoveProduct = (index) => {
     setAddedProducts((prev) => {
       const updatedProducts = prev.filter((_, i) => i !== index);
+      const total = calculateTotal(updatedProducts); // Calculate total after removing the product
+
       setFormState((prevState) => ({
         ...prevState,
         items: updatedProducts,
+        Total: total, // Update the total in the form state
       }));
+
       return updatedProducts;
     });
   };
-
+  const calculateTotalQuantity = (items) => {
+    return items.reduce((total, item) => total + (item.quantity || 0), 0);
+  };
+  const calculateTotal = (items) => {
+    return items.reduce((acc, item) => acc + (item.subtotal || 0), 0);
+  };
+  const calculateProductSubtotal = (product) => {
+    const price = product?.price || 0;
+    const quantity = product?.quantity || 1;
+    const discount = product?.discount || 0;
+    const productTax = product?.productTax || 0;
+    const stateTax = product?.state_tax || 0;
+    const countyTax = product?.county_tax || 0;
+    const cityTax = product?.city_tax || 0;
+    const totalTax = productTax + stateTax + countyTax + cityTax;
+    return price * quantity + totalTax - discount;
+  };
   const handleQuantityChange = (e, index) => {
     const value = parseInt(e.target.value, 10);
+    const updatedQuantity = isNaN(value) ? 0 : Math.max(value, 0);
     setAddedProducts((prev) => {
       const updatedProducts = [...prev];
-      updatedProducts[index].quantity = value; // Update the quantity
+      updatedProducts[index].quantity = updatedQuantity;
+      updatedProducts[index].subtotal = calculateProductSubtotal(updatedProducts[index]);
+      const totalQuantity = calculateTotalQuantity(updatedProducts);
+      const total = calculateTotal(updatedProducts);
       setFormState((prevState) => ({
         ...prevState,
-        quantuity: updatedProducts,
+        items: updatedProducts,
+        totalQuantity: totalQuantity,
+        Total: total,
       }));
+
       return updatedProducts;
     });
   };
@@ -186,6 +227,7 @@ export default function AddOrders() {
   useEffect(() => {
     localStorage.setItem('form-Data', JSON.stringify(formState));
     // fetchCustomer();
+    console.log('total', Total);
   }, [formState]);
 
   const handleAutocompleteChange = (name) => (event, newValue) => {
@@ -199,6 +241,35 @@ export default function AddOrders() {
     const file = event.target.files[0];
     setSelectedFile(file);
     setFormState((prevState) => ({ ...prevState, selectedFile: file }));
+  };
+  const handleReset = () => {
+    const today = new Date(); // Reset the date to today's date if needed
+    const initialFormState = {
+      selectedDate: today,
+      referenceNo: '',
+      biller: null,
+      warehouse: null,
+      customer: null,
+      walkInCustomer: true,
+      items: [],
+      totalQuantity: '',
+      Total: '',
+      orderDiscount: '',
+      shipping: '',
+      selectedFile: null,
+      salestatus: null,
+      paymentTerm: '',
+      paymentStatus: null,
+      saleNote: '',
+      staffNote: '',
+    };
+
+    setFormState(initialFormState); // Reset formState to initial values
+    setAddedProducts([]); // Clear the added products
+    setCustomer([]);
+    setSelectedFile(null); // Clear any selected file
+    setSelectedDate(today); // Reset the date to today
+    localStorage.removeItem('form-Data'); // Optionally, clear saved form data from localStorage
   };
 
   const columns1 = [
@@ -244,15 +315,7 @@ export default function AddOrders() {
       options: {
         customBodyRenderLite: (dataIndex) => {
           const product = addedProducts[dataIndex];
-          const price = product?.price || 0;
-          const quantity = product?.quantity || 1;
-          const discount = product?.discount || 0;
-          const productTax = product?.productTax || 0;
-          const stateTax = product?.state_tax || 0;
-          const countyTax = product?.county_tax || 0;
-          const cityTax = product?.city_tax || 0;
-          const totalTax = productTax + stateTax + countyTax + cityTax;
-          const subtotal = price * quantity + totalTax - discount;
+          const subtotal = calculateProductSubtotal(product);
           return `$${subtotal.toFixed(2)}`;
         },
       },
@@ -305,7 +368,7 @@ export default function AddOrders() {
     formData.append('orderDiscount', formState.orderDiscount);
     formData.append('shipping', formState.shipping);
     if (selectedFile) formData.append('selectedFile', selectedFile);
-    formData.append('saleStatus', formState.saleStatus?.title || '');
+    formData.append('salestatus', formState.salestatus?.title || '');
     formData.append('paymentTerm', formState.paymentTerm);
     formData.append('paymentStatus', formState.paymentStatus?.title || '');
     formData.append('saleNote', formState.saleNote);
@@ -428,32 +491,30 @@ export default function AddOrders() {
           <Grid item xs={2} sm={4} md={12}>
             <Grid container spacing={2}>
               <Grid item xs={12}>
-                <FormControl fullWidth>
-                  <Autocomplete
-                    clearOnEscape
-                    options={formState.items || []}
-                    getOptionLabel={(option) => option.name || ''}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        label="Select Product"
-                        InputProps={{
-                          ...params.InputProps,
-                          startAdornment: (
-                            <InputAdornment position="start">
-                              <SearchIcon />
-                            </InputAdornment>
-                          ),
-                        }}
-                      />
-                    )}
-                    onInputChange={handleInputChange}
-                    onChange={(event, newValue) => {
-                      if (newValue) handleAddProduct(newValue);
-                    }}
-                    freeSolo
-                  />
-                </FormControl>
+                <Autocomplete
+                  clearOnEscape
+                  options={products || []}
+                  getOptionLabel={(option) => option.name || ''}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Select Product"
+                      InputProps={{
+                        ...params.InputProps,
+                        startAdornment: (
+                          <InputAdornment position="start">
+                            <SearchIcon />
+                          </InputAdornment>
+                        ),
+                      }}
+                    />
+                  )}
+                  onInputChange={handleInputChange}
+                  onChange={(event, newValue) => {
+                    if (newValue) handleAddProduct(newValue);
+                  }}
+                  freeSolo
+                />
               </Grid>
             </Grid>
           </Grid>
@@ -471,19 +532,26 @@ export default function AddOrders() {
             >
               Order Items*
             </Typography>
-            <AppGrid
-              data={Data}
-              columns={columns1}
-              options={{
-                selectableRows: false,
-                selectableRowsHideCheckboxes: true,
-                textLabels: {
-                  body: {
-                    noMatch: '',
-                  },
-                },
+            <Box
+              sx={{
+                maxHeight: '200px',
+                overflowY: 'auto',
               }}
-            />
+            >
+              <AppGrid
+                data={Data}
+                columns={columns1}
+                options={{
+                  selectableRows: false,
+                  selectableRowsHideCheckboxes: true,
+                  textLabels: {
+                    body: {
+                      noMatch: '',
+                    },
+                  },
+                }}
+              />
+            </Box>
           </Grid>
           <Grid item xs={2} sm={4} md={4}>
             <FormControl fullWidth>
@@ -526,7 +594,7 @@ export default function AddOrders() {
                 options={salestatus}
                 clearOnEscape
                 value={salestatus.find((options) => options.title === formState.salestatus) || null}
-                onChange={handleAutocompleteChange('saleStatus')}
+                onChange={handleAutocompleteChange('salestatus')}
                 getOptionLabel={(option) => `${option.title}`}
                 renderInput={(params) => <TextField {...params} label="Sale Status *" />}
               />
@@ -564,7 +632,7 @@ export default function AddOrders() {
                 value={formState.saleNote}
                 onChange={handleChange}
                 multiline
-                rows={4}
+                rows={2}
                 variant="outlined"
                 fullWidth
               />
@@ -578,7 +646,7 @@ export default function AddOrders() {
                 value={formState.staffNote}
                 onChange={handleChange}
                 multiline
-                rows={4}
+                rows={2}
                 variant="outlined"
                 fullWidth
               />
@@ -606,29 +674,14 @@ export default function AddOrders() {
                 color: 'red',
                 border: '1px solid red',
               }}
-              onClick={() => {
-                console.log('Cancel button clicked');
-              }}
+              onClick={handleReset}
             >
               Reset
             </Button>
           </Grid>
 
           <Grid item xs={2} sm={4} md={12}>
-            {/* <AppGrid
-              data={[]}
-              columns={columns2}
-              options={{
-                selectableRows: false,
-                selectableRowsHideCheckboxes: true,
-                textLabels: {
-                  body: {
-                    noMatch: '',
-                  },
-                },
-              }}
-            /> */}
-            <DynamicHeader />
+            <DynamicHeader data={formState} />
           </Grid>
         </Grid>
         <Box sx={{ mt: 2 }}></Box>

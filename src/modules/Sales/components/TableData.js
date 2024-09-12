@@ -45,7 +45,7 @@ const TableData = () => {
       data = {
         start: start,
         limit: limit,
-        status: status,
+        status: status || '',
       };
       const response = await fetchSalesData(data);
       if (response.status === true) {

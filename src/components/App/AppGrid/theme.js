@@ -134,7 +134,7 @@ export const getOverrides = (
             : {},
         },
         '& tr': {
-          height: 50,
+          height: 40,
         },
       },
     },

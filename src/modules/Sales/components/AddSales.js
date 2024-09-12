@@ -27,6 +27,7 @@ import { debounce } from 'lodash';
 import React, { useCallback, useEffect, useState } from 'react';
 import AppGrid from 'src/components/App/AppGrid';
 import { submitFormData } from '../api/AddSalesapi';
+import DynamicHeader from './tableFooter';
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: '#fff',
   ...theme.typography.body2,
@@ -614,7 +615,7 @@ export default function AddOrders() {
           </Grid>
 
           <Grid item xs={2} sm={4} md={12}>
-            <AppGrid
+            {/* <AppGrid
               data={[]}
               columns={columns2}
               options={{
@@ -626,7 +627,8 @@ export default function AddOrders() {
                   },
                 },
               }}
-            />
+            /> */}
+            <DynamicHeader />
           </Grid>
         </Grid>
         <Box sx={{ mt: 2 }}></Box>

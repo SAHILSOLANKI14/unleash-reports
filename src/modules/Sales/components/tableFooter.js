@@ -11,7 +11,7 @@ const DynamicHeader = (data) => {
   console.log('first', items);
 
   return (
-    <Paper style={{ padding: '16px', backgroundColor: '#e0f7fa' }}>
+    <Paper style={{ padding: '10px', backgroundColor: '#e0f0ff' }}>
       <Grid container spacing={2}>
         <Grid item xs={2}>
           <Typography variant="subtitle1">

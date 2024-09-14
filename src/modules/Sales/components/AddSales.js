@@ -148,10 +148,12 @@ export default function AddOrders() {
         const updatedProducts = [...prev, newProduct];
 
         const total = calculateTotal(updatedProducts);
+        const totalQuantity = calculateTotalQuantity(updatedProducts);
 
         setFormState((prevState) => ({
           ...prevState,
           items: updatedProducts,
+          totalQuantity: totalQuantity,
           Total: total,
         }));
         return updatedProducts;
@@ -163,9 +165,12 @@ export default function AddOrders() {
           updatedProducts[existingProductIndex],
         );
         const total = calculateTotal(updatedProducts); // Recalculate total after updating the quantity
+        const totalQuantity = calculateTotalQuantity(updatedProducts);
+
         setFormState((prevState) => ({
           ...prevState,
           items: updatedProducts,
+          totalQuantity: totalQuantity,
           Total: total,
         }));
         return updatedProducts;
@@ -178,15 +183,20 @@ export default function AddOrders() {
       const updatedProducts = prev.filter((_, i) => i !== index);
       const total = calculateTotal(updatedProducts); // Calculate total after removing the product
 
-      setFormState((prevState) => ({
-        ...prevState,
+      const updatedFormState = {
+        ...formState,
         items: updatedProducts,
+        totalQuantity: calculateTotalQuantity(updatedProducts),
         Total: total, // Update the total in the form state
-      }));
+      };
+
+      setFormState(updatedFormState);
+      localStorage.setItem('form-Data', JSON.stringify(updatedFormState)); // Update localStorage with the new form state
 
       return updatedProducts;
     });
   };
+
   const calculateTotalQuantity = (items) => {
     return items.reduce((total, item) => total + (item.quantity || 0), 0);
   };

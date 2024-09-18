@@ -5,10 +5,10 @@ const DynamicHeader = (data) => {
   const Footerdata = data.data;
   const items = Footerdata.items.length;
   const GrandTotal =
-    parseFloat(Footerdata.Total || 0) -
+    parseFloat(Footerdata.total || 0) -
     parseFloat(Footerdata.orderDiscount || 0) +
     parseFloat(Footerdata.shipping || 0);
-  console.log('first', items);
+  // console.log('first', items);
 
   return (
     <Paper style={{ padding: '10px', backgroundColor: '#e0f0ff' }}>
@@ -20,7 +20,7 @@ const DynamicHeader = (data) => {
         </Grid>
         <Grid item xs={2}>
           <Typography variant="subtitle1">
-            <strong>Total:</strong> ${Footerdata.Total || '0.00'}
+            <strong>Total:</strong> ${Footerdata.total || '0.00'}
           </Typography>
         </Grid>
         <Grid item xs={3}>
@@ -35,7 +35,7 @@ const DynamicHeader = (data) => {
         </Grid>
         <Grid item xs={3}>
           <Typography variant="subtitle1">
-            <strong>Grand Total:</strong> ${GrandTotal || '0.00'}
+            <strong>Grand Total:</strong> ${GrandTotal.toFixed(2) || '0.00'}
           </Typography>
         </Grid>
       </Grid>

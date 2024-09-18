@@ -52,10 +52,11 @@ export default function AddOrders() {
           biller: null,
           warehouse: null,
           customer: null,
+          total_items: null,
           walkInCustomer: true,
           items: [],
           totalQuantity: '',
-          Total: '',
+          total: '',
           orderDiscount: '',
           shipping: '',
           selectedFile: null,
@@ -72,7 +73,7 @@ export default function AddOrders() {
   const [products, setProducts] = useState([]);
   const [addedProducts, setAddedProducts] = useState([]);
   const [customer, setCustomer] = useState([]);
-  const [Total, setSubToTal] = useState([]);
+  // const [Total, setSubToTal] = useState([]);
   const Biller = [{ title: 'Unleash POS LLC' }];
   const Warehouse = [{ title: 'Unleash POS LLC' }];
   const salestatus = [{ title: 'Pending' }, { title: 'Completed' }, { title: 'Allocated' }];
@@ -91,13 +92,13 @@ export default function AddOrders() {
             `https://dev.unleashpos.com/api/v1/products?api-key=kccw48o08c8kk0448scwcg8swgg8g04w4ccwsgos&name=${search}&limit=${limit}`,
           );
           const data = await response.json();
-          setProducts(data.data || []); // Update products state
+          setProducts(data.data || []);
         } catch (error) {
           console.error('Error fetching products:', error);
-          setProducts([]); // Clear products state in case of error
+          setProducts([]);
         }
       } else {
-        setProducts([]); // Clear products state if no search term
+        setProducts([]);
       }
     }, 300),
     [],
@@ -108,6 +109,8 @@ export default function AddOrders() {
         `https://dev.unleashpos.com/api/v1/customers?api-key=kccw48o08c8kk0448scwcg8swgg8g04w4ccwsgos`,
       );
       const data = await response.json();
+      // setCustomerData(data.data);
+      // console.log('CSC', customerData);
       const customerCompanies = data.data.map((customer) => ({
         title: customer.company,
       }));
@@ -153,25 +156,26 @@ export default function AddOrders() {
         setFormState((prevState) => ({
           ...prevState,
           items: updatedProducts,
+          total_items: updatedProducts.length,
           totalQuantity: totalQuantity,
-          Total: total,
+          total: total,
         }));
         return updatedProducts;
       } else {
-        // Product already exists, so increment its quantity by 1
         const updatedProducts = [...prev];
         updatedProducts[existingProductIndex].quantity += 1;
         updatedProducts[existingProductIndex].subtotal = calculateProductSubtotal(
           updatedProducts[existingProductIndex],
         );
-        const total = calculateTotal(updatedProducts); // Recalculate total after updating the quantity
+        const total = calculateTotal(updatedProducts);
         const totalQuantity = calculateTotalQuantity(updatedProducts);
 
         setFormState((prevState) => ({
           ...prevState,
           items: updatedProducts,
+          total_items: updatedProducts.length,
           totalQuantity: totalQuantity,
-          Total: total,
+          total: total,
         }));
         return updatedProducts;
       }
@@ -181,17 +185,17 @@ export default function AddOrders() {
   const handleRemoveProduct = (index) => {
     setAddedProducts((prev) => {
       const updatedProducts = prev.filter((_, i) => i !== index);
-      const total = calculateTotal(updatedProducts); // Calculate total after removing the product
-
+      const total = calculateTotal(updatedProducts);
       const updatedFormState = {
         ...formState,
         items: updatedProducts,
+        total_items: updatedProducts.length,
         totalQuantity: calculateTotalQuantity(updatedProducts),
-        Total: total, // Update the total in the form state
+        total: total,
       };
 
       setFormState(updatedFormState);
-      localStorage.setItem('form-Data', JSON.stringify(updatedFormState)); // Update localStorage with the new form state
+      localStorage.setItem('form-Data', JSON.stringify(updatedFormState));
 
       return updatedProducts;
     });
@@ -203,6 +207,7 @@ export default function AddOrders() {
   const calculateTotal = (items) => {
     return items.reduce((acc, item) => acc + (item.subtotal || 0), 0);
   };
+
   const calculateProductSubtotal = (product) => {
     const price = product?.price || 0;
     const quantity = product?.quantity || 1;
@@ -214,9 +219,11 @@ export default function AddOrders() {
     const totalTax = productTax + stateTax + countyTax + cityTax;
     return price * quantity + totalTax - discount;
   };
+
   const handleQuantityChange = (e, index) => {
     const value = parseInt(e.target.value, 10);
     const updatedQuantity = isNaN(value) ? 0 : Math.max(value, 0);
+
     setAddedProducts((prev) => {
       const updatedProducts = [...prev];
       updatedProducts[index].quantity = updatedQuantity;
@@ -227,7 +234,7 @@ export default function AddOrders() {
         ...prevState,
         items: updatedProducts,
         totalQuantity: totalQuantity,
-        Total: total,
+        total: total,
       }));
 
       return updatedProducts;
@@ -236,14 +243,13 @@ export default function AddOrders() {
 
   useEffect(() => {
     localStorage.setItem('form-Data', JSON.stringify(formState));
-    // fetchCustomer();
-    console.log('total', Total);
+    // console.log('total', Total);
   }, [formState]);
 
   const handleAutocompleteChange = (name) => (event, newValue) => {
     setFormState((prevState) => ({
       ...prevState,
-      [name]: newValue ? newValue.title : '', // Store only the title or an empty string
+      [name]: newValue ? newValue.title : '',
     }));
   };
 
@@ -252,8 +258,9 @@ export default function AddOrders() {
     setSelectedFile(file);
     setFormState((prevState) => ({ ...prevState, selectedFile: file }));
   };
+
   const handleReset = () => {
-    const today = new Date(); // Reset the date to today's date if needed
+    const today = new Date();
     const initialFormState = {
       selectedDate: today,
       referenceNo: '',
@@ -263,7 +270,8 @@ export default function AddOrders() {
       walkInCustomer: true,
       items: [],
       totalQuantity: '',
-      Total: '',
+      total: '',
+      total_items: '',
       orderDiscount: '',
       shipping: '',
       selectedFile: null,
@@ -273,13 +281,12 @@ export default function AddOrders() {
       saleNote: '',
       staffNote: '',
     };
-
-    setFormState(initialFormState); // Reset formState to initial values
-    setAddedProducts([]); // Clear the added products
+    setFormState(initialFormState);
+    setAddedProducts([]);
     setCustomer([]);
-    setSelectedFile(null); // Clear any selected file
-    setSelectedDate(today); // Reset the date to today
-    localStorage.removeItem('form-Data'); // Optionally, clear saved form data from localStorage
+    setSelectedFile(null);
+    setSelectedDate(today);
+    localStorage.removeItem('form-Data');
   };
 
   const columns1 = [
@@ -298,15 +305,15 @@ export default function AddOrders() {
               onChange={(e) => handleQuantityChange(e, dataIndex)}
               inputProps={{
                 min: 1,
-                style: { textAlign: 'center' }, // Center the text
+                style: { textAlign: 'center' },
               }}
               InputLabelProps={{
-                shrink: true, // Ensure the label doesn't overlap with the text
+                shrink: true,
               }}
               sx={{
-                width: '80px', // Adjust the width if necessary
+                width: '80px',
                 '& input': {
-                  textAlign: 'center', // Center the text inside the input
+                  textAlign: 'center',
                 },
               }}
             />
@@ -345,13 +352,13 @@ export default function AddOrders() {
     },
   ];
 
-  const columns2 = [
-    { name: 'Items', label: 'Items' },
-    { name: 'Total', label: 'Total' },
-    { name: 'Order Discount', label: 'Order Discount' },
-    { name: 'Shipping', label: 'Shipping' },
-    { name: 'Grand Total', label: 'Grand Total' },
-  ];
+  // const columns2 = [
+  //   { name: 'Items', label: 'Items' },
+  //   { name: 'Total', label: 'Total' },
+  //   { name: 'Order Discount', label: 'Order Discount' },
+  //   { name: 'Shipping', label: 'Shipping' },
+  //   { name: 'Grand Total', label: 'Grand Total' },
+  // ];
 
   const Data = addedProducts.map((item, index) => ({
     'Product (Code - Name)': item.name,
@@ -366,39 +373,35 @@ export default function AddOrders() {
     Subtotal: item.subtotal || '$0.00',
   }));
 
-  const prepareFormData = () => {
-    const formData = new FormData();
-    formData.append('selectedDate', formState.selectedDate);
-    formData.append('referenceNo', formState.referenceNo);
-    formData.append('biller', formState.biller?.title || '');
-    formData.append('warehouse', formState.warehouse?.title || '');
-    formData.append('customer', formState.customer?.title || '');
-    formData.append('walkInCustomer', formState.walkInCustomer);
-    formData.append('items', JSON.stringify(formState.items));
-    formData.append('orderDiscount', formState.orderDiscount);
-    formData.append('shipping', formState.shipping);
-    if (selectedFile) formData.append('selectedFile', selectedFile);
-    formData.append('salestatus', formState.salestatus?.title || '');
-    formData.append('paymentTerm', formState.paymentTerm);
-    formData.append('paymentStatus', formState.paymentStatus?.title || '');
-    formData.append('saleNote', formState.saleNote);
-    formData.append('staffNote', formState.staffNote);
+  // const FormData = formState.map((item) => {
+  //   item.total, item.total_items, item.totalQuantity;
+  // });
 
-    return formData;
-  };
   const handleSubmit = async () => {
     try {
-      const formData = new FormData();
-      Object.entries(formState).forEach(([key, value]) => {
-        formData.append(key, value instanceof Date ? value.toISOString() : value);
-      });
+      const submittedItems = formState.items.map((item) => ({
+        quantity: item.quantity,
+        id: item.id,
+      }));
+      console.log('Sub', submittedItems);
 
-      const result = await submitFormData(formData);
-      console.log('Data submitted successfully:', result);
+      const submissionData = {
+        items: submittedItems,
+        customer: formState.customer,
+      };
+
+      console.log(
+        'Submitted Data',
+        // formState.totalQuantity,
+        // formState.total,
+        submissionData,
+        // formState.customer,
+      );
     } catch (error) {
       console.error('Submission failed:', error);
     }
   };
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <Item>
@@ -667,7 +670,7 @@ export default function AddOrders() {
             xs={12}
             sm={12}
             md={12}
-            sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}
+            sx={{ display: 'flex', justifyContent: 'flex-end', mt: 0 }}
           >
             <Button
               variant="contained"
@@ -689,12 +692,11 @@ export default function AddOrders() {
               Reset
             </Button>
           </Grid>
-
           <Grid item xs={2} sm={4} md={12}>
             <DynamicHeader data={formState} />
           </Grid>
         </Grid>
-        <Box sx={{ mt: 2 }}></Box>
+        {/* <Box sx={{ mt: 2 }}></Box> */}
       </Item>
     </Box>
   );

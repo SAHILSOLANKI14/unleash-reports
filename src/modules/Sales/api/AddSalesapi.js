@@ -1,15 +1,19 @@
+import axios from 'axios';
 import api from 'src/api';
-import { objectToQueryString } from '../../../utils/helper';
-
 export const submitFormData = async (data) => {
-  let qs = objectToQueryString(data);
+  const url = `api/v1/sales?`;
 
-  const url = `api/v1/sales?api-key=kccw48o08c8kk0448scwcg8swgg8g04w4ccwsgos&${qs}`;
-  // console.log('searchTerm', status);
   try {
-    const response = await api(url, null, 'post');
+    const response = await api(url, data, 'post', {
+      headers: {
+        'api-key': 'kccw48o08c8kk0448scwcg8swgg8g04w4ccwsgos', 
+        'Content-Type': 'application/json', 
+      },
+    });
+    console.log('Response:', response);
     return response;
   } catch (error) {
+    console.error('Error:', error.response ? error.response.data : error.message);
     throw error;
   }
 };

@@ -11,6 +11,8 @@ import {
   Stack,
   TextField,
   Typography,
+  CircularProgress,
+  IconButton,
 } from '@mui/material';
 import Box from '@mui/material/Box';
 import FormControlLabel from '@mui/material/FormControlLabel';
@@ -28,6 +30,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import AppGrid from 'src/components/App/AppGrid';
 import { submitFormData } from '../api/AddSalesapi';
 import DynamicHeader from './tableFooter';
+import AddCustomer from './AddCustomer';
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: '#fff',
   ...theme.typography.body2,
@@ -62,7 +65,7 @@ export default function AddOrders() {
           selectedFile: null,
           saleStatus: null,
           paymentTerm: '',
-          paymentStatus: null,
+          payment_status: null,
           saleNote: '',
           staffNote: '',
         };
@@ -73,6 +76,9 @@ export default function AddOrders() {
   const [products, setProducts] = useState([]);
   const [addedProducts, setAddedProducts] = useState([]);
   const [customer, setCustomer] = useState([]);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [open, setOpen] = useState(false);
+  const [isLoadingOption, setIsLoadingOption] = useState(false);
   // const [Total, setSubToTal] = useState([]);
   const Biller = [{ title: 'Unleash POS LLC' }];
   const Warehouse = [{ title: 'Unleash POS LLC' }];
@@ -93,6 +99,7 @@ export default function AddOrders() {
           );
           const data = await response.json();
           setProducts(data.data || []);
+          setIsLoadingOption(false);
         } catch (error) {
           console.error('Error fetching products:', error);
           setProducts([]);
@@ -109,12 +116,13 @@ export default function AddOrders() {
         `https://dev.unleashpos.com/api/v1/customers?api-key=kccw48o08c8kk0448scwcg8swgg8g04w4ccwsgos`,
       );
       const data = await response.json();
-      // setCustomerData(data.data);
-      // console.log('CSC', customerData);
+
       const customerCompanies = data.data.map((customer) => ({
         title: customer.company,
+        ID: customer.id,
       }));
       setCustomer(customerCompanies);
+      setIsLoadingOption(false);
     } catch (error) {
       console.error('Error fetching customers:', error);
     }
@@ -136,6 +144,7 @@ export default function AddOrders() {
 
   const handleInputChange = (event, search) => {
     if (search !== '') {
+      setIsLoadingOption(true);
       fetchProducts(search);
     } else {
       setProducts([]);
@@ -146,7 +155,7 @@ export default function AddOrders() {
     setAddedProducts((prev) => {
       const existingProductIndex = prev.findIndex((p) => p.name === product.name);
       if (existingProductIndex === -1) {
-        const newProduct = { ...product, quantity: 1 };
+        const newProduct = { ...product, Quantity: 1 };
         newProduct.subtotal = calculateProductSubtotal(newProduct);
         const updatedProducts = [...prev, newProduct];
 
@@ -163,7 +172,7 @@ export default function AddOrders() {
         return updatedProducts;
       } else {
         const updatedProducts = [...prev];
-        updatedProducts[existingProductIndex].quantity += 1;
+        updatedProducts[existingProductIndex].Quantity += 1;
         updatedProducts[existingProductIndex].subtotal = calculateProductSubtotal(
           updatedProducts[existingProductIndex],
         );
@@ -202,7 +211,7 @@ export default function AddOrders() {
   };
 
   const calculateTotalQuantity = (items) => {
-    return items.reduce((total, item) => total + (item.quantity || 0), 0);
+    return items.reduce((total, item) => total + (item.Quantity || 0), 0);
   };
   const calculateTotal = (items) => {
     return items.reduce((acc, item) => acc + (item.subtotal || 0), 0);
@@ -210,7 +219,7 @@ export default function AddOrders() {
 
   const calculateProductSubtotal = (product) => {
     const price = product?.price || 0;
-    const quantity = product?.quantity || 1;
+    const quantity = product?.Quantity || 1;
     const discount = product?.discount || 0;
     const productTax = product?.productTax || 0;
     const stateTax = product?.state_tax || 0;
@@ -226,7 +235,7 @@ export default function AddOrders() {
 
     setAddedProducts((prev) => {
       const updatedProducts = [...prev];
-      updatedProducts[index].quantity = updatedQuantity;
+      updatedProducts[index].Quantity = updatedQuantity;
       updatedProducts[index].subtotal = calculateProductSubtotal(updatedProducts[index]);
       const totalQuantity = calculateTotalQuantity(updatedProducts);
       const total = calculateTotal(updatedProducts);
@@ -243,7 +252,6 @@ export default function AddOrders() {
 
   useEffect(() => {
     localStorage.setItem('form-Data', JSON.stringify(formState));
-    // console.log('total', Total);
   }, [formState]);
 
   const handleAutocompleteChange = (name) => (event, newValue) => {
@@ -253,11 +261,11 @@ export default function AddOrders() {
     }));
   };
 
-  const handleFileChange = (event) => {
-    const file = event.target.files[0];
-    setSelectedFile(file);
-    setFormState((prevState) => ({ ...prevState, selectedFile: file }));
-  };
+  // const handleFileChange = (event) => {
+  //   const file = event.target.files[0];
+  //   setSelectedFile(file);
+  //   setFormState((prevState) => ({ ...prevState, selectedFile: file }));
+  // };
 
   const handleReset = () => {
     const today = new Date();
@@ -277,7 +285,7 @@ export default function AddOrders() {
       selectedFile: null,
       salestatus: null,
       paymentTerm: '',
-      paymentStatus: null,
+      payment_status: null,
       saleNote: '',
       staffNote: '',
     };
@@ -289,6 +297,14 @@ export default function AddOrders() {
     localStorage.removeItem('form-Data');
   };
 
+  const handleOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+  // const id = open ? 'simple-popover' : undefined;
   const columns1 = [
     { name: 'Product (Code - Name)', label: 'Product (Code - Name)' },
     { name: 'Serial No', label: 'Serial No' },
@@ -301,7 +317,7 @@ export default function AddOrders() {
           return (
             <TextField
               type="text"
-              value={addedProducts[dataIndex]?.quantity || ''}
+              value={addedProducts[dataIndex]?.Quantity || ''}
               onChange={(e) => handleQuantityChange(e, dataIndex)}
               inputProps={{
                 min: 1,
@@ -352,19 +368,11 @@ export default function AddOrders() {
     },
   ];
 
-  // const columns2 = [
-  //   { name: 'Items', label: 'Items' },
-  //   { name: 'Total', label: 'Total' },
-  //   { name: 'Order Discount', label: 'Order Discount' },
-  //   { name: 'Shipping', label: 'Shipping' },
-  //   { name: 'Grand Total', label: 'Grand Total' },
-  // ];
-
   const Data = addedProducts.map((item, index) => ({
     'Product (Code - Name)': item.name,
     'Serial No': item.product_code,
     Price: item.price,
-    Quantity: item.quantity || '$0.00',
+    Quantity: item.Quantity || '0',
     Discount: item.discount || '$0.00',
     'Product Tax': item.productTax || '$0.00',
     'State Tax': item.state_tax || '$0.00',
@@ -373,30 +381,29 @@ export default function AddOrders() {
     Subtotal: item.subtotal || '$0.00',
   }));
 
-  // const FormData = formState.map((item) => {
-  //   item.total, item.total_items, item.totalQuantity;
-  // });
-
   const handleSubmit = async () => {
     try {
       const submittedItems = formState.items.map((item) => ({
-        quantity: item.quantity,
+        quantity: item.Quantity,
         id: item.id,
       }));
+
       console.log('Sub', submittedItems);
 
       const submissionData = {
         items: submittedItems,
         customer: formState.customer,
+        salestatus: formState.salestatus,
+        payment_status: formState.payment_status,
+        total_items: formState.total_items,
+        total: formState.total,
       };
-
-      console.log(
-        'Submitted Data',
-        // formState.totalQuantity,
-        // formState.total,
-        submissionData,
-        // formState.customer,
-      );
+      const data = {
+        'form-data': submissionData,
+      };
+      const response = await submitFormData(data);
+      console.log('Submitted Data', data);
+      return response;
     } catch (error) {
       console.error('Submission failed:', error);
     }
@@ -410,6 +417,7 @@ export default function AddOrders() {
             <FormControl fullWidth>
               <LocalizationProvider dateAdapter={AdapterDateFns}>
                 <DatePicker
+                  size="small"
                   label="Date"
                   value={formState.selectedDate ? new Date(formState.selectedDate) : null}
                   onChange={handleDateChange}
@@ -421,6 +429,7 @@ export default function AddOrders() {
           <Grid item xs={2} sm={4} md={4}>
             <FormControl fullWidth>
               <TextField
+                size="small"
                 name="referenceNo"
                 value={formState.referenceNo}
                 onChange={handleChange}
@@ -432,6 +441,7 @@ export default function AddOrders() {
             <FormControl fullWidth>
               <Autocomplete
                 options={Biller}
+                size="small"
                 clearOnEscape
                 value={Biller.find((option) => option.title === formState.biller) || null}
                 onChange={handleAutocompleteChange('biller')}
@@ -444,6 +454,7 @@ export default function AddOrders() {
             <FormControl fullWidth>
               <Autocomplete
                 options={Warehouse}
+                size="small"
                 clearOnEscape
                 value={Warehouse.find((option) => option.title === formState.warehouse) || null}
                 onChange={handleAutocompleteChange('warehouse')}
@@ -461,6 +472,8 @@ export default function AddOrders() {
               <FormControl fullWidth>
                 <Autocomplete
                   options={customer || []}
+                  // key={customer.id}
+                  size="small"
                   clearOnEscape
                   value={customer.find((option) => option.title === formState.customer) || null}
                   getOptionLabel={(option) => option.title || ''}
@@ -475,12 +488,17 @@ export default function AddOrders() {
                   noOptionsText="Type to search for a customer"
                   onChange={handleAutocompleteChange('customer')}
                   freeSolo
+                  loading={isLoadingOption}
+                  loadingText="Loading...."
                 />
                 {/* {!formState.customer && <FormHelperText>This field is required</FormHelperText>} */}
               </FormControl>
               <ModeEditOutlineOutlinedIcon />
               <VisibilityIcon />
-              <PersonAddIcon />
+              <IconButton onClick={handleOpen}>
+                <PersonAddIcon />
+              </IconButton>
+              <AddCustomer open={open} handleClose={handleClose} />
             </Stack>
           </Grid>
           <Grid item xs={2} sm={4} md={4}>
@@ -506,6 +524,7 @@ export default function AddOrders() {
               <Grid item xs={12}>
                 <Autocomplete
                   clearOnEscape
+                  size="small"
                   options={products || []}
                   getOptionLabel={(option) => option.name || ''}
                   renderInput={(params) => (
@@ -527,6 +546,19 @@ export default function AddOrders() {
                     if (newValue) handleAddProduct(newValue);
                   }}
                   freeSolo
+                  loading={isLoadingOption}
+                  loadingText={
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        height: '100%',
+                      }}
+                    >
+                      <CircularProgress size={20} color="secondary" />
+                    </Box>
+                  }
                 />
               </Grid>
             </Grid>
@@ -569,6 +601,7 @@ export default function AddOrders() {
           <Grid item xs={2} sm={4} md={4}>
             <FormControl fullWidth>
               <TextField
+                size="small"
                 name="orderDiscount"
                 value={formState.orderDiscount}
                 onChange={handleChange}
@@ -579,6 +612,7 @@ export default function AddOrders() {
           <Grid item xs={2} sm={4} md={4}>
             <FormControl fullWidth>
               <TextField
+                size="small"
                 label="Shipping"
                 name="shipping"
                 value={formState.shipping}
@@ -604,6 +638,7 @@ export default function AddOrders() {
           <Grid item xs={2} sm={4} md={4}>
             <FormControl fullWidth>
               <Autocomplete
+                size="small"
                 options={salestatus}
                 clearOnEscape
                 value={salestatus.find((options) => options.title === formState.salestatus) || null}
@@ -616,6 +651,7 @@ export default function AddOrders() {
           <Grid item xs={2} sm={4} md={4}>
             <FormControl fullWidth>
               <TextField
+                size="small"
                 label="Payment Term"
                 name="paymentTerm"
                 value={formState.paymentTerm}
@@ -626,12 +662,14 @@ export default function AddOrders() {
           <Grid item xs={2} sm={4} md={4}>
             <FormControl fullWidth>
               <Autocomplete
+                size="small"
                 options={PaymentStatus}
                 clearOnEscape
                 value={
-                  PaymentStatus.find((options) => options.title === formState.paymentStatus) || null
+                  PaymentStatus.find((options) => options.title === formState.payment_status) ||
+                  null
                 }
-                onChange={handleAutocompleteChange('paymentStatus')}
+                onChange={handleAutocompleteChange('payment_status')}
                 getOptionLabel={(option) => `${option.title}`}
                 renderInput={(params) => <TextField {...params} label="Payment Status *" />}
               />

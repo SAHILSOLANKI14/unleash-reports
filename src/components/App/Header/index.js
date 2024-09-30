@@ -1,22 +1,18 @@
-import React from 'react';
-import InputBase from '@mui/material/InputBase';
-import IconButton from '@mui/material/IconButton';
-import SearchIcon from '@mui/icons-material/Search';
-import Paper from '@mui/material/Paper';
-import Grid from '@mui/material/Grid';
-import Box from '@mui/material/Box';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Switch from '@mui/material/Switch';
+import ComputerIcon from '@mui/icons-material/Computer';
 import NotificationsIcon from '@mui/icons-material/NotificationsOutlined';
+import SearchIcon from '@mui/icons-material/Search';
 import SettingsIcon from '@mui/icons-material/SettingsOutlined';
 import Badge from '@mui/material/Badge';
-import { StyledEngineProvider } from '@mui/material/styles';
-import AccountMenu from '../AccountMenu';
-import Stack from '@mui/material/Stack';
+import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
+import Grid from '@mui/material/Grid';
+import IconButton from '@mui/material/IconButton';
+import InputBase from '@mui/material/InputBase';
+import Paper from '@mui/material/Paper';
+import Stack from '@mui/material/Stack';
 import { styled } from '@mui/material/styles';
-import ComputerIcon from '@mui/icons-material/Computer';
 import { Link } from 'react-router-dom';
+import AccountMenu from '../AccountMenu';
 
 const AppointmentToggle = styled(Paper)({
   backgroundColor: '#fff',

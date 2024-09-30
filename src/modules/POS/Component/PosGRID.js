@@ -1,5 +1,8 @@
+import AddCircleIcon from '@mui/icons-material/AddCircle';
 import CloseIcon from '@mui/icons-material/Close';
+import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded';
 import SearchIcon from '@mui/icons-material/Search';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 import {
   Autocomplete,
   Button,
@@ -20,12 +23,8 @@ import { experimentalStyled as styled } from '@mui/material/styles';
 import { debounce } from 'lodash';
 import { useCallback, useEffect, useState } from 'react';
 import AppGrid from 'src/components/App/AppGrid';
-import POSFooter from './POSFooter';
-import VisibilityIcon from '@mui/icons-material/Visibility';
 import ProductGrid from '../Component/ProductGrid';
-import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded';
-import AddCircleIcon from '@mui/icons-material/AddCircle';
-import { Warehouse } from '@mui/icons-material';
+import POSFooter from './POSFooter';
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: '#fff',

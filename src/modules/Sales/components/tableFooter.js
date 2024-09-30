@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import { Box, Grid, Typography, Paper } from '@mui/material';
+import { Grid, Paper, Typography } from '@mui/material';
 
 const DynamicHeader = (data) => {
   const Footerdata = data.data;

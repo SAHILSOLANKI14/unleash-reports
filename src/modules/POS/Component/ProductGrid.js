@@ -48,10 +48,9 @@ export default function ProductGrid({ selectedProduct }) {
   };
 
   const handleProductClick = (product) => {
-    selectedProduct(product);
-    // console.log('Clicked Product:', product);
+    selectedProduct(product); 
   };
-  // console.log('Clicked:', clickedProduct);
+
 
   return (
     <Box sx={{ p: 0 }}>

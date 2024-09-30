@@ -1,17 +1,22 @@
-import React, { useState } from 'react';
-import { styled } from '@mui/material/styles';
-import Box from '@mui/material/Box';
-import Paper from '@mui/material/Paper';
-import Grid from '@mui/material/Grid';
-import { Button, Stack, Typography } from '@mui/material';
-import WalletIcon from '@mui/icons-material/Wallet';
-import RequestQuoteIcon from '@mui/icons-material/RequestQuote';
-import DoNotDisturbIcon from '@mui/icons-material/DoNotDisturb';
 import CancelIcon from '@mui/icons-material/Cancel';
+import DoNotDisturbIcon from '@mui/icons-material/DoNotDisturb';
 import LocalHospitalOutlinedIcon from '@mui/icons-material/LocalHospitalOutlined';
-import { Dialog, DialogActions, DialogContent, DialogTitle, IconButton } from '@mui/material';
+import RequestQuoteIcon from '@mui/icons-material/RequestQuote';
+import WalletIcon from '@mui/icons-material/Wallet';
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  IconButton,
+  Stack,
+  Typography,
+} from '@mui/material';
+import Box from '@mui/material/Box';
+import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
-import { Discount } from '@mui/icons-material';
+import { useState } from 'react';
 
 const POSFooter = ({ data }) => {
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -38,7 +43,7 @@ const POSFooter = ({ data }) => {
   const items = DATA.items ? DATA.items.length : 0;
   const GrandTotal =
     parseFloat(DATA.total || 0) -
-    parseFloat(DATA.orderDiscount || 0) +
+    parseFloat(inputValue.Discount || 0) +
     parseFloat(inputValue.Shipping || DATA.shipping || 0);
 
   return (

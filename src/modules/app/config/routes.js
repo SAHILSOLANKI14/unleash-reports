@@ -6,6 +6,8 @@ import supplier from 'src/modules/Suppliers/Container/supplier';
 import customers from 'src/modules/Customer/Container/CustomerContainer';
 import PurchaseContainer from 'src/modules/Purchase/Container/PurchaseContainer';
 import AddSalescontainer from 'src/modules/Sales/container/AddSalescontainer';
+import POS from 'src/modules/POS/Container/POSContainer';
+
 export default [
   {
     title: 'dashboard',
@@ -60,6 +62,13 @@ export default [
     title: 'purchases',
     component: PurchaseContainer,
     url: '/purchases',
+    exact: true,
+    auth: false,
+  },
+  {
+    title: 'pos',
+    component: POS,
+    url: '/pos',
     exact: true,
     auth: false,
   },

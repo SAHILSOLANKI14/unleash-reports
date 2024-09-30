@@ -15,6 +15,8 @@ import AccountMenu from '../AccountMenu';
 import Stack from '@mui/material/Stack';
 import Divider from '@mui/material/Divider';
 import { styled } from '@mui/material/styles';
+import ComputerIcon from '@mui/icons-material/Computer';
+import { Link } from 'react-router-dom';
 
 const AppointmentToggle = styled(Paper)({
   backgroundColor: '#fff',
@@ -58,14 +60,24 @@ function Header() {
         </Grid>
         <Grid item xs={4} container>
           <Grid item xs={6}>
-            <AppointmentToggle>
-              <FormControlLabel
-                value="appointment"
-                control={<Switch color="primary" />}
-                label="Appointment"
-                labelPlacement="start"
-              />
-            </AppointmentToggle>
+            <IconButton color="inherit">
+              <Link
+                to="/pos"
+                style={{ textDecoration: 'none', display: 'flex', alignItems: 'center' }}
+              >
+                <IconItem
+                  sx={{
+                    fontSize: '18px',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}
+                >
+                  <ComputerIcon color="secondary" sx={{ fontSize: '30px' }} />
+                  POS
+                </IconItem>
+              </Link>
+            </IconButton>
           </Grid>
           <Grid item xs={6} sx={{ display: 'flex' }}>
             <Stack

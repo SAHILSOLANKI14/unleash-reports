@@ -16,7 +16,6 @@ import AddIcon from '@mui/icons-material/Add';
 const AddCustomer = ({ open, handleClose }) => {
   return (
     <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
-      {/* Sticky Header */}
       <DialogTitle
         sx={{
           position: 'sticky',
@@ -199,26 +198,26 @@ const AddCustomer = ({ open, handleClose }) => {
               </Stack>
             </Grid>
           </Grid>
-          <Grid item xs={12}>
-            <Grid item xs={6}>
-              <Autocomplete
-                sx={{ mt: 3 }}
-                id="size-small-outlined"
-                size="small"
-                options={[]}
-                getOptionLabel={(option) => option.title}
-                renderInput={(params) => (
-                  <TextField {...params} label="Customer Documents" placeholder="Favorites" />
-                )}
-              />
-            </Grid>
-            <Grid item xs={6}>
-              <Button sx={{ background: '#1a79ff', color: 'white' }}>
-                <AddIcon />
-              </Button>
-            </Grid>
-          </Grid>
         </Box>
+        <Grid item xs={12}>
+          <Grid item xs={6}>
+            <Autocomplete
+              sx={{ mt: 3 }}
+              id="size-small-outlined"
+              size="small"
+              options={[]}
+              getOptionLabel={(option) => option.title}
+              renderInput={(params) => (
+                <TextField {...params} label="Customer Documents" placeholder="Favorites" />
+              )}
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <Button sx={{ background: '#1a79ff', color: 'white' }}>
+              <AddIcon />
+            </Button>
+          </Grid>
+        </Grid> 
       </DialogContent>
 
       {/* Sticky Footer */}

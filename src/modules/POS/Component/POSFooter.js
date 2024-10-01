@@ -3,6 +3,7 @@ import DoNotDisturbIcon from '@mui/icons-material/DoNotDisturb';
 import LocalHospitalOutlinedIcon from '@mui/icons-material/LocalHospitalOutlined';
 import RequestQuoteIcon from '@mui/icons-material/RequestQuote';
 import WalletIcon from '@mui/icons-material/Wallet';
+import { useEffect, useRef } from 'react';
 import {
   Button,
   Dialog,
@@ -17,8 +18,11 @@ import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
 import { useState } from 'react';
+import { useCallback } from 'react';
 
 const POSFooter = ({ data }) => {
+  const ShortcutShipping = useRef(null);
+  const ShortcutDiscount = useRef(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [fieldName, setFieldName] = useState('');
   const [inputValue, setInputValue] = useState({
@@ -39,6 +43,28 @@ const POSFooter = ({ data }) => {
     setInputValue({ ...inputValue, [fieldName]: e.target.value });
   };
 
+  const handleKeypress = useCallback((event) => {
+    if (event.ctrlKey && event.shiftKey) {
+      switch (event.key) {
+        case 'S':
+          setFieldName('Shipping');
+          setDialogOpen(true);
+          break;
+        case 'E':
+          setFieldName('Discount');
+          setDialogOpen(true);
+          break;
+        default:
+          break;
+      }
+    }
+  }, []);
+  useEffect(() => {
+    document.addEventListener('keydown', handleKeypress);
+    return () => {
+      document.removeEventListener('keydown', handleKeypress);
+    };
+  }, [handleKeypress]);
   const DATA = data || {};
   const items = DATA.items ? DATA.items.length : 0;
   const GrandTotal =
@@ -63,6 +89,7 @@ const POSFooter = ({ data }) => {
             >
               <Typography
                 variant="h5"
+                ref={ShortcutShipping}
                 sx={{
                   //   fontWeight: 'bold',
                   display: 'flex',
@@ -99,6 +126,7 @@ const POSFooter = ({ data }) => {
               sx={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid' }}
             >
               <Typography
+                ref={ShortcutDiscount}
                 variant="h5"
                 sx={{
                   marginLeft: '20px',
@@ -131,7 +159,7 @@ const POSFooter = ({ data }) => {
                 Total
               </Typography>
               <Typography variant="h5" sx={{ marginLeft: '20px' }}>
-                {DATA.total || '$0.00'}
+                {DATA.total.toFixed(2) || '$0.00'}
               </Typography>
             </Stack>
 

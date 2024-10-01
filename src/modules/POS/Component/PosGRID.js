@@ -25,6 +25,7 @@ import { useCallback, useEffect, useState } from 'react';
 import AppGrid from 'src/components/App/AppGrid';
 import ProductGrid from '../Component/ProductGrid';
 import POSFooter from './POSFooter';
+import { useRef } from 'react';
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: '#fff',
@@ -38,6 +39,7 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 export default function AddOrders() {
+  const customerInputRef = useRef(null);
   const [formState, setFormState] = useState(() => {
     const savedState = localStorage.getItem('POS-Data');
     return savedState
@@ -66,6 +68,18 @@ export default function AddOrders() {
   const [customer, setCustomer] = useState([]);
   const [isLoadingOption, setIsLoadingOption] = useState(false);
   const Warehouse = [{ title: 'Unleash POS LLC' }];
+
+  const handleKeyPress = useCallback((event) => {
+    if (event.ctrlKey && event.shiftKey && event.key === 'Y') {
+      if (customerInputRef.current) {
+        customerInputRef.current.querySelector('input').focus();
+        customerInputRef.current.style.backgroundColor = '#e7e8ea';
+        setTimeout(() => {
+          customerInputRef.current.style.backgroundColor = '';
+        }, 2000);
+      }
+    }
+  }, []);
   const fetchProducts = useCallback(
     debounce(async (search) => {
       if (search) {
@@ -176,7 +190,7 @@ export default function AddOrders() {
       };
 
       setFormState(updatedFormState);
-      localStorage.setItem('form-Data', JSON.stringify(updatedFormState));
+      localStorage.setItem('POS-Data', JSON.stringify(updatedFormState));
 
       return updatedProducts;
     });
@@ -223,7 +237,11 @@ export default function AddOrders() {
   };
   useEffect(() => {
     localStorage.setItem('POS-Data', JSON.stringify(formState));
-  }, [formState]);
+    document.addEventListener('keydown', handleKeyPress);
+    return () => {
+      document.removeEventListener('keydown', handleKeyPress);
+    };
+  }, [formState, handleKeyPress]);
 
   const handleAutocompleteChange = (name) => (event, newValue) => {
     setFormState((prevState) => ({
@@ -277,11 +295,11 @@ export default function AddOrders() {
       },
     },
     {
-      name: '',
-      label: '',
+      name: 'Action',
+      label: 'Action',
       options: {
         customHeadRender: () => {
-          return <DeleteRoundedIcon />;
+          return <DeleteRoundedIcon sx={{ mt: 3 }} />;
         },
         customBodyRenderLite: (dataIndex) => {
           return (
@@ -319,6 +337,7 @@ export default function AddOrders() {
                   >
                     <FormControl fullWidth>
                       <Autocomplete
+                        ref={customerInputRef}
                         options={customer || []}
                         // key={customer.id}
                         size="small"

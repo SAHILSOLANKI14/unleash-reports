@@ -7,6 +7,8 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import image from 'src/modules/Categories/images/no_image.png';
+import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
+import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import { fetchproductData } from '../../Categories/API/ProductsApi';
 
 export default function ProductGrid({ selectedProduct }) {
@@ -48,20 +50,21 @@ export default function ProductGrid({ selectedProduct }) {
   };
 
   const handleProductClick = (product) => {
-    selectedProduct(product); 
+    selectedProduct(product);
   };
-
 
   return (
     <Box sx={{ p: 0 }}>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2, mb: 2 }}>
+      <Box
+        sx={{ display: 'flex', justifyContent: 'space-between', mt: 0, mb: 2, color: '#1a79ff' }}
+      >
         <Button
           variant="outlined"
           onClick={handlePrevious}
           disabled={currentPage === 1}
           sx={{ border: '1px solid' }}
         >
-          Previous
+          <KeyboardArrowLeftIcon /> Previous
         </Button>
         <Typography variant="body2" sx={{ alignSelf: 'center' }}>
           Record {currentPage} Out of {totalPages}
@@ -72,7 +75,7 @@ export default function ProductGrid({ selectedProduct }) {
           disabled={currentPage === totalPages}
           sx={{ border: '1px solid' }}
         >
-          Next
+          Next <KeyboardArrowRightIcon />
         </Button>
       </Box>
 
@@ -82,12 +85,14 @@ export default function ProductGrid({ selectedProduct }) {
             <Card
               onClick={() => handleProductClick(product)}
               sx={{
-                height: '180px',
+                height: '185px',
                 display: 'flex',
                 flexDirection: 'column',
                 textAlign: 'center',
                 justifyContent: 'space-between',
                 cursor: 'pointer',
+                background: '#f1f1f1',
+                p: 2,
               }}
             >
               <Box

@@ -10,11 +10,15 @@ import image from 'src/modules/Categories/images/no_image.png';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import { fetchproductData } from '../../Categories/API/ProductsApi';
+import { useRef, useCallback } from 'react';
 
 export default function ProductGrid({ selectedProduct }) {
-  const [productGridData, setProductGridData] = useState([]);
+  const prev = useRef(null);
+  const next = useRef(null);
+
+  // const [productGridData, setProductGridData] = useState([]);
   const [currentProducts, setCurrentProducts] = useState([]);
-  const [clickedProduct, setClickedProduct] = useState(null);
+  // const [clickedProduct, setClickedProduct] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const productsPerPage = 28;
@@ -27,15 +31,38 @@ export default function ProductGrid({ selectedProduct }) {
 
     const res = await fetchproductData(data);
     if (res && res.data) {
-      setProductGridData(res.data);
+      // setProductGridData(res.data);
       setCurrentProducts(res.data);
       setTotalPages(res.total);
     }
   };
+  const handleKeypress = useCallback(
+    (event) => {
+      if (event.ctrlKey) {
+        switch (event.key) {
+          case 'ArrowRight':
+            handleNext();
+            break;
+          case 'ArrowLeft':
+            handlePrevious();
+            break;
+          default:
+            break;
+        }
+      }
+    },
+    [currentPage, totalPages],
+  );
 
   useEffect(() => {
     fetchProductGrid(currentPage);
-  }, [currentPage]);
+    window.addEventListener('keydown', handleKeypress);
+    fetchProductGrid(currentPage);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeypress);
+    };
+  }, [currentPage, handleKeypress]);
 
   const handleNext = () => {
     if (currentPage < totalPages) {
@@ -59,6 +86,7 @@ export default function ProductGrid({ selectedProduct }) {
         sx={{ display: 'flex', justifyContent: 'space-between', mt: 0, mb: 2, color: '#1a79ff' }}
       >
         <Button
+          ref={prev}
           variant="outlined"
           onClick={handlePrevious}
           disabled={currentPage === 1}
@@ -70,6 +98,7 @@ export default function ProductGrid({ selectedProduct }) {
           Record {currentPage} Out of {totalPages}
         </Typography>
         <Button
+          ref={next}
           variant="outlined"
           onClick={handleNext}
           disabled={currentPage === totalPages}

@@ -44,13 +44,13 @@ const POSFooter = ({ data }) => {
   };
 
   const handleKeypress = useCallback((event) => {
-    if (event.ctrlKey && event.shiftKey) {
+    if (event.shiftKey) {
       switch (event.key) {
         case 'S':
           setFieldName('Shipping');
           setDialogOpen(true);
           break;
-        case 'E':
+        case 'A':
           setFieldName('Discount');
           setDialogOpen(true);
           break;
@@ -263,6 +263,7 @@ const POSFooter = ({ data }) => {
         <DialogContent>
           <TextField
             autoFocus
+            type="number"
             margin="dense"
             label={fieldName}
             fullWidth

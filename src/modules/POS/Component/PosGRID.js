@@ -40,6 +40,7 @@ const Item = styled(Paper)(({ theme }) => ({
 
 export default function AddOrders() {
   const customerInputRef = useRef(null);
+  const ProductInputRef = useRef(null);
   const [formState, setFormState] = useState(() => {
     const savedState = localStorage.getItem('POS-Data');
     return savedState
@@ -70,13 +71,23 @@ export default function AddOrders() {
   const Warehouse = [{ title: 'Unleash POS LLC' }];
 
   const handleKeyPress = useCallback((event) => {
-    if (event.ctrlKey && event.shiftKey && event.key === 'Y') {
-      if (customerInputRef.current) {
-        customerInputRef.current.querySelector('input').focus();
-        customerInputRef.current.style.backgroundColor = '#e7e8ea';
-        setTimeout(() => {
-          customerInputRef.current.style.backgroundColor = '';
-        }, 2000);
+    if (event.ctrlKey && event.shiftKey) {
+      if (event.key === 'Y') {
+        if (customerInputRef.current) {
+          customerInputRef.current.querySelector('input').focus();
+          customerInputRef.current.style.backgroundColor = '#e7e8ea';
+          setTimeout(() => {
+            customerInputRef.current.style.backgroundColor = '';
+          }, 2000);
+        }
+      } else if (event.key === 'Z') {
+        if (ProductInputRef.current) {
+          ProductInputRef.current.querySelector('input').focus();
+          ProductInputRef.current.style.backgroundColor = '#e7e8ea';
+          setTimeout(() => {
+            ProductInputRef.current.style.backgroundColor = '';
+          }, 2000);
+        }
       }
     }
   }, []);
@@ -399,6 +410,7 @@ export default function AddOrders() {
                     <Grid item xs={5}>
                       {/* <Stack direction="row"> */}
                       <Autocomplete
+                        ref={ProductInputRef}
                         clearOnEscape
                         size="small"
                         options={products || []}

@@ -11,6 +11,7 @@ import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import { fetchproductData } from '../../Categories/API/ProductsApi';
 import { useRef, useCallback } from 'react';
+import CircularProgress from '@mui/material/CircularProgress';
 
 export default function ProductGrid({ selectedProduct }) {
   const prev = useRef(null);
@@ -18,12 +19,13 @@ export default function ProductGrid({ selectedProduct }) {
 
   // const [productGridData, setProductGridData] = useState([]);
   const [currentProducts, setCurrentProducts] = useState([]);
-  // const [clickedProduct, setClickedProduct] = useState(null);
+  const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const productsPerPage = 28;
 
   const fetchProductGrid = async (page) => {
+    setLoading(true);
     const data = {
       limit: productsPerPage,
       start: page,
@@ -32,9 +34,11 @@ export default function ProductGrid({ selectedProduct }) {
     const res = await fetchproductData(data);
     if (res && res.data) {
       // setProductGridData(res.data);
+      setLoading(true);
       setCurrentProducts(res.data);
       setTotalPages(res.total);
     }
+    setLoading(false);
   };
   const handleKeypress = useCallback(
     (event) => {
@@ -107,51 +111,64 @@ export default function ProductGrid({ selectedProduct }) {
           Next <KeyboardArrowRightIcon />
         </Button>
       </Box>
+      {loading && (
+        <Box sx={{ display: 'flex', justifyContent: 'center', my: 2 }}>
+          <CircularProgress />
+        </Box>
+      )}
 
-      <Grid container spacing={1} sx={{ height: '600px', overflowY: 'auto' }}>
-        {currentProducts.map((product, index) => (
-          <Grid item xs={12} sm={6} md={3} key={index}>
-            <Card
-              onClick={() => handleProductClick(product)}
-              sx={{
-                height: '185px',
-                display: 'flex',
-                flexDirection: 'column',
-                textAlign: 'center',
-                justifyContent: 'space-between',
-                cursor: 'pointer',
-                background: '#f1f1f1',
-                p: 2,
-              }}
-            >
-              <Box
+      {!loading && currentProducts.length > 0 ? (
+        <Grid container spacing={1} sx={{ height: '600px', overflowY: 'auto' }}>
+          {currentProducts.map((product, index) => (
+            <Grid item xs={12} sm={6} md={3} key={index}>
+              <Card
+                onClick={() => handleProductClick(product)}
                 sx={{
+                  height: '185px',
                   display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  height: '100px',
+                  flexDirection: 'column',
+                  textAlign: 'center',
+                  justifyContent: 'space-between',
+                  cursor: 'pointer',
+                  background: '#f1f1f1',
+                  p: 2,
                 }}
               >
-                <CardMedia
-                  component="img"
-                  image={product.img || image}
-                  alt={product.name}
+                <Box
                   sx={{
-                    maxHeight: '100%',
-                    maxWidth: '100%',
-                    objectFit: 'contain',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    height: '100px',
                   }}
-                />
-              </Box>
-              <CardContent>
-                <Typography variant="body1" sx={{ fontSize: '11px' }}>
-                  {product.name}
-                </Typography>
-              </CardContent>
-            </Card>
-          </Grid>
-        ))}
-      </Grid>
+                >
+                  <CardMedia
+                    component="img"
+                    image={product.img || image}
+                    alt={product.name}
+                    sx={{
+                      maxHeight: '100%',
+                      maxWidth: '100%',
+                      objectFit: 'contain',
+                    }}
+                  />
+                </Box>
+                <CardContent>
+                  <Typography variant="body1" sx={{ fontSize: '11px' }}>
+                    {product.name}
+                  </Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
+      ) : (
+        !loading && (
+          <Typography variant="body2" sx={{ textAlign: 'center', my: 4 }}>
+            No products available.
+          </Typography>
+        )
+      )}
     </Box>
   );
 }

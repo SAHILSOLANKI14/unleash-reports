@@ -86,15 +86,15 @@ export const getOverrides = (
             }
           : {}),
 
-        [`& th:nth-of-type(${stickyTD})`]: stickyCol
-          ? {
-              whiteSpace: 'nowrap',
-              position: 'sticky',
-              left: stickyTD === 1 ? 0 : 42,
-              zIndex: 101,
-              borderRadius: '20px 0 0 0',
-            }
-          : {},
+        // [`& th:nth-of-type(${stickyTD})`]: stickyCol
+        //   ? {
+        //       whiteSpace: 'nowrap',
+        //       position: 'sticky',
+        //       left: stickyTD === 1 ? 0 : 42,
+        //       zIndex: 101,
+        //       borderRadius: '20px 0 0 0',
+        //     }
+        //   : {},
         '& th:last-child': {
           borderRadius: '0 20px 0 0',
         },
@@ -120,7 +120,7 @@ export const getOverrides = (
         [`& td:nth-of-type(${stickyTD})`]: stickyCol
           ? {
               whiteSpace: 'nowrap',
-              position: 'sticky',
+              // position: 'sticky',
               left: stickyTD === 1 ? 0 : 42,
               zIndex: 100,
             }

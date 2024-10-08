@@ -50,7 +50,7 @@ const POSFooter = ({ data }) => {
           setFieldName('Shipping');
           setDialogOpen(true);
           break;
-        case 'A':
+        case 'D':
           setFieldName('Discount');
           setDialogOpen(true);
           break;
@@ -259,8 +259,33 @@ const POSFooter = ({ data }) => {
 
       {/* Dialog for input */}
       <Dialog open={dialogOpen} onClose={handleDialogClose}>
-        <DialogTitle>Enter {fieldName} Value</DialogTitle>
-        <DialogContent>
+        <DialogTitle
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            fontWeight: '700',
+          }}
+        >
+          <Typography
+            variant="h4"
+            sx={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              fontWeight: '600',
+              fontSize: '20px',
+            }}
+          >
+            {' '}
+            Enter {fieldName} Value
+          </Typography>
+        </DialogTitle>
+        <DialogContent
+          sx={{
+            mt: 1,
+          }}
+        >
           <TextField
             autoFocus
             type="number"
@@ -271,11 +296,45 @@ const POSFooter = ({ data }) => {
             onChange={handleInputChange}
           />
         </DialogContent>
-        <DialogActions>
-          <Button onClick={handleDialogClose} color="primary">
+        <DialogActions
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            p: 3,
+            paddingBottom: '20px',
+            paddingTop: '10px',
+          }}
+        >
+          <Button
+            onClick={handleDialogClose}
+            color="primary"
+            sx={{
+              border: '1px solid',
+              background: '#ec2951',
+              color: '#ffffff',
+              fontWeight: '600',
+              paddingLeft: '20px',
+              paddingRight: '20px',
+              fontFamily: 'sans-serif',
+              borderRadius: '10px',
+            }}
+          >
             Cancel
           </Button>
-          <Button onClick={handleDialogClose} color="primary">
+          <Button
+            onClick={handleDialogClose}
+            color="primary"
+            sx={{
+              border: '1px solid',
+              background: '#18be48',
+              color: '#ffffff',
+              fontWeight: '600',
+              paddingLeft: '20px',
+              paddingRight: '20px',
+              fontFamily: 'sans-serif',
+              borderRadius: '10px',
+            }}
+          >
             Submit
           </Button>
         </DialogActions>

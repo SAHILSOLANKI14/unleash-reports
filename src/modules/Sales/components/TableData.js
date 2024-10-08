@@ -52,7 +52,7 @@ const TableData = () => {
         const fetchedData = response.data;
         setSaleDatas(fetchedData);
         setTotal(response.total);
-        console.log('Dispatching sales data:', fetchedData);
+        // console.log('Dispatching sales data:', fetchedData);
         dispatch(setSalesData(fetchedData));
       } else {
         setSaleDatas([]);

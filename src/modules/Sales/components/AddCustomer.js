@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Dialog,
   DialogTitle,
@@ -9,19 +9,44 @@ import {
   Box,
   Grid,
   Stack,
+  IconButton,
 } from '@mui/material';
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 import AddIcon from '@mui/icons-material/Add';
+import ClearIcon from '@mui/icons-material/Clear';
+
 const AddCustomer = ({ open, handleClose }) => {
+  const [documentFields, setDocumentFields] = useState([]);
+  const [selectedDocument, setSelectedDocument] = useState(null);
+
+  const handleDocumentChange = (index, field, value) => {
+    const newDocumentFields = [...documentFields];
+    newDocumentFields[index][field] = value;
+    setDocumentFields(newDocumentFields);
+  };
+
+  const handleRemove = (index) => {
+    setDocumentFields((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const handleAddDocumentField = () => {
+    if (selectedDocument) {
+      setDocumentFields((prev) => [...prev, { documentType: selectedDocument.title, file: null }]);
+      setSelectedDocument(null);
+    }
+  };
+
+  const Document = [{ title: 'MSA' }, { title: 'Tobacco' }, { title: 'Other' }];
   return (
-    <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
+    <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md">
       <DialogTitle
         sx={{
           position: 'sticky',
           zIndex: 1,
           backgroundColor: 'white',
           borderBottom: '1px solid #ddd',
+          padding: 3,
         }}
       >
         <Typography variant="h4" sx={{ fontWeight: '400' }}>
@@ -32,7 +57,7 @@ const AddCustomer = ({ open, handleClose }) => {
       {/* Modal Content */}
       <DialogContent dividers>
         <Box sx={{ width: '100%' }}>
-          <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+          <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 4 }}>
             <Grid item xs={6}>
               <Stack spacing={4}>
                 <TextField id="outlined-basic" label="Company *" variant="outlined" size="small" />
@@ -200,36 +225,90 @@ const AddCustomer = ({ open, handleClose }) => {
           </Grid>
         </Box>
         <Grid item xs={12}>
-          <Grid item xs={6}>
-            <Autocomplete
-              sx={{ mt: 3 }}
-              id="size-small-outlined"
-              size="small"
-              options={[]}
-              getOptionLabel={(option) => option.title}
-              renderInput={(params) => (
-                <TextField {...params} label="Customer Documents" placeholder="Favorites" />
-              )}
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <Button sx={{ background: '#1a79ff', color: 'white' }}>
-              <AddIcon />
-            </Button>
-          </Grid>
-        </Grid> 
-      </DialogContent>
+          <Stack
+            direction={'row'}
+            spacing={2}
+            sx={{
+              mt: 3,
+              mb: 5,
+            }}
+          >
+            <Grid item xs={11}>
+              <Autocomplete
+                id="size-small-outlined"
+                size="small"
+                options={Document}
+                getOptionLabel={(option) => option.title}
+                renderInput={(params) => (
+                  <TextField {...params} label="Customer Documents" placeholder="Favorites" />
+                )}
+                value={selectedDocument}
+                onChange={(event, value) => {
+                  setSelectedDocument(value);
+                }}
+              />
+            </Grid>
+            <Grid item xs={1}>
+              <Button
+                sx={{ background: '#1a79ff', color: 'white' }}
+                onClick={handleAddDocumentField}
+              >
+                <AddIcon />
+              </Button>
+            </Grid>
+          </Stack>
+        </Grid>
+        {documentFields.length > 0 && (
+          <Box sx={{ mt: 2 }}>
+            {documentFields.map((doc, index) => (
+              <Stack
+                key={index}
+                direction="row"
+                spacing={2}
+                alignItems="center"
+                sx={{ mt: 2, mb: 2 }}
+              >
+                <TextField
+                  type="file"
+                  size="small"
+                  onChange={(e) => handleDocumentChange(index, 'file', e.target.files[0])}
+                />
 
-      {/* Sticky Footer */}
+                <TextField
+                  label="Document Type"
+                  value={doc.documentType}
+                  size="small"
+                  variant="outlined"
+                  disabled
+                />
+
+                <IconButton onClick={() => handleRemove(index)} sx={{ mt: 1 }}>
+                  <ClearIcon />
+                </IconButton>
+              </Stack>
+            ))}
+          </Box>
+        )}
+      </DialogContent>
       <DialogActions
         sx={{
           position: 'sticky',
           zIndex: 1,
           backgroundColor: 'white',
           borderTop: '1px solid #ddd',
+          padding: 3,
         }}
       >
-        <Button onClick={handleClose} color="primary">
+        <Button
+          onClick={handleClose}
+          color="primary"
+          sx={{
+            border: '1px solid #ec2951',
+            color: '#ec2951',
+            pl: 4,
+            pr: 4,
+          }}
+        >
           Cancel
         </Button>
         <Button
@@ -238,7 +317,9 @@ const AddCustomer = ({ open, handleClose }) => {
           sx={{
             background: '#1a79ff',
             color: 'white',
-            fontWeight: '500',
+            fontWeight: '600',
+            pl: 4,
+            pr: 4,
             ':hover': {
               background: '#1a79ff',
               color: 'white',

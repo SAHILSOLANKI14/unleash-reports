@@ -19,15 +19,18 @@ import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
 import { useState } from 'react';
 import { useCallback } from 'react';
+import Payment from './Payment';
 
 const POSFooter = ({ data }) => {
-  const ShortcutShipping = useRef(null);
-  const ShortcutDiscount = useRef(null);
+  const Shortcutshipping = useRef(null);
+  const ShortcutorderDiscount = useRef(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [fieldName, setFieldName] = useState('');
+  const [open, setOpen] = useState(false);
+
   const [inputValue, setInputValue] = useState({
-    Discount: '',
-    Shipping: '',
+    orderDiscount: '',
+    shipping: '',
   });
 
   const handleDialogOpen = (field) => {
@@ -38,20 +41,37 @@ const POSFooter = ({ data }) => {
   const handleDialogClose = () => {
     setDialogOpen(false);
   };
+  const handleOpen = () => {
+    setOpen(true);
+  };
 
+  const handleClose = () => {
+    setOpen(false);
+  };
   const handleInputChange = (e) => {
-    setInputValue({ ...inputValue, [fieldName]: e.target.value });
+    const newValue = e.target.value;
+    setInputValue({ ...inputValue, [fieldName]: newValue });
+
+    // Update local storage whenever the input value changes
+    const storedData = JSON.parse(localStorage.getItem('POS-Data')) || {};
+    localStorage.setItem(
+      'POS-Data',
+      JSON.stringify({
+        ...storedData,
+        [fieldName]: newValue,
+      }),
+    );
   };
 
   const handleKeypress = useCallback((event) => {
     if (event.shiftKey) {
       switch (event.key) {
         case 'S':
-          setFieldName('Shipping');
+          setFieldName('shipping');
           setDialogOpen(true);
           break;
         case 'D':
-          setFieldName('Discount');
+          setFieldName('orderDiscount');
           setDialogOpen(true);
           break;
         default:
@@ -60,6 +80,11 @@ const POSFooter = ({ data }) => {
     }
   }, []);
   useEffect(() => {
+    const storedData = JSON.parse(localStorage.getItem('POS-Data')) || {};
+    setInputValue({
+      orderDiscount: storedData.orderDiscount || '',
+      shipping: storedData.shipping || '',
+    });
     document.addEventListener('keydown', handleKeypress);
     return () => {
       document.removeEventListener('keydown', handleKeypress);
@@ -69,8 +94,8 @@ const POSFooter = ({ data }) => {
   const items = DATA.items ? DATA.items.length : 0;
   const GrandTotal =
     parseFloat(DATA.total || 0) -
-    parseFloat(inputValue.Discount || 0) +
-    parseFloat(inputValue.Shipping || DATA.shipping || 0);
+    parseFloat(inputValue.orderDiscount || 0) +
+    parseFloat(inputValue.shipping || DATA.shipping || 0);
 
   return (
     <Box>
@@ -89,7 +114,7 @@ const POSFooter = ({ data }) => {
             >
               <Typography
                 variant="h5"
-                ref={ShortcutShipping}
+                ref={Shortcutshipping}
                 sx={{
                   //   fontWeight: 'bold',
                   display: 'flex',
@@ -97,9 +122,9 @@ const POSFooter = ({ data }) => {
                   alignItems: 'center',
                 }}
               >
-                Shipping :${inputValue.Shipping || DATA.shipping || '0.00'}
+                shipping :${inputValue.shipping || DATA.shipping || '0.00'}
               </Typography>
-              <IconButton onClick={() => handleDialogOpen('Shipping')}>
+              <IconButton onClick={() => handleDialogOpen('shipping')}>
                 <LocalHospitalOutlinedIcon sx={{ fontSize: '18px' }} />
               </IconButton>
             </Stack>
@@ -126,7 +151,7 @@ const POSFooter = ({ data }) => {
               sx={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid' }}
             >
               <Typography
-                ref={ShortcutDiscount}
+                ref={ShortcutorderDiscount}
                 variant="h5"
                 sx={{
                   marginLeft: '20px',
@@ -135,7 +160,7 @@ const POSFooter = ({ data }) => {
                   alignItems: 'center',
                 }}
               >
-                Discount : ${inputValue.Discount || DATA.orderDiscount || '0.00'}
+                Discount : ${inputValue.orderDiscount || DATA.orderDiscount || '0.00'}
               </Typography>
               <Typography
                 variant="h5"
@@ -146,7 +171,7 @@ const POSFooter = ({ data }) => {
                   alignItems: 'center',
                 }}
               >
-                <IconButton onClick={() => handleDialogOpen('Discount')}>
+                <IconButton onClick={() => handleDialogOpen('orderDiscount')}>
                   <LocalHospitalOutlinedIcon sx={{ fontSize: '18px' }} />
                 </IconButton>
               </Typography>
@@ -159,7 +184,7 @@ const POSFooter = ({ data }) => {
                 Total
               </Typography>
               <Typography variant="h5" sx={{ marginLeft: '20px' }}>
-                {DATA.total.toFixed(2) || '$0.00'}
+                {DATA.total || '$0.00'}
               </Typography>
             </Stack>
 
@@ -186,6 +211,7 @@ const POSFooter = ({ data }) => {
         >
           <Stack spacing={2} direction={'row'}>
             <Button
+              onClick={handleOpen}
               sx={{
                 color: '#18be48',
                 background: '#e9f9f8',
@@ -202,6 +228,7 @@ const POSFooter = ({ data }) => {
               <WalletIcon />
               Payment
             </Button>
+            <Payment open={open} onClose={handleClose} formState={DATA} totalAmount={GrandTotal} />
             <Button
               sx={{
                 color: '#faa90c',

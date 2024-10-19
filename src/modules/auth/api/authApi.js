@@ -7,5 +7,5 @@ export const loginUser = (data) => {
 
 export const getProfile = (data) => {
   let ks = objectToQueryString(data);
-  return api(`api/v2/login/Main_Company_Details?${ks}`, null, 'post');
+  return api(`api/v1/login/Main_Company_Details?${ks}`, null, 'post');
 };

@@ -45,7 +45,7 @@ export const getOverrides = (
             }),
 
         '&::-webkit-scrollbar': {
-          width: 3,
+          width: 1,
           backgroundColor: '#1a79ff',
           Opacity: 0.3,
         },

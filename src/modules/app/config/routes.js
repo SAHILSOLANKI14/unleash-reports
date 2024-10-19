@@ -7,7 +7,7 @@ import customers from 'src/modules/Customer/Container/CustomerContainer';
 import PurchaseContainer from 'src/modules/Purchase/Container/PurchaseContainer';
 import AddSalescontainer from 'src/modules/Sales/container/AddSalescontainer';
 import POS from 'src/modules/POS/Container/POSContainer';
-
+import AddProductContainer from 'src/modules/Categories/Container/AddProductContainer';
 export default [
   {
     title: 'dashboard',
@@ -55,6 +55,13 @@ export default [
     title: 'products',
     component: ProductsContainer,
     url: '/products',
+    exact: true,
+    auth: false,
+  },
+  {
+    title: 'addproducts',
+    component: AddProductContainer,
+    url: '/add-products',
     exact: true,
     auth: false,
   },

@@ -61,8 +61,6 @@ export default function ProductGrid({ selectedProduct }) {
   useEffect(() => {
     fetchProductGrid(currentPage);
     window.addEventListener('keydown', handleKeypress);
-    fetchProductGrid(currentPage);
-
     return () => {
       window.removeEventListener('keydown', handleKeypress);
     };

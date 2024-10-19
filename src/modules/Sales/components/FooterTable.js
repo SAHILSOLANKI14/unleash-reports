@@ -17,7 +17,7 @@ const useStyles = makeStyles({
     fontWeight: 'bold',
   },
   tableRow: {
-    borderBottom: 'none',
+    borderBottom: '1px solid',
   },
   tableCell: {
     borderBottom: 'none',

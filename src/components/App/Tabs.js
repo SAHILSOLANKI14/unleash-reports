@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import * as React from 'react';
 import AppGrid from './AppGrid';
 import { fetchlatestsalesData } from 'src/modules/Sales/api/LatestSalesapi';
-import { fetchproductDetailData } from 'src/modules/Purchase/api/LatestProductApi';
+import { fetchpurchaseDetailData } from 'src/modules/Purchase/api/LatestPurchaseApi';
 import { format } from 'date-fns';
 import { Height } from '@mui/icons-material';
 
@@ -137,7 +137,7 @@ export default function BasicTabs() {
         start: 1,
         limit: 8,
       };
-      const purchasedata = await fetchproductDetailData(data);
+      const purchasedata = await fetchpurchaseDetailData(data);
       // console.log('API Response purchase:', purchasedata.data);
       setPurchaseData(purchasedata.data);
     } catch (error) {

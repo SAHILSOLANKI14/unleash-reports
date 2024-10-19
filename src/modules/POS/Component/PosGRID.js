@@ -26,6 +26,7 @@ import AppGrid from 'src/components/App/AppGrid';
 import ProductGrid from '../Component/ProductGrid';
 import POSFooter from './POSFooter';
 import { useRef } from 'react';
+import Calc from './Calculator';
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: '#fff',
@@ -43,20 +44,30 @@ export default function AddOrders() {
   const ProductInputRef = useRef(null);
   const [formState, setFormState] = useState(() => {
     const savedState = localStorage.getItem('POS-Data');
+    const parsedState = savedState ? JSON.parse(savedState) : {};
+    const today = new Date();
     return savedState
       ? JSON.parse(savedState)
       : {
+          selectedDate: parsedState.selectedDate ? new Date(parsedState.selectedDate) : today,
           referenceNo: '',
-          Warehouse: '',
+          biller: null,
+          warehouse: null,
           customer: null,
           total_items: null,
-          Cost_to_Cost: true,
-          AddShipping: true,
+          walkInCustomer: true,
           items: [],
           totalQuantity: '',
           total: '',
           orderDiscount: '',
           shipping: '',
+          selectedFile: null,
+          saleStatus: null,
+          paymentTerm: '',
+          payment_status: null,
+          saleNote: '',
+          staffNote: '',
+          PaymentNote: '',
         };
   });
 
@@ -337,7 +348,7 @@ export default function AddOrders() {
     <Box sx={{ width: '100%', flexGrow: 1 }}>
       <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }} sx={{ mb: 2 }}>
         <Grid item xs={6}>
-          <Item>
+          <Item sx={{ minHeight: '71vh' }}>
             <Box sx={{ flexGrow: 1 }}>
               <Stack spacing={2}>
                 <Grid item xs={2} sm={4} md={12}>
@@ -529,9 +540,10 @@ export default function AddOrders() {
               </Stack>
             </Box>
           </Item>
+          <Calc />
         </Grid>
         <Grid item xs={6}>
-          <Item>
+          <Item sx={{ minHeight: '71vh' }}>
             <ProductGrid selectedProduct={handleAddProduct} />
           </Item>
         </Grid>

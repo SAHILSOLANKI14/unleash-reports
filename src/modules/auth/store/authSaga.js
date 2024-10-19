@@ -14,15 +14,22 @@ function* handleLogin({ data, resolve, reject }) {
       identity: data.email,
       password: data.password,
     });
-    console.log('response :', res);
+    console.log('response :', res.data);
+    const Response = res.data;
     console.log('data :', data);
-    if (res.token) {
-      console.log('tokennnnn :', res.token);
-      storage.set('TOKEN', JSON.stringify(res.token));
-      console.log('token', res.token);
+    if (Response.company_id) {
+      localStorage.setItem('company_id', Response.company_id);
+      console.log('company_id stored: ', Response.company_id);
     } else {
-      toast.error('Error occured! Please try again.');
+      console.log('company_id not found in response');
     }
+    // if (res.token) {
+    //   console.log('tokennnnn :', res.token);
+    //   storage.set('TOKEN', JSON.stringify(res.token));
+    //   console.log('token', res.token);
+    // } else {
+    //   toast.error('Error occured! Please try again.');
+    // }
   } catch (error) {
     console.log(error);
     storage.del('TOKEN');
@@ -34,8 +41,18 @@ function* restoreSession({ data, resolve, reject }) {
   try {
     yield put(setAppLoading(true));
     const token = storage.get('TOKEN');
-    const userIdObj = JSON.parse(token);
+    const userId = localStorage.getItem('company_id');
+    // const userIdObj = JSON.parse(token);
+    const userIdObj = JSON.parse(userId);
     console.log(userIdObj, 'TOKEN');
+    console.log(userIdObj, 'company_id');
+    if (userId && userId !== '') {
+      const res = yield call(authApi.getProfile, { ...data, token, company_id: userId });
+      console.log('getProfileRes :', res);
+      resolve(res);
+    } else {
+      toast.error('User ID not found in local storage');
+    }
     if (userIdObj && userIdObj !== '') {
       const res = yield call(authApi.getProfile, { ...data, token: userIdObj });
       console.log('getProfileRes :', res);

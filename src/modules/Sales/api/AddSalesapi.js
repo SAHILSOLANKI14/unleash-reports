@@ -5,10 +5,8 @@ export const submitFormData = async (data) => {
 
   try {
     const response = await api(url, data, 'post', {
-      headers: {
-        'api-key': 'kccw48o08c8kk0448scwcg8swgg8g04w4ccwsgos', 
-        'Content-Type': 'application/json', 
-      },
+      'api-key': 'kccw48o08c8kk0448scwcg8swgg8g04w4ccwsgos',
+      'Content-Type': 'application/json',
     });
     console.log('Response:', response);
     return response;

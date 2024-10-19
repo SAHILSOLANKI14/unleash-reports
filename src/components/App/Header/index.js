@@ -13,17 +13,9 @@ import Stack from '@mui/material/Stack';
 import { styled } from '@mui/material/styles';
 import { Link } from 'react-router-dom';
 import AccountMenu from '../AccountMenu';
-
-const AppointmentToggle = styled(Paper)({
-  backgroundColor: '#fff',
-  width: '200px',
-  border: '1px solid #eee',
-  padding: 0,
-  textAlign: 'center',
-  '& .MuiFormControlLabel-root': {
-    margin: 0,
-  },
-});
+import CalculateIcon from '@mui/icons-material/Calculate';
+import Calc from 'src/modules/POS/Component/Calculator';
+import React, { useState } from 'react';
 
 const IconItem = styled(Badge)({
   '& .MuiSvgIcon-root': {
@@ -38,6 +30,15 @@ const IconItem = styled(Badge)({
 });
 
 function Header() {
+  const [open, setOpen] = useState(false);
+
+  const handleOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
   return (
     <Box sx={{ flexGrow: 1 }}>
       <Grid container spacing={7}>
@@ -56,24 +57,32 @@ function Header() {
         </Grid>
         <Grid item xs={4} container>
           <Grid item xs={6}>
-            <IconButton color="inherit">
-              <Link
-                to="/pos"
-                style={{ textDecoration: 'none', display: 'flex', alignItems: 'center' }}
-              >
-                <IconItem
-                  sx={{
-                    fontSize: '18px',
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  }}
+            <Stack direction={'row'} spacing={3}>
+              <IconButton color="inherit">
+                <Link
+                  to="/pos"
+                  style={{ textDecoration: 'none', display: 'flex', alignItems: 'center' }}
                 >
-                  <ComputerIcon color="secondary" sx={{ fontSize: '30px' }} />
-                  POS
+                  <IconItem
+                    sx={{
+                      fontSize: '18px',
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <ComputerIcon color="secondary" sx={{ fontSize: '30px' }} />
+                    POS
+                  </IconItem>
+                </Link>
+              </IconButton>
+              <IconButton color="inherit" onClick={handleOpen}>
+                <IconItem>
+                  <CalculateIcon color="secondary" sx={{ fontSize: '30px' }} />
                 </IconItem>
-              </Link>
-            </IconButton>
+              </IconButton>
+              <Calc open={open} onClose={handleClose} />
+            </Stack>
           </Grid>
           <Grid item xs={6} sx={{ display: 'flex' }}>
             <Stack

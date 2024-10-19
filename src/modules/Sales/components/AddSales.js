@@ -14,6 +14,7 @@ import {
   CircularProgress,
   IconButton,
 } from '@mui/material';
+import axios from 'axios';
 import Box from '@mui/material/Box';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormGroup from '@mui/material/FormGroup';
@@ -31,6 +32,8 @@ import AppGrid from 'src/components/App/AppGrid';
 import { submitFormData } from '../api/AddSalesapi';
 import DynamicHeader from './tableFooter';
 import AddCustomer from './AddCustomer';
+import { Save } from '@mui/icons-material';
+import CustomerDialog from 'src/modules/Customer/Component/CustomerDialog';
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: '#fff',
   ...theme.typography.body2,
@@ -74,8 +77,15 @@ export default function AddOrders() {
   const [selectedDate, setSelectedDate] = useState(formState.selectedDate);
   const [selectedFile, setSelectedFile] = useState(formState.selectedFile);
   const [products, setProducts] = useState([]);
-  const [addedProducts, setAddedProducts] = useState([]);
+  const [address, setAddress] = useState([]);
+  const [addedProducts, setAddedProducts] = useState(() => {
+    const SavedData = localStorage.getItem('form-Data');
+    const parsedData = SavedData ? JSON.parse(SavedData) : null;
+    return parsedData?.items || [];
+  });
   const [customer, setCustomer] = useState([]);
+  const [openPopup, setOpenPopup] = useState(false);
+
   const [anchorEl, setAnchorEl] = useState(null);
   const [open, setOpen] = useState(false);
   const [isLoadingOption, setIsLoadingOption] = useState(false);
@@ -116,11 +126,12 @@ export default function AddOrders() {
         `https://dev.unleashpos.com/api/v1/customers?api-key=kccw48o08c8kk0448scwcg8swgg8g04w4ccwsgos`,
       );
       const data = await response.json();
-
-      const customerCompanies = data.data.map((customer) => ({
-        title: customer.company,
-        ID: customer.id,
+      console.log('data', data);
+      const customerCompanies = data.data.map((customer, index) => ({
+        title: `${customer.company},(${customer.person}) ${customer.city}`,
+        id: index + 1,
       }));
+      console.log('cusotmer', customer);
       setCustomer(customerCompanies);
       setIsLoadingOption(false);
     } catch (error) {
@@ -132,7 +143,9 @@ export default function AddOrders() {
     setSelectedDate(date);
     setFormState((prevState) => ({ ...prevState, selectedDate: date }));
   };
-
+  const handleClosePopup = () => {
+    setOpenPopup(false);
+  };
   const handleChange = (e) => {
     const { name, value, type, checked, files } = e.target;
     const newValue = type === 'checkbox' ? checked : type === 'file' ? files[0] : value;
@@ -260,12 +273,14 @@ export default function AddOrders() {
       [name]: newValue ? newValue.title : '',
     }));
   };
-
-  // const handleFileChange = (event) => {
-  //   const file = event.target.files[0];
-  //   setSelectedFile(file);
-  //   setFormState((prevState) => ({ ...prevState, selectedFile: file }));
-  // };
+  const handleAutocompleteChanges = (name) => (event, newValue) => {
+    if (newValue) {
+      setFormState((prevState) => ({
+        ...prevState,
+        [name]: newValue.id,
+      }));
+    }
+  };
 
   const handleReset = () => {
     const today = new Date();
@@ -299,6 +314,9 @@ export default function AddOrders() {
 
   const handleOpen = () => {
     setOpen(true);
+  };
+  const Handlepopup = () => {
+    setOpenPopup(true);
   };
 
   const handleClose = () => {
@@ -380,27 +398,49 @@ export default function AddOrders() {
     'City Tax': item.city_tax || '$0.00',
     Subtotal: item.subtotal || '$0.00',
   }));
+  const getaddress = async () => {
+    const company_id = localStorage.getItem('company_id');
+    try {
+      const response = await axios.post(`https://dev.unleashpos.com/api/v1/companies`, {
+        'api-key': 'kccw48o08c8kk0448scwcg8swgg8g04w4ccwsgos',
+        company_id: company_id,
+      });
+      const data = response.data;
+      console.log('address', data.data[1]);
+      setAddress(data.data[1]);
+    } catch (error) {
+      console.error('Error fetching address:', error);
+      return {};
+    }
+  };
 
   const handleSubmit = async () => {
     try {
+      const company_id = localStorage.getItem('company_id');
+      const responses = await axios.post(`https://dev.unleashpos.com/api/v1/companies`, {
+        'api-key': 'kccw48o08c8kk0448scwcg8swgg8g04w4ccwsgos',
+        company_id: company_id,
+      });
+      const sale = responses.data;
+      console.log('address', sale.data[1]);
+      const Datas = sale.data[1];
       const submittedItems = formState.items.map((item) => ({
         quantity: item.Quantity,
         id: item.id,
       }));
-
-      console.log('Sub', submittedItems);
-
-      const submissionData = {
+      const data = {
         items: submittedItems,
-        customer: formState.customer,
-        salestatus: formState.salestatus,
+        customer_id: formState.customer,
+        paid_by: formState.salestatus,
         payment_status: formState.payment_status,
         total_items: formState.total_items,
         total: formState.total,
+        company_id: company_id,
+        // address_id: Datas.line1,
+        address_id: '853',
+        'api-key': 'kccw48o08c8kk0448scwcg8swgg8g04w4ccwsgos',
       };
-      const data = {
-        'form-data': submissionData,
-      };
+
       const response = await submitFormData(data);
       console.log('Submitted Data', data);
       return response;
@@ -471,6 +511,7 @@ export default function AddOrders() {
             >
               <FormControl fullWidth>
                 <Autocomplete
+                  key={customer.id || []}
                   options={customer || []}
                   // key={customer.id}
                   size="small"
@@ -486,7 +527,7 @@ export default function AddOrders() {
                     }
                   }}
                   noOptionsText="Type to search for a customer"
-                  onChange={handleAutocompleteChange('customer')}
+                  onChange={handleAutocompleteChanges('customer')}
                   freeSolo
                   loading={isLoadingOption}
                   loadingText="Loading...."
@@ -494,7 +535,14 @@ export default function AddOrders() {
                 {/* {!formState.customer && <FormHelperText>This field is required</FormHelperText>} */}
               </FormControl>
               <ModeEditOutlineOutlinedIcon />
-              <VisibilityIcon />
+              <IconButton onClick={Handlepopup}>
+                <VisibilityIcon />
+              </IconButton>
+              <CustomerDialog
+                open={openPopup}
+                handleClose={handleClosePopup}
+                // detailData={detailData}
+              />
               <IconButton onClick={handleOpen}>
                 <PersonAddIcon />
               </IconButton>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   Tabs,
   Tab,
@@ -20,27 +20,52 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  Autocomplete,
 } from '@mui/material';
 import InputAdornment from '@mui/material/InputAdornment';
 import AutorenewIcon from '@mui/icons-material/Autorenew';
 import Input from '@mui/material/Input';
 import AppGrid from 'src/components/App/AppGrid';
 import SyncIcon from '@mui/icons-material/Sync';
+import { styled } from '@mui/material/styles';
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import Checkbox from '@mui/material/Checkbox';
+import CircularProgress from '@mui/material/CircularProgress';
+const VisuallyHiddenInput = styled('input')({
+  clip: 'rect(0 0 0 0)',
+  clipPath: 'inset(50%)',
+  height: 1,
+  overflow: 'hidden',
+  position: 'absolute',
+  bottom: 0,
+  left: 0,
+  whiteSpace: 'nowrap',
+  width: 1,
+});
+
 function ProductForm() {
   const [activeTab, setActiveTab] = useState(1);
   const [productName, setProductName] = useState('');
   const [slug, setSlug] = useState('');
   const [error, setError] = useState({ productName: false, slug: false });
+  const [innerPackCode, setInnerPackCode] = useState('');
+  const [caseCode, setCaseCode] = useState('');
+  const [EachCode, setEachCode] = useState('');
+  const [checked, setChecked] = React.useState(true);
+  const [open, setOpen] = React.useState(false);
+  const [options, setOptions] = React.useState([]);
+  const [loading, setLoading] = React.useState(false);
+
   const tabTitles = [
     '',
     'Basic Product Details',
     'Pricing & Taxes',
     'Product Units & Code',
+    'Images & Description',
     'Setup Your Delivery Location',
-    'Product Quantity & Location',
-    'Product Suppliers',
-    'Promotions',
-    'Additional Settings',
+    'Product Suppliers Details',
+    'Promotional Price Details',
+    'Review your Details and Submit',
   ];
   function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -159,6 +184,47 @@ function ProductForm() {
     Margin: item.sale_status || '0',
   }));
 
+  const generateinnerCode = () => {
+    const math = Math.floor(100000 + Math.random() * 900000);
+    setInnerPackCode(math);
+  };
+  const generateCaseCode = () => {
+    const math = Math.floor(100000 + Math.random() * 900000);
+    setCaseCode(math);
+  };
+  const generateEachCode = () => {
+    const math = Math.floor(100000 + Math.random() * 900000);
+    setEachCode(math);
+  };
+  const handleChange = (event) => {
+    setChecked(event.target.checked);
+  };
+  function sleep(duration) {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve();
+      }, duration);
+    });
+  }
+  const topFilms = [
+    { title: 'The Shawshank Redemption', year: 1994 },
+    { title: 'The Godfather', year: 1972 },
+  ];
+  const handleOpen = () => {
+    setOpen(true);
+    (async () => {
+      setLoading(true);
+      await sleep(1e3); // For demo purposes.
+      setLoading(false);
+
+      setOptions([...topFilms]);
+    })();
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+    setOptions([]);
+  };
   return (
     <Grid container spacing={0}>
       <Grid item xs={3}>
@@ -546,20 +612,20 @@ function ProductForm() {
               <Grid item xs={12} md={6}>
                 <InputLabel sx={{ mb: 1 }}>Default Sale Unit *</InputLabel>
                 <FormControl fullWidth variant="outlined" size="small" sx={{ mb: 1 }}>
-                  <Select>
-                    <MenuItem value="Brand 1">Each (1)</MenuItem>
-                    <MenuItem value="Brand 2">Inner Pack (2)</MenuItem>
-                    <MenuItem value="Brand 3">Case (3)</MenuItem>
+                  <Select defaultValue="Each (1)">
+                    <MenuItem value="Each (1)">Each (1)</MenuItem>
+                    <MenuItem value="Inner Pack (2)">Inner Pack (2)</MenuItem>
+                    <MenuItem value="Case (3)">Case (3)</MenuItem>
                   </Select>
                 </FormControl>
               </Grid>
               <Grid item xs={12} md={6}>
                 <InputLabel sx={{ mb: 1 }}>Default Purchase Unit *</InputLabel>
                 <FormControl fullWidth variant="outlined" size="small" sx={{ mb: 1 }}>
-                  <Select>
-                    <MenuItem value="Brand 1">Each (1)</MenuItem>
-                    <MenuItem value="Brand 2">Inner Pack (2)</MenuItem>
-                    <MenuItem value="Brand 3">Case (3)</MenuItem>
+                  <Select defaultValue="Each (1)">
+                    <MenuItem value="Each (1)">Each (1)</MenuItem>
+                    <MenuItem value="Inner Pack (2)">Inner Pack (2)</MenuItem>
+                    <MenuItem value="Case (3)">Case (3)</MenuItem>
                   </Select>
                 </FormControl>
               </Grid>
@@ -580,12 +646,18 @@ function ProductForm() {
                         <TableCell>Each</TableCell>
                         <TableCell>-</TableCell>
                         <TableCell>
-                          <TextField variant="outlined" size="small" defaultValue={1} fullWidth />
+                          <TextField
+                            variant="outlined"
+                            size="small"
+                            value={1}
+                            fullWidth
+                            aria-readonly
+                          />
                         </TableCell>
                         <TableCell>
                           <Box display="flex" alignItems="center">
-                            <TextField variant="outlined" size="small" fullWidth />
-                            <IconButton>
+                            <TextField variant="outlined" size="small" fullWidth value={EachCode} />
+                            <IconButton onClick={() => generateEachCode()}>
                               <SyncIcon />
                             </IconButton>
                           </Box>
@@ -604,8 +676,13 @@ function ProductForm() {
                         </TableCell>
                         <TableCell>
                           <Box display="flex" alignItems="center">
-                            <TextField variant="outlined" size="small" fullWidth />
-                            <IconButton>
+                            <TextField
+                              variant="outlined"
+                              size="small"
+                              fullWidth
+                              value={innerPackCode}
+                            />
+                            <IconButton onClick={() => generateinnerCode()}>
                               <SyncIcon />
                             </IconButton>
                           </Box>
@@ -616,6 +693,7 @@ function ProductForm() {
                         <TableCell>Case</TableCell>
                         <TableCell>
                           <Select fullWidth size="small" defaultValue="Inner Pack">
+                            <MenuItem value="Each">Each</MenuItem>
                             <MenuItem value="Inner Pack">Inner Pack</MenuItem>
                           </Select>
                         </TableCell>
@@ -624,8 +702,8 @@ function ProductForm() {
                         </TableCell>
                         <TableCell>
                           <Box display="flex" alignItems="center">
-                            <TextField variant="outlined" size="small" fullWidth />
-                            <IconButton>
+                            <TextField variant="outlined" size="small" fullWidth value={caseCode} />
+                            <IconButton onClick={() => generateCaseCode()}>
                               <SyncIcon />
                             </IconButton>
                           </Box>
@@ -634,6 +712,530 @@ function ProductForm() {
                     </TableBody>
                   </Table>
                 </TableContainer>
+              </Grid>
+              <Grid item xs={12} md={2} sx={{ mt: 3 }}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  sx={{
+                    color: 'white',
+                    background: '#2277f5',
+                    fontSize: '16px',
+                    fontWeight: '600',
+                  }}
+                  fullWidth
+                  onClick={handlePrev}
+                >
+                  Previous
+                </Button>
+              </Grid>
+              <Grid item xs={12} md={8} sx={{ mt: 3 }}></Grid>
+              <Grid item xs={2} sx={{ mt: 3 }}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={handleNext}
+                  fullWidth
+                  sx={{
+                    color: 'white',
+                    background: '#2277f5',
+                    fontSize: '16px',
+                    fontWeight: '600',
+                  }}
+                >
+                  Next Step
+                </Button>
+              </Grid>
+            </Grid>
+          </TabPanel>
+          <TabPanel value={activeTab} index={4}>
+            <Grid container spacing={2}>
+              <Grid item xs={12} md={4}>
+                <Stack direction={'row'}>
+                  <TextField
+                    label="Product Image"
+                    variant="outlined"
+                    size="small"
+                    fullWidth
+                    value={'Product Image'}
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <Button
+                            component="label"
+                            role={undefined}
+                            variant="contained"
+                            tabIndex={-1}
+                            startIcon={<CloudUploadIcon />}
+                          >
+                            Upload files
+                            <VisuallyHiddenInput
+                              type="file"
+                              onChange={(event) => console.log(event.target.files)}
+                              multiple
+                            />
+                          </Button>
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+                </Stack>
+              </Grid>
+              <Grid item xs={12} md={12}>
+                <TextField
+                  label="Product Image Gallery"
+                  variant="outlined"
+                  size="small"
+                  fullWidth
+                  value={'Product Image Gallery'}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <Button
+                          component="label"
+                          role={undefined}
+                          variant="contained"
+                          tabIndex={-1}
+                          startIcon={<CloudUploadIcon />}
+                        >
+                          Upload files
+                          <VisuallyHiddenInput
+                            type="file"
+                            onChange={(event) => console.log(event.target.files)}
+                            multiple
+                          />
+                        </Button>
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              </Grid>
+              <Grid item xs={12} md={12}>
+                <InputLabel>Product Details</InputLabel>
+                <TextField id="outlined-multiline-static" multiline rows={7} fullWidth />
+              </Grid>
+              <Grid item xs={12} md={12}>
+                <InputLabel>Product details for invoice</InputLabel>
+                <TextField id="outlined-multiline-static" multiline fullWidth rows={7} />
+              </Grid>
+              <Grid item xs={12} md={2} sx={{ mt: 3 }}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  sx={{
+                    color: 'white',
+                    background: '#2277f5',
+                    fontSize: '16px',
+                    fontWeight: '600',
+                  }}
+                  fullWidth
+                  onClick={handlePrev}
+                >
+                  Previous
+                </Button>
+              </Grid>
+              <Grid item xs={12} md={8} sx={{ mt: 3 }}></Grid>
+              <Grid item xs={2} sx={{ mt: 3 }}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={handleNext}
+                  fullWidth
+                  sx={{
+                    color: 'white',
+                    background: '#2277f5',
+                    fontSize: '16px',
+                    fontWeight: '600',
+                  }}
+                >
+                  Next Step
+                </Button>
+              </Grid>
+            </Grid>
+          </TabPanel>
+          <TabPanel value={activeTab} index={5}>
+            <Grid container spacing={2}>
+              <Grid item xs={12} md={12}>
+                <InputLabel>Alert Quantity</InputLabel>
+                <TextField
+                  variant="outlined"
+                  size="small"
+                  fullWidth
+                  type="number"
+                  // value={}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <Checkbox
+                          checked={checked}
+                          onChange={handleChange}
+                          inputProps={{ 'aria-label': 'controlled' }}
+                        />
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              </Grid>
+              <Grid item xs={12} md={12}>
+                <InputLabel>Reorder Threshold Quantity</InputLabel>
+                <TextField variant="outlined" size="small" fullWidth />
+              </Grid>
+              <Grid item xs={12} md={12}>
+                <InputLabel>Maximum Quantity per Sale</InputLabel>
+                <TextField variant="outlined" size="small" fullWidth />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <InputLabel>Location (Rack)</InputLabel>
+                <TextField variant="outlined" size="small" fullWidth />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                {/* <InputLabel>Location (Rack)</InputLabel>
+                <TextField variant="outlined" size="small" fullWidth /> */}
+              </Grid>
+              <Grid item xs={12} md={2} sx={{ mt: 3 }}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  sx={{
+                    color: 'white',
+                    background: '#2277f5',
+                    fontSize: '16px',
+                    fontWeight: '600',
+                  }}
+                  fullWidth
+                  onClick={handlePrev}
+                >
+                  Previous
+                </Button>
+              </Grid>
+              <Grid item xs={12} md={8} sx={{ mt: 3 }}></Grid>
+              <Grid item xs={2} sx={{ mt: 3 }}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={handleNext}
+                  fullWidth
+                  sx={{
+                    color: 'white',
+                    background: '#2277f5',
+                    fontSize: '16px',
+                    fontWeight: '600',
+                  }}
+                >
+                  Next Step
+                </Button>
+              </Grid>
+            </Grid>
+          </TabPanel>
+          <TabPanel value={activeTab} index={6}>
+            <Grid container spacing={1}>
+              <Grid item xs={12} md={4}>
+                <Autocomplete
+                  open={open}
+                  onOpen={handleOpen}
+                  onClose={handleClose}
+                  isOptionEqualToValue={(option, value) => option.title === value.title}
+                  getOptionLabel={(option) => option.title}
+                  options={options}
+                  loading={loading}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Select Supplier1"
+                      size="small"
+                      slotProps={{
+                        input: {
+                          ...params.InputProps,
+                          endAdornment: (
+                            <React.Fragment>
+                              {loading ? <CircularProgress color="inherit" size={20} /> : null}
+                              {params.InputProps.endAdornment}
+                            </React.Fragment>
+                          ),
+                        },
+                      }}
+                    />
+                  )}
+                />
+              </Grid>
+              <Grid item xs={12} md={3}>
+                <TextField variant="outlined" size="small" fullWidth label="Supplier1 Part No " />
+              </Grid>
+              <Grid item xs={12} md={2}>
+                <TextField variant="outlined" size="small" fullWidth label="Supplier1 Price " />
+              </Grid>
+              <Grid item xs={12} md={2}>
+                <FormControl
+                  fullWidth
+                  variant="outlined"
+                  size="small"
+                  sx={{ mb: 1 }}
+                  label="Supplier1 Price "
+                >
+                  <Select defaultValue="Each (1)">
+                    <MenuItem value="Each (1)">Each (1)</MenuItem>
+                    <MenuItem value="Inner Pack (2)">Inner Pack (2)</MenuItem>
+                    <MenuItem value="Case (3)">Case (3)</MenuItem>
+                  </Select>
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} md={1}>
+                <IconButton>
+                  <SyncIcon />
+                </IconButton>
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <Autocomplete
+                  open={open}
+                  onOpen={handleOpen}
+                  onClose={handleClose}
+                  isOptionEqualToValue={(option, value) => option.title === value.title}
+                  getOptionLabel={(option) => option.title}
+                  options={options}
+                  loading={loading}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Select Supplier2"
+                      size="small"
+                      slotProps={{
+                        input: {
+                          ...params.InputProps,
+                          endAdornment: (
+                            <React.Fragment>
+                              {loading ? <CircularProgress color="inherit" size={20} /> : null}
+                              {params.InputProps.endAdornment}
+                            </React.Fragment>
+                          ),
+                        },
+                      }}
+                    />
+                  )}
+                />
+              </Grid>
+              <Grid item xs={12} md={3}>
+                <TextField variant="outlined" size="small" fullWidth label="Supplier2 Part No " />
+              </Grid>
+              <Grid item xs={12} md={2}>
+                <TextField variant="outlined" size="small" fullWidth label="Supplier2 Price " />
+              </Grid>
+              <Grid item xs={12} md={2}>
+                <FormControl
+                  fullWidth
+                  variant="outlined"
+                  size="small"
+                  sx={{ mb: 1 }}
+                  label="Supplier2 Price "
+                >
+                  <Select defaultValue="Each (1)">
+                    <MenuItem value="Each (1)">Each (1)</MenuItem>
+                    <MenuItem value="Inner Pack (2)">Inner Pack (2)</MenuItem>
+                    <MenuItem value="Case (3)">Case (3)</MenuItem>
+                  </Select>
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} md={1}>
+                <IconButton>
+                  <SyncIcon />
+                </IconButton>
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <Autocomplete
+                  open={open}
+                  onOpen={handleOpen}
+                  onClose={handleClose}
+                  isOptionEqualToValue={(option, value) => option.title === value.title}
+                  getOptionLabel={(option) => option.title}
+                  options={options}
+                  loading={loading}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Select Supplier3"
+                      size="small"
+                      slotProps={{
+                        input: {
+                          ...params.InputProps,
+                          endAdornment: (
+                            <React.Fragment>
+                              {loading ? <CircularProgress color="inherit" size={20} /> : null}
+                              {params.InputProps.endAdornment}
+                            </React.Fragment>
+                          ),
+                        },
+                      }}
+                    />
+                  )}
+                />
+              </Grid>
+              <Grid item xs={12} md={3}>
+                <TextField variant="outlined" size="small" fullWidth label="Supplier3 Part No " />
+              </Grid>
+              <Grid item xs={12} md={2}>
+                <TextField variant="outlined" size="small" fullWidth label="Supplier3 Price " />
+              </Grid>
+              <Grid item xs={12} md={2}>
+                <FormControl
+                  fullWidth
+                  variant="outlined"
+                  size="small"
+                  sx={{ mb: 1 }}
+                  label="Supplier3 Price "
+                >
+                  <Select defaultValue="Each (1)">
+                    <MenuItem value="Each (1)">Each (1)</MenuItem>
+                    <MenuItem value="Inner Pack (2)">Inner Pack (2)</MenuItem>
+                    <MenuItem value="Case (3)">Case (3)</MenuItem>
+                  </Select>
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} md={1}>
+                <IconButton>
+                  <SyncIcon />
+                </IconButton>
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <Autocomplete
+                  open={open}
+                  onOpen={handleOpen}
+                  onClose={handleClose}
+                  isOptionEqualToValue={(option, value) => option.title === value.title}
+                  getOptionLabel={(option) => option.title}
+                  options={options}
+                  loading={loading}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Select Supplier4"
+                      size="small"
+                      slotProps={{
+                        input: {
+                          ...params.InputProps,
+                          endAdornment: (
+                            <React.Fragment>
+                              {loading ? <CircularProgress color="inherit" size={20} /> : null}
+                              {params.InputProps.endAdornment}
+                            </React.Fragment>
+                          ),
+                        },
+                      }}
+                    />
+                  )}
+                />
+              </Grid>
+              <Grid item xs={12} md={3}>
+                <TextField variant="outlined" size="small" fullWidth label="Supplier4 Part No " />
+              </Grid>
+              <Grid item xs={12} md={2}>
+                <TextField variant="outlined" size="small" fullWidth label="Supplier4 Price " />
+              </Grid>
+              <Grid item xs={12} md={2}>
+                <FormControl
+                  fullWidth
+                  variant="outlined"
+                  size="small"
+                  sx={{ mb: 1 }}
+                  label="Supplier4 Price "
+                >
+                  <Select defaultValue="Each (1)">
+                    <MenuItem value="Each (1)">Each (1)</MenuItem>
+                    <MenuItem value="Inner Pack (2)">Inner Pack (2)</MenuItem>
+                    <MenuItem value="Case (3)">Case (3)</MenuItem>
+                  </Select>
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} md={1}>
+                <IconButton>
+                  <SyncIcon />
+                </IconButton>
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <Autocomplete
+                  open={open}
+                  onOpen={handleOpen}
+                  onClose={handleClose}
+                  isOptionEqualToValue={(option, value) => option.title === value.title}
+                  getOptionLabel={(option) => option.title}
+                  options={options}
+                  loading={loading}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Select Supplier5"
+                      size="small"
+                      slotProps={{
+                        input: {
+                          ...params.InputProps,
+                          endAdornment: (
+                            <React.Fragment>
+                              {loading ? <CircularProgress color="inherit" size={20} /> : null}
+                              {params.InputProps.endAdornment}
+                            </React.Fragment>
+                          ),
+                        },
+                      }}
+                    />
+                  )}
+                />
+              </Grid>
+              <Grid item xs={12} md={3}>
+                <TextField variant="outlined" size="small" fullWidth label="Supplier5 Part No " />
+              </Grid>
+              <Grid item xs={12} md={2}>
+                <TextField variant="outlined" size="small" fullWidth label="Supplier5 Price " />
+              </Grid>
+              <Grid item xs={12} md={2}>
+                <FormControl
+                  fullWidth
+                  variant="outlined"
+                  size="small"
+                  sx={{ mb: 1 }}
+                  label="Supplier5 Price "
+                >
+                  <Select defaultValue="Each (1)">
+                    <MenuItem value="Each (1)">Each (1)</MenuItem>
+                    <MenuItem value="Inner Pack (2)">Inner Pack (2)</MenuItem>
+                    <MenuItem value="Case (3)">Case (3)</MenuItem>
+                  </Select>
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} md={1}>
+                <IconButton>
+                  <SyncIcon />
+                </IconButton>
+              </Grid>
+              <Grid item xs={12} md={2} sx={{ mt: 3 }}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  sx={{
+                    color: 'white',
+                    background: '#2277f5',
+                    fontSize: '16px',
+                    fontWeight: '600',
+                  }}
+                  fullWidth
+                  onClick={handlePrev}
+                >
+                  Previous
+                </Button>
+              </Grid>
+              <Grid item xs={12} md={8} sx={{ mt: 3 }}></Grid>
+              <Grid item xs={2} sx={{ mt: 3 }}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={handleNext}
+                  fullWidth
+                  sx={{
+                    color: 'white',
+                    background: '#2277f5',
+                    fontSize: '16px',
+                    fontWeight: '600',
+                  }}
+                >
+                  Next Step
+                </Button>
               </Grid>
             </Grid>
           </TabPanel>

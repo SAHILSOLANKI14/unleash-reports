@@ -1,0 +1,214 @@
+<div class="container" style="text-align: center;">
+  <h1 style="font-size: 28px; color: black;">Also Available on</h1>
+
+  <div class="image-container" style="display: flex; justify-content: center; align-items: center; margin-top: 20px;">
+    <img class="logo flipkart-logo" src="https://cdn.shopify.com/s/files/1/0878/5933/1394/files/Flipkart-Photoroom.png?v=1730179724" alt="Flipkart Logo">
+    <img class="logo amazon-logo" src="https://cdn.shopify.com/s/files/1/0878/5933/1394/files/Amazon-Photoroom.png?v=1730179724" alt="Amazon Logo">
+    <img class="logo myntra-logo" src="https://cdn.shopify.com/s/files/1/0878/5933/1394/files/Myntraa-Photoroom.png?v=1730179724" alt="Myntra Logo">
+    <img class="logo nykaa-logo" src="https://cdn.shopify.com/s/files/1/0878/5933/1394/files/Nykaa-Photoroom.png?v=1730180046" alt="Nykaa Logo">
+    <img class="logo Shopsy-logo" src="https://cdn.shopify.com/s/files/1/0878/5933/1394/files/ShopsyLite-205d58-Photoroom_9fb0d708-f08f-4903-bab1-fab2d316bc05.png?v=1730179725" alt="Nykaa Logo">
+    <img class="logo Ajio-logo" src="https://cdn.shopify.com/s/files/1/0878/5933/1394/files/Ajio-Photoroom.png?v=1730179724" alt="Nykaa Logo">
+  </div>
+</div>
+
+<style>
+  .image-container {
+    gap: 20px; /* Add gap between images */
+  }
+
+  .logo {
+    width: 200px; /* Set fixed width */
+    height: 120px; /* Set fixed height */
+    object-fit: contain; /* Ensure logos maintain aspect ratio */
+    margin: 10px;
+  }
+  img.logo.Ajio-logo {
+    margin-right: 40px;
+    margin-left: -30px;
+}
+img.logo.flipkart-logo {
+    margin-left: 30px;
+    margin-right: -10px;
+    width: 230px; /* Set fixed width */
+    height: 120px;
+}
+img.logo.Shopsy-logo {
+    margin-left: -40px;
+    margin-right: -20px;
+}
+img.logo.nykaa-logo {
+    margin-left: -10px;
+    margin-right: -10px;
+}
+img.logo.myntra-logo {
+    margin-left: -20px;
+    margin-right: -10px;
+}
+  /* } */
+  /* Extra top margin for Amazon logo on full screen (desktop) */
+  @media (min-width: 1025px) {
+    .amazon-logo {
+      margin-top: 0; /* Add top margin only for full-screen devices */
+      margin-bottom: 0;
+    }
+    /* .flipkart-logo{
+        margin-bottom: 0;
+    }
+    .myntra-logo{
+        margin-top: 0;
+    }
+    .Ajio-logo{
+        margin-top: 0;
+    } */
+  }
+  /* @media (min-width: 1440px) {
+   img.logo.Ajio-logo {
+    margin-right: 40px;
+    margin-left: -20px;
+}
+img.logo.flipkart-logo {
+    margin-left: 30px;
+    margin-right: -10px;
+}
+img.logo.Shopsy-logo {
+    margin-left: -30px;
+}
+img.logo.nykaa-logo {
+    margin-left: -10px;
+}
+  } */
+
+  /* Media query for medium devices (laptop/tablets) */
+  @media (max-width: 1024px) {
+    .logo {
+      width: 180px; /* Reduce size for medium screens */
+      height: 100px;
+    }
+
+    .image-container {
+      flex-direction: column; /* Stack images in a column on smaller screens */
+    }
+    
+    .amazon-logo {
+        margin-top: -40px; /* Add top margin only for full-screen devices */
+        margin-bottom: 0;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+      }
+      .flipkart-logo{
+          margin-bottom: 0;
+          margin-left: 0 !important;
+margin-right: 0 !important;
+      }
+      .myntra-logo{
+          margin-top: 0;
+          margin-left: 0 !important;
+          margin-right: 0 !important;
+           margin-bottom: 15px;
+      }
+      .Ajio-logo{
+          margin-top: -15px;
+          margin-left: 0 !important;
+margin-right: 0 !important;
+      }
+      .Shopsy-logo {
+        margin-left: 0 !important;
+margin-right: 0 !important;
+    }
+   .nykaa-logo {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    }
+  }
+  
+
+  /* Media query for small devices (mobile) */
+  @media (max-width: 768px) {
+    .logo {
+      width: 180px; /* Keep logos small for mobile devices */
+      height: 100px; /* Adjust height */
+    }
+
+    h1 {
+      font-size: 24px;
+    }
+
+    .amazon-logo {
+        margin-top: -40px; /* Add top margin only for full-screen devices */
+        margin-bottom: 0;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+      }
+      .flipkart-logo{
+          margin-bottom: 0;
+          margin-left: 0 !important;
+          margin-right: 0 !important;
+      }
+      .myntra-logo{
+          margin-top: 0;
+margin-bottom: 15px;
+margin-left: 0 !important;
+margin-right: 0 !important;
+      }
+      .Ajio-logo{
+          margin-top: -15px;
+          margin-left: 0 !important;
+          margin-right: 0 !important;
+      }
+      .Shopsy-logo {
+        margin-left: 0 !important;
+margin-right: 0 !important;
+    }
+   .nykaa-logo {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    }
+  }
+
+  /* Media query for extra small devices (phones) */
+  @media (max-width: 480px) {
+    .logo {
+      width: 180px; /* Smaller size for very small screens */
+      height: 100px; /* Adjust height */
+    }
+
+    .image-container {
+      flex-direction: column; /* Ensure images stack in a column */
+    }
+
+    h1 {
+      font-size: 20px;
+    }
+
+    .amazon-logo {
+        margin-top: -40px; /* Add top margin only for full-screen devices */
+        margin-bottom: 0 ;
+        margin-left: 0 !important;
+margin-right: 0 !important;
+      }
+      .flipkart-logo{
+          margin-bottom: 0;
+          margin-left: 0 !important;
+          margin-right: 0 !important;
+      }
+      .myntra-logo{
+          margin-top: 0;
+margin-bottom: 15px;
+margin-left: 0 !important;
+margin-right: 0 !important;
+      }
+      .Ajio-logo{
+          margin-top: -15px;
+          margin-left: 0 !important;
+          margin-right: 0 !important;
+      }
+      .Shopsy-logo {
+        margin-left: 0 !important;
+margin-right: 0 !important;
+    }
+   .nykaa-logo {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    }
+  }
+</style>

@@ -5,9 +5,11 @@ import ProductsContainer from '../../Categories/Container/ProductsContainer';
 import supplier from 'src/modules/Suppliers/Container/supplier';
 import customers from 'src/modules/Customer/Container/CustomerContainer';
 import PurchaseContainer from 'src/modules/Purchase/Container/PurchaseContainer';
+import addPurchaseContainer from 'src/modules/Purchase/Container/AddPurchaseContainer';
 import AddSalescontainer from 'src/modules/Sales/container/AddSalescontainer';
 import POS from 'src/modules/POS/Container/POSContainer';
 import AddProductContainer from 'src/modules/Categories/Container/AddProductContainer';
+
 export default [
   {
     title: 'dashboard',
@@ -69,6 +71,13 @@ export default [
     title: 'purchases',
     component: PurchaseContainer,
     url: '/purchases',
+    exact: true,
+    auth: false,
+  },
+  {
+    title: 'AddPurchases',
+    component: addPurchaseContainer,
+    url: '/add-purchases',
     exact: true,
     auth: false,
   },

@@ -398,6 +398,7 @@ export default function AddOrders() {
     'City Tax': item.city_tax || '$0.00',
     Subtotal: item.subtotal || '$0.00',
   }));
+  
   const getaddress = async () => {
     const company_id = localStorage.getItem('company_id');
     try {

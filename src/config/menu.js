@@ -52,7 +52,7 @@ export const menuItems = [
     icon: <Icon name="purchases" />,
     children: [
       { title: 'List Purcahses', link: '/purchases', icon: '-' },
-      { title: 'Add Purcahses', link: '/products/b', icon: '-' },
+      { title: 'Add Purcahses', link: '/add-purchases', icon: '-' },
     ],
   },
   {

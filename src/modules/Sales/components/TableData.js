@@ -12,6 +12,7 @@ import PopupAction from '../components/PopupAction';
 import TableHeader from '../components/TableHeader';
 import { fetchSalesDataFailure, setSalesData } from '../store/SalesAction';
 import PopupComponent from './PopupTableRow';
+import Breadcrumbs from 'src/components/shared/BreadCrumbs/Breadcrumb';
 
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -188,7 +189,14 @@ const TableData = () => {
 
   return (
     <>
-      <TableHeader onSelect={handleStatusChange} />
+      <Grid container spacing={2} alignItems="center">
+        <Grid item xs={6}>
+          <Breadcrumbs />
+        </Grid>
+        <Grid item xs={6} style={{ textAlign: 'right', alignItems: 'flex-end', display: 'flex',justifyContent:'flex-end',justifySelf:'end' }}>
+          <TableHeader onSelect={handleStatusChange} />
+        </Grid>
+      </Grid>
       <AppGrid columns={columns} data={Data} options={options} onTableChange={onTableChange} />
       <PopupComponent open={openPopup} handleClose={handleClosePopup} detailData={detailData} />
     </>

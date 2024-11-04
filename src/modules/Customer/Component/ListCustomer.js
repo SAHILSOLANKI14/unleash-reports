@@ -13,6 +13,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import { Typography, Button, Grid, Stack } from '@mui/material';
 import CustomerDialog from './CustomerDialog';
 import { fetchCustomerDetailData } from '../api/CustomerDetail';
+import Breadcrumbs from 'src/components/shared/BreadCrumbs/Breadcrumb';
 
 const ListCustomer = () => {
   const dispatch = useDispatch();
@@ -148,7 +149,14 @@ const ListCustomer = () => {
 
   return (
     <>
-      <SupplierSearch onSearch={handleSearch} />
+      <Grid container spacing={2} alignItems="center">
+        <Grid item xs={6}>
+          <Breadcrumbs />
+        </Grid>
+        <Grid item xs={6} style={{ textAlign: 'right' }}>
+          <SupplierSearch onSearch={handleSearch} />
+        </Grid>
+      </Grid>
       <CustomerDialog open={openPopup} handleClose={handleClosePopup} detailData={detailData} />
       <AppGrid data={Data} columns={columns} options={options} onTableChange={onTableChange} />
     </>

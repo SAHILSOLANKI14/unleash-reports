@@ -8,7 +8,10 @@ import {
   fetchSupplierFailure,
 } from '../Store/SupplierAction';
 import SupplierSearch from './supplierSearch';
-import { fetchCustomerData } from 'src/modules/Customer/api/CustomerApi';
+import { fetchSupplierData } from 'src/modules/Suppliers/api/SupplierApi';
+import Breadcrumbs from 'src/components/shared/BreadCrumbs/Breadcrumb';
+import { Grid } from '@mui/material';
+
 const columns = [
   {
     name: 'Company',
@@ -59,14 +62,14 @@ const Listsupplier = () => {
   const [perPage, setPerPage] = useState(10);
   const [searchparam, setSearchparam] = useState('');
   const [total, setTotal] = useState('');
+
   const fetchSupplier = async (pageNo, perPage, search = '') => {
     console.log('Fetching products for:', { pageNo, perPage, search });
     try {
       const start = pageNo * perPage + 1;
       const limit = perPage;
-      const data = 'supplier';
-      const response = await fetchCustomerData(start, limit, search, data);
-
+      // const group_by = 'supplier';
+      const response = await fetchSupplierData(start, limit);
       const fetchedData = response.data;
       setSupplier(fetchedData);
       setTotal(response.total);
@@ -78,8 +81,8 @@ const Listsupplier = () => {
   };
 
   useEffect(() => {
-    fetchSupplier(pageNo, perPage, searchparam);
-  }, [pageNo, perPage, searchparam]);
+    fetchSupplier(pageNo, perPage);
+  }, [pageNo, perPage]);
 
   const onTableChange = ({ pageNo, perPage }) => {
     fetchSupplier(pageNo, perPage, searchparam);
@@ -112,7 +115,14 @@ const Listsupplier = () => {
 
   return (
     <>
-      <SupplierSearch onSearch={handleSearch} />
+      <Grid container spacing={2} alignItems="center">
+        <Grid item xs={6}>
+          <Breadcrumbs />
+        </Grid>
+        <Grid item xs={6} style={{ textAlign: 'right' }}>
+          <SupplierSearch onSearch={handleSearch} />
+        </Grid>
+      </Grid>
       <AppGrid data={Data} columns={columns} options={options} onTableChange={onTableChange} />
     </>
   );

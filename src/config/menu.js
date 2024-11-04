@@ -6,16 +6,6 @@ export const menuItems = [
     link: '/',
     icon: <Icon name="dashboard" />,
   },
-  // {
-  //   key: 'appointment',
-  //   title: 'Appointment',
-  //   link: '/appointment',
-  //   icon: <Icon name="appointment" />,
-  //   children: [
-  //     { title: 'Product A', link: '/products/a', icon: '-' },
-  //     { title: 'Product B', link: '/products/b', icon: '-' },
-  //   ],
-  // },
   {
     key: 'products',
     title: 'products',
@@ -66,7 +56,7 @@ export const menuItems = [
       { title: 'List Billers', link: '/biller', icon: '-' },
       { title: 'Add Billers', link: '/products/5', icon: '-' },
       { title: 'List Customer', link: '/customers', icon: '-' },
-      { title: 'Add Customer', link: '/products/6', icon: '-' },
+      { title: 'Add Customer', link: '/add-customers', icon: '-' },
       { title: 'List Suppliers', link: '/suppliers', icon: '-' },
       { title: 'Add Suppliers', link: '/products/8', icon: '-' },
     ],

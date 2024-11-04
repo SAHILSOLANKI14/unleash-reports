@@ -10,6 +10,7 @@ import PopupComponent from '../Component/PurchaseDialog';
 import axios from 'axios';
 import { fetchpurchasedataFailure, setpurchasedata } from '../Store/PurchaseAction';
 import { useDispatch } from 'react-redux';
+import Breadcrumbs from 'src/components/shared/BreadCrumbs/Breadcrumb';
 const ListPurchase = () => {
   const dispatch = useDispatch();
   const [purchaseData, setPurchaseData] = useState([]);
@@ -173,6 +174,7 @@ const ListPurchase = () => {
   return (
     <>
       {/* <TableHeader onSelect={handleStatusChange} /> */}
+      <Breadcrumbs />
       <AppGrid columns={columns} data={Data} options={options} onTableChange={onTableChange} />
       <PopupComponent
         open={openPopup}

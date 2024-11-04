@@ -16,7 +16,10 @@ import AccountMenu from '../AccountMenu';
 import CalculateIcon from '@mui/icons-material/Calculate';
 import Calc from 'src/modules/POS/Component/Calculator';
 import React, { useState } from 'react';
-
+import TrendingUpIcon from '@mui/icons-material/TrendingUp';
+import HistoryIcon from '@mui/icons-material/History';
+import StoreMallDirectoryIcon from '@mui/icons-material/StoreMallDirectory';
+import { Typography } from '@mui/material';
 const IconItem = styled(Badge)({
   '& .MuiSvgIcon-root': {
     color: '#273e84',
@@ -41,57 +44,101 @@ function Header() {
   };
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <Grid container spacing={7}>
-        <Grid item xs={8}>
-          <Paper component="form" sx={{ p: '2px 4px', display: 'flex', alignItems: 'center' }}>
-            <InputBase
-              sx={{ ml: 1, flex: 1 }}
-              placeholder="Search Patient Name, Etc..."
-              inputProps={{ 'aria-label': 'Search Patient Name, Etc...' }}
-              fullWidth
-            />
-            <IconButton type="button" sx={{ p: '10px' }} aria-label="search">
-              <SearchIcon />
-            </IconButton>
-          </Paper>
-        </Grid>
-        <Grid item xs={4} container>
-          <Grid item xs={6}>
-            <Stack direction={'row'} spacing={3}>
-              <IconButton color="inherit">
-                <Link
-                  to="/pos"
-                  style={{ textDecoration: 'none', display: 'flex', alignItems: 'center' }}
+      <Grid container spacing={0}>
+        <Grid item xs={7}>
+          <Stack direction={'row'} spacing={3}>
+            <IconButton color="inherit">
+              <Link
+                to="/pos"
+                style={{ textDecoration: 'none', display: 'flex', alignItems: 'center' }}
+              >
+                <IconItem
+                  sx={{
+                    fontSize: '18px',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}
                 >
-                  <IconItem
-                    sx={{
-                      fontSize: '18px',
-                      display: 'flex',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                    }}
-                  >
-                    <ComputerIcon color="secondary" sx={{ fontSize: '30px' }} />
-                    POS
-                  </IconItem>
-                </Link>
-              </IconButton>
-              <IconButton color="inherit" onClick={handleOpen}>
-                <IconItem>
-                  <CalculateIcon color="secondary" sx={{ fontSize: '30px' }} />
+                  <ComputerIcon color="secondary" sx={{ fontSize: '20px' }} />
+                  <Typography variant="h5">POS</Typography>
                 </IconItem>
+              </Link>
+            </IconButton>
+            <IconButton color="inherit">
+              <Link
+                to="/pos"
+                style={{ textDecoration: 'none', display: 'flex', alignItems: 'center' }}
+              >
+                <IconItem
+                  sx={{
+                    fontSize: '18px',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}
+                >
+                  <StoreMallDirectoryIcon color="secondary" sx={{ fontSize: '25px' }} />
+                  <Typography variant="h5">Web</Typography>
+                </IconItem>
+              </Link>
+            </IconButton>
+            <IconButton color="inherit" onClick={handleOpen}>
+              <IconItem>
+                <CalculateIcon color="secondary" sx={{ fontSize: '25px' }} />
+              </IconItem>
+            </IconButton>
+            <Calc open={open} onClose={handleClose} />
+          </Stack>
+        </Grid>
+        <Grid item xs={5} container spacing={0}>
+          <Grid item xs={7}>
+            <Paper
+              component="form"
+              sx={{ p: '0px 0px', display: 'flex', alignItems: 'center', background: '#f7f8fa' }}
+            >
+              <IconButton type="button" sx={{ p: '10px' }} aria-label="search">
+                <SearchIcon />
               </IconButton>
-              <Calc open={open} onClose={handleClose} />
-            </Stack>
+              <InputBase
+                size="small"
+                sx={{ ml: 1, flex: 1 }}
+                placeholder="Search Patient Name, Etc..."
+                inputProps={{ 'aria-label': 'Search Patient Name, Etc...' }}
+                fullWidth
+              />
+            </Paper>
           </Grid>
-          <Grid item xs={6} sx={{ display: 'flex' }}>
+          <Grid item xs={5} sx={{ display: 'flex' }}>
             <Stack
               spacing={2}
               direction="row"
-              divider={<Divider orientation="vertical" flexItem />}
+              // divider={<Divider orientation="vertical" flexItem />}
+              // sx={{ display: 'flex', justifyContent: 'center', alignItems: '' }}
             >
               <div>
                 <Stack spacing={1} direction="row">
+                  <IconButton color="inherit">
+                    <IconItem>
+                      <Badge badgeContent={0} color="secondary">
+                        <TrendingUpIcon
+                          color="secondary"
+                          sx={{
+                            borderLeft: '2px solid',
+                            borderBottom: '2px solid',
+                            fontSize: '20px',
+                          }}
+                        />
+                      </Badge>
+                    </IconItem>
+                  </IconButton>
+                  <IconButton color="inherit">
+                    <IconItem>
+                      <Badge badgeContent={0} color="secondary">
+                        <HistoryIcon color="secondary" />
+                      </Badge>
+                    </IconItem>
+                  </IconButton>
                   <IconButton color="inherit">
                     <IconItem>
                       <Badge badgeContent={0} color="secondary">

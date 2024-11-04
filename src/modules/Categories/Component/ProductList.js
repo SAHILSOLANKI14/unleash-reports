@@ -15,6 +15,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import ProductSearch from './ProductSearch';
 import { initLightboxJS } from 'lightbox.js-react';
 import { SlideshowLightbox } from 'lightbox.js-react';
+import Breadcrumbs from 'src/components/shared/BreadCrumbs/Breadcrumb';
 import 'lightbox.js-react/dist/index.css';
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -212,7 +213,14 @@ const ProductList = () => {
   return (
     <>
       {/* <TableHeader onSearch={handleSearch} /> */}
-      <ProductSearch onSearch={handleSearch} />
+      <Grid container spacing={2} alignItems="center">
+        <Grid item xs={6}>
+          <Breadcrumbs />
+        </Grid>
+        <Grid item xs={6} style={{ textAlign: 'right' }}>
+          <ProductSearch onSearch={handleSearch} />
+        </Grid>
+      </Grid>
       <AppGrid columns={columns} data={data} options={options} onTableChange={onTableChange} />
       <Productdetailpopup
         open={openPopup}

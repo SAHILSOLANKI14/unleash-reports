@@ -11,7 +11,7 @@ import {
   Typography,
 } from '@mui/material';
 import { useState } from 'react';
-import BackspaceIcon from '@mui/icons-material/Backspace'; 
+import BackspaceIcon from '@mui/icons-material/Backspace';
 
 const Calc = ({ open, onClose }) => {
   const [input, setInput] = useState('');
@@ -27,7 +27,7 @@ const Calc = ({ open, onClose }) => {
   };
 
   const handleBackspace = () => {
-    setInput(input.slice(0, -1)); 
+    setInput(input.slice(0, -1));
   };
 
   const handleCalculate = () => {
@@ -57,7 +57,6 @@ const Calc = ({ open, onClose }) => {
       </DialogTitle>
       <DialogContent>
         <Box sx={{ width: '100%', padding: 4 }}>
-        
           <TextField
             variant="outlined"
             fullWidth
@@ -69,11 +68,10 @@ const Calc = ({ open, onClose }) => {
               marginBottom: '-18px',
               borderBottom: 'none',
               borderRadius: '0px',
-              fontSize: '1.6rem', 
+              fontSize: '1.6rem',
             }}
           />
 
-        
           <TextField
             variant="outlined"
             fullWidth
@@ -94,7 +92,7 @@ const Calc = ({ open, onClose }) => {
               { label: 'C', color: 'red', action: handleClear },
               { label: <BackspaceIcon />, color: 'orange', action: handleBackspace },
               { label: '%', color: 'default', action: () => handleButtonClick('%') },
-              { label: '±', color: 'default', action: () => handleButtonClick('-') }, 
+              { label: '±', color: 'default', action: () => handleButtonClick('-') },
               { label: '7', color: 'default', action: () => handleButtonClick('7') },
               { label: '8', color: 'default', action: () => handleButtonClick('8') },
               { label: '9', color: 'default', action: () => handleButtonClick('9') },
@@ -102,7 +100,7 @@ const Calc = ({ open, onClose }) => {
               { label: '4', color: 'default', action: () => handleButtonClick('4') },
               { label: '5', color: 'default', action: () => handleButtonClick('5') },
               { label: '6', color: 'default', action: () => handleButtonClick('6') },
-              { label: '*', color: 'default', action: () => handleButtonClick('*') },
+              { label: 'x', color: 'default', action: () => handleButtonClick('*') },
               { label: '1', color: 'default', action: () => handleButtonClick('1') },
               { label: '2', color: 'default', action: () => handleButtonClick('2') },
               { label: '3', color: 'default', action: () => handleButtonClick('3') },

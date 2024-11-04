@@ -56,7 +56,7 @@ const Tab6 = ({ handlePrev, handleNext, formState, handleAutocompleteChanges, on
               }
             }}
             noOptionsText="Type to search for a supplier"
-            onChange={handleAutocompleteChanges('supplier1_id')}
+            onChange={handleAutocompleteChanges(0)}
             freeSolo
           />
         </FormControl>
@@ -105,7 +105,7 @@ const Tab6 = ({ handlePrev, handleNext, formState, handleAutocompleteChanges, on
               }
             }}
             noOptionsText="Type to search for a supplier"
-            onChange={handleAutocompleteChanges('supplier2_id')}
+            onChange={handleAutocompleteChanges(1)}
             freeSolo
           />
         </FormControl>
@@ -154,7 +154,7 @@ const Tab6 = ({ handlePrev, handleNext, formState, handleAutocompleteChanges, on
               }
             }}
             noOptionsText="Type to search for a supplier"
-            onChange={handleAutocompleteChanges('supplier3_id')}
+            onChange={handleAutocompleteChanges(2)}
             freeSolo
           />
         </FormControl>
@@ -203,7 +203,7 @@ const Tab6 = ({ handlePrev, handleNext, formState, handleAutocompleteChanges, on
               }
             }}
             noOptionsText="Type to search for a supplier"
-            onChange={handleAutocompleteChanges('supplier4_id')}
+            onChange={handleAutocompleteChanges(3)}
             freeSolo
           />
         </FormControl>
@@ -252,7 +252,7 @@ const Tab6 = ({ handlePrev, handleNext, formState, handleAutocompleteChanges, on
               }
             }}
             noOptionsText="Type to search for a supplier"
-            onChange={handleAutocompleteChanges('supplier5_id')}
+            onChange={handleAutocompleteChanges(4)}
             freeSolo
           />
         </FormControl>

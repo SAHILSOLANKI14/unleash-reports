@@ -9,6 +9,7 @@ import addPurchaseContainer from 'src/modules/Purchase/Container/AddPurchaseCont
 import AddSalescontainer from 'src/modules/Sales/container/AddSalescontainer';
 import POS from 'src/modules/POS/Container/POSContainer';
 import AddProductContainer from 'src/modules/Categories/Container/AddProductContainer';
+import AddCustomer from 'src/modules/Sales/components/AddCustomer';
 
 export default [
   {
@@ -36,6 +37,13 @@ export default [
     title: 'customers',
     component: customers,
     url: '/customers',
+    exact: true,
+    auth: false,
+  },
+  {
+    title: 'addcustomers',
+    component: AddCustomer,
+    url: '/add-customers',
     exact: true,
     auth: false,
   },

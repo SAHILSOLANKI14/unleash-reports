@@ -34,6 +34,8 @@ import DynamicHeader from './tableFooter';
 import AddCustomer from './AddCustomer';
 import { Save } from '@mui/icons-material';
 import CustomerDialog from 'src/modules/Customer/Component/CustomerDialog';
+import Breadcrumbs from 'src/components/shared/BreadCrumbs/Breadcrumb';
+
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: '#fff',
   ...theme.typography.body2,
@@ -398,7 +400,7 @@ export default function AddOrders() {
     'City Tax': item.city_tax || '$0.00',
     Subtotal: item.subtotal || '$0.00',
   }));
-  
+
   const getaddress = async () => {
     const company_id = localStorage.getItem('company_id');
     try {
@@ -452,6 +454,7 @@ export default function AddOrders() {
 
   return (
     <Box sx={{ flexGrow: 1 }}>
+      <Breadcrumbs />
       <Item>
         <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }}>
           <Grid item xs={2} sm={4} md={4}>

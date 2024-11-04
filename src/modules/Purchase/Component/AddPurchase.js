@@ -30,6 +30,7 @@ import axios from 'axios';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { debounce } from 'lodash';
 import { submitPurchaseData } from '../api/AddPurchaseapi';
+import Breadcrumbs from 'src/components/shared/BreadCrumbs/Breadcrumb';
 
 function sleep(duration) {
   return new Promise((resolve) => {
@@ -458,9 +459,7 @@ const AddPurchase = () => {
   };
   return (
     <Box>
-      <Typography variant="h3" sx={{ mb: 3 }}>
-        Add Purchase
-      </Typography>
+     <Breadcrumbs />
       <Paper sx={{ p: 2 }}>
         <Grid container spacing={2}>
           {/* Date Field */}

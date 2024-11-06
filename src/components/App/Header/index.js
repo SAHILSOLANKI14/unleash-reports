@@ -67,7 +67,7 @@ function Header() {
             </IconButton>
             <IconButton color="inherit">
               <Link
-                to="/pos"
+                to="/home"
                 style={{ textDecoration: 'none', display: 'flex', alignItems: 'center' }}
               >
                 <IconItem

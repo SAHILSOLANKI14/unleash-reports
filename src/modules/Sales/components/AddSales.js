@@ -35,6 +35,7 @@ import AddCustomer from './AddCustomer';
 import { Save } from '@mui/icons-material';
 import CustomerDialog from 'src/modules/Customer/Component/CustomerDialog';
 import Breadcrumbs from 'src/components/shared/BreadCrumbs/Breadcrumb';
+import Textarea from 'src/components/shared/Form/Textarea';
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: '#fff',

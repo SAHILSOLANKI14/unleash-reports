@@ -13,7 +13,7 @@ export const menuItems = [
     icon: <Icon name="Product" />,
     children: [
       { title: 'List Product', link: '/products', icon: '-' },
-      { title: 'Add Product', link: '/add-products', icon: '-' },
+      { title: 'Add Product', link: '/products/add', icon: '-' },
       { title: 'Import Product', link: '/products/c', icon: '-' },
       { title: 'Print Barcode/Label', link: '/products/d', icon: '-' },
       { title: 'Print Catalog', link: '/products/e', icon: '-' },
@@ -28,7 +28,7 @@ export const menuItems = [
     icon: <Icon name="orders" />,
     children: [
       { title: 'List Orders', link: '/sales', icon: '-' },
-      { title: 'Add Orders', link: '/add-sales', icon: '-' },
+      { title: 'Add Orders', link: '/sales/add', icon: '-' },
       { title: 'Completed Orders', link: 'add-products', icon: '-' },
       { title: 'Pending Orders', link: 'add-products', icon: '-' },
       { title: 'Promotion List', link: 'add-products', icon: '-' },
@@ -42,7 +42,7 @@ export const menuItems = [
     icon: <Icon name="purchases" />,
     children: [
       { title: 'List Purcahses', link: '/purchases', icon: '-' },
-      { title: 'Add Purcahses', link: '/add-purchases', icon: '-' },
+      { title: 'Add Purcahses', link: '/purchases/add', icon: '-' },
     ],
   },
   {

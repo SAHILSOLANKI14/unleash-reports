@@ -11,7 +11,7 @@ export default [
   {
     title: 'addproducts',
     component: AddProductContainer,
-    url: '/add-products',
+    url: '/products/add',
     exact: true,
     auth: false,
   },

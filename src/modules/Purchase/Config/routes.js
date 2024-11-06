@@ -12,7 +12,7 @@ export default [
   {
     title: 'purchases',
     component: AddPurchase,
-    url: '/add-purchases',
+    url: '/purchases/add',
     exact: true,
     auth: false,
   },

@@ -1,8 +1,9 @@
 import { useEffect } from 'react';
-import { ThemeProvider, StyledEngineProvider } from '@mui/material/styles';
-import { Provider, useDispatch, useSelector } from 'react-redux';
+import { ThemeProvider } from '@mui/material/styles';
+import { useDispatch, useSelector } from 'react-redux';
 import AuthLayout from 'src/layout/AuthLayout';
 import AppLayout from 'src/layout/AppLayout';
+import WebsiteLayout from 'src/layout/WebsiteLayout'; // Import the new WebsiteLayout
 import AppLoader from 'src/layout/AppLoader';
 import AppRouter from './router';
 import 'src/assets/css/fonts.css';
@@ -12,7 +13,9 @@ import theme from 'src/config/theme';
 import { authPages } from 'src/config';
 import { restoreSession } from 'src/modules/auth/store/authActions';
 import { useLocation } from 'react-router-dom';
-// import { SalesSession } from './modules/Sales/store/SalesAction';
+
+// Define your website routes
+const websiteRoutes = ['/home', '/about', '/contact']; // Add your website routes here
 
 function App({ ...props }) {
   const dispatch = useDispatch();
@@ -20,20 +23,27 @@ function App({ ...props }) {
 
   useEffect(() => {
     dispatch(restoreSession());
-    // dispatch(SalesSession());
-  }, []);
+  }, [dispatch]);
 
   const loading = useSelector((state) => state.app.appLoading);
 
   if (loading) return <AppLoader />;
 
+  // Determine layout to use based on the current route
+  const isAuthPage = authPages.includes(location.pathname);
+  const isWebsitePage = websiteRoutes.includes(location.pathname);
+
   return (
     <SnackbarProvider maxSnack={3}>
       <ThemeProvider theme={theme}>
-        {authPages.includes(location.pathname) ? (
+        {isAuthPage ? (
           <AuthLayout>
             <AppRouter />
           </AuthLayout>
+        ) : isWebsitePage ? (
+          <WebsiteLayout>
+            <AppRouter />
+          </WebsiteLayout>
         ) : (
           <AppLayout>
             <AppRouter />

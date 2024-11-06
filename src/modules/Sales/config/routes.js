@@ -11,7 +11,7 @@ export default [
   {
     title: 'addsales',
     component: AddSalescontainer,
-    url: '/add-sales',
+    url: '/sales/add',
     exact: true,
     auth: false,
   },

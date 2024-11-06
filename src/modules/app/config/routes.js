@@ -10,7 +10,7 @@ import AddSalescontainer from 'src/modules/Sales/container/AddSalescontainer';
 import POS from 'src/modules/POS/Container/POSContainer';
 import AddProductContainer from 'src/modules/Categories/Container/AddProductContainer';
 import AddCustomer from 'src/modules/Sales/components/AddCustomer';
-
+import WebHome from 'src/modules/WebSite/WebHome/Container/HomeDash';
 export default [
   {
     title: 'dashboard',
@@ -57,7 +57,7 @@ export default [
   {
     title: 'addsales',
     component: AddSalescontainer,
-    url: '/add-sales',
+    url: '/sales/add',
     exact: true,
     auth: false,
   },
@@ -71,7 +71,7 @@ export default [
   {
     title: 'addproducts',
     component: AddProductContainer,
-    url: '/add-products',
+    url: '/products/add',
     exact: true,
     auth: false,
   },
@@ -85,7 +85,7 @@ export default [
   {
     title: 'AddPurchases',
     component: addPurchaseContainer,
-    url: '/add-purchases',
+    url: '/purchases/add',
     exact: true,
     auth: false,
   },
@@ -93,6 +93,13 @@ export default [
     title: 'pos',
     component: POS,
     url: '/pos',
+    exact: true,
+    auth: false,
+  },
+  {
+    title: 'Home',
+    component: WebHome,
+    url: '/home',
     exact: true,
     auth: false,
   },

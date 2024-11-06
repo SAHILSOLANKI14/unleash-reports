@@ -10,23 +10,32 @@ import {
   Typography,
   TextField,
 } from '@mui/material';
-import Rating from '@mui/material/Rating';
 import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { addToCart, incrementQuantity, decrementQuantity } from '../Store/productSlice';
 import { fetchproductData } from '../../../Categories/API/ProductsApi';
 import noimg from '../../../Categories/images/no_image.png';
-
 const ProductPage = () => {
   const [products, setProducts] = useState([]);
   const [value, setValue] = useState(2);
   const [count, setCount] = useState(1);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const handleIncrement = () => {
-    setCount(count + 1);
+
+  // const cartItems = useSelector((state) => state.cart.items);
+
+  const dispatch = useDispatch();
+
+  const handleIncrement = (id) => {
+    dispatch(incrementQuantity(id));
   };
 
-  const handleDecrement = () => {
-    if (count > 1) setCount(count - 1); // Prevent going below 1
+  const handleDecrement = (id) => {
+    dispatch(decrementQuantity(id));
+  };
+
+  const handleAddToCart = (product) => {
+    dispatch(addToCart(product));
   };
 
   useEffect(() => {
@@ -66,13 +75,13 @@ const ProductPage = () => {
         Latest Product
       </Typography>
       <hr></hr>
-      <Grid container spacing={0} sx={{ mt: 4 }}>
+      <Grid container spacing={4} sx={{ mt: 0 }}>
         {products.map((product) => (
-          <Grid item key={product.id} xs={12} sm={8} md={3} sx={{ mb: 2 }}>
+          <Grid item key={product.id} xs={12} sm={8} md={3} sx={{ mb: 0 }}>
             <Card
               sx={{
                 height: 'auto',
-                width: '80%',
+                width: '100%',
               }}
             >
               <CardMedia
@@ -124,7 +133,7 @@ const ProductPage = () => {
                   </Typography>
                   <Stack direction="row" spacing={2} alignItems="center" sx={{ mb: '-8px' }}>
                     <Button
-                      onClick={handleDecrement}
+                      onClick={() => handleDecrement(product.id)}
                       variant="outlined"
                       sx={{
                         minWidth: '30px',
@@ -150,7 +159,7 @@ const ProductPage = () => {
                     />
 
                     <Button
-                      onClick={handleIncrement}
+                      onClick={() => handleIncrement(product.id)}
                       variant="outlined"
                       sx={{
                         minWidth: '30px',
@@ -174,6 +183,7 @@ const ProductPage = () => {
                     background: '#5341f9',
                     color: '#fff',
                   }}
+                  onClick={() => handleAddToCart(product)}
                 >
                   Add to Cart
                 </Button>

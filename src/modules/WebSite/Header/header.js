@@ -12,6 +12,7 @@ import {
   Badge,
   Drawer,
   Grid,
+  TextField,
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import PhoneIcon from '@mui/icons-material/Phone';
@@ -22,6 +23,15 @@ import logo from '../../../assets/images/unleash-logo.png';
 import noimg from '../../../modules/Categories/images/no_image.png';
 import { Link } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { useSelector } from 'react-redux';
+import {
+  incrementQuantity,
+  decrementQuantity,
+  removeFromCart,
+} from '../Product/Store/productSlice';
+import { useDispatch } from 'react-redux';
+import Cart from '../WebCart/Cart';
 
 const StyledBadge = styled(Badge)(({ theme }) => ({
   '& .MuiBadge-badge': {
@@ -34,6 +44,7 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
 
 function CustomHeader() {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const cartItems = useSelector((state) => state.cart.items);
 
   const toggleDrawer = (open) => () => {
     setIsDrawerOpen(open);
@@ -42,7 +53,6 @@ function CustomHeader() {
   return (
     <Box>
       <AppBar position="static" sx={{ backgroundColor: '#ffffff', boxShadow: 'none', pt: 0 }}>
-        {/* Header Top Section */}
         <Box
           display="flex"
           alignItems="center"
@@ -82,7 +92,6 @@ function CustomHeader() {
           </Stack>
         </Box>
 
-        {/* Main Toolbar */}
         <Toolbar
           sx={{ justifyContent: 'space-between', px: 0, mt: 2, borderBottom: '1px solid #bcbdc1' }}
         >
@@ -123,71 +132,18 @@ function CustomHeader() {
               </IconButton>
             </Box>
 
-            {/* Cart Icon with Drawer */}
             <Box display="flex" alignItems="center">
               <IconButton aria-label="cart" onClick={toggleDrawer(true)}>
-                <StyledBadge badgeContent={4} color="secondary">
+                <StyledBadge badgeContent={cartItems.length} color="secondary">
                   <ShoppingCartIcon />
                 </StyledBadge>
               </IconButton>
               <Drawer anchor="right" open={isDrawerOpen} onClose={toggleDrawer(false)}>
-                <Box sx={{ width: 400, p: 2 }} role="presentation">
-                  <Typography variant="h6" sx={{ mb: 2 }}>
-                    Shopping Cart
-                  </Typography>
-
-                  <Box sx={{ mb: 2 }}>
-                    <Grid container spacing={2} alignItems="center">
-                      <Grid item xs={4}>
-                        <Box
-                          component="img"
-                          src={logo}
-                          alt="Product"
-                          sx={{
-                            width: '100%',
-                            height: 'auto',
-                            borderRadius: 1,
-                            objectFit: 'contain',
-                          }}
-                        />
-                      </Grid>
-                      <Grid item xs={5}>
-                        <Typography variant="body1" fontWeight="bold">
-                          Product Name
-                        </Typography>
-                        <Typography variant="body2" color="text.secondary">
-                          $19.99
-                        </Typography>
-                        <Typography variant="body2" sx={{ mt: 1 }}>
-                          Qty: 2
-                        </Typography>
-                      </Grid>
-                      <Grid item xs={3}>
-                        <Button variant="outlined" color="secondary" size="small" fullWidth>
-                          Remove
-                        </Button>
-                      </Grid>
-                    </Grid>
-                  </Box>
-
-                  {/* Add more items in similar structure if needed */}
-
-                  {/* Total and Checkout Button */}
-                  <Box sx={{ mt: 2 }}>
-                    <Typography variant="h6" fontWeight="bold">
-                      Total: $39.98
-                    </Typography>
-                    <Button variant="contained" color="primary" sx={{ mt: 2 }} fullWidth>
-                      Checkout
-                    </Button>
-                  </Box>
-                </Box>
+                <Cart />
               </Drawer>
             </Box>
           </Stack>
         </Toolbar>
-
-        {/* Bottom Navigation Links */}
       </AppBar>
     </Box>
   );

@@ -7,11 +7,10 @@ import {
   IconButton,
   MenuItem,
   Select,
-  TextField,
-  CircularProgress,
+  TextField
 } from '@mui/material';
-import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { useState } from 'react';
 
 const Tab6 = ({ handlePrev, handleNext, formState, handleAutocompleteChanges, onSyncClick }) => {
   const [supplier, setSupplier] = useState([]);
@@ -29,6 +28,7 @@ const Tab6 = ({ handlePrev, handleNext, formState, handleAutocompleteChanges, on
         id: supplier.company_id,
       }));
       setSupplier(SupplierCompanies);
+      console.log('sup', supplier);
     } catch (error) {
       console.error('Error fetching Supplier:', error);
     } finally {
@@ -45,7 +45,7 @@ const Tab6 = ({ handlePrev, handleNext, formState, handleAutocompleteChanges, on
             options={supplier || []}
             size="small"
             clearOnEscape
-            value={supplier.find((option) => option.id === formState[`supplier1_id`]) || null}
+            value={supplier.find((option) => option.title === formState[`supplier1_name`]) || null}
             getOptionLabel={(option) => option.title || ''}
             renderInput={(params) => <TextField {...params} label={`Supplier_id1`} />}
             onInputChange={(event, newValue) => {

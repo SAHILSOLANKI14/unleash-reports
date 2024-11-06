@@ -1,73 +1,193 @@
-import React from 'react';
-import { AppBar, Toolbar, Typography, Box, Button, IconButton, InputBase } from '@mui/material';
+import React, { useState } from 'react';
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  Box,
+  Button,
+  IconButton,
+  InputBase,
+  Stack,
+  Container,
+  Badge,
+  Drawer,
+  Grid,
+} from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import PhoneIcon from '@mui/icons-material/Phone';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import DashboardIcon from '@mui/icons-material/Dashboard';
 import logo from '../../../assets/images/unleash-logo.png';
+import noimg from '../../../modules/Categories/images/no_image.png';
+import { Link } from 'react-router-dom';
+import { styled } from '@mui/material/styles';
+
+const StyledBadge = styled(Badge)(({ theme }) => ({
+  '& .MuiBadge-badge': {
+    right: -3,
+    top: 13,
+    border: `2px solid ${theme.palette.background.paper}`,
+    padding: '0 4px',
+  },
+}));
+
 function CustomHeader() {
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+
+  const toggleDrawer = (open) => () => {
+    setIsDrawerOpen(open);
+  };
+
   return (
     <Box>
-      <AppBar position="static" sx={{ backgroundColor: '#ffffff', boxShadow: 'none', pt: 2 }}>
-        <Toolbar sx={{ justifyContent: 'space-between', px: 4 }}>
-          <Box display="flex" alignItems="center" sx={{ pb: 2 }}>
-            <img src={logo} alt="Unleash POS Logo" style={{ width: '60%', marginRight: '16px' }} />
-          </Box>
-
-          <Box
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              backgroundColor: '#f4f4f4',
-              borderRadius: 1,
-              px: 2,
-              width: '40%',
-            }}
-          >
-            <InputBase
-              placeholder="Search Product..."
-              sx={{ ml: 1, flex: 1, color: '#333' }}
-              inputProps={{ 'aria-label': 'search product' }}
-            />
-            <IconButton type="submit" sx={{ p: 1, color: '#333' }} aria-label="search">
-              <SearchIcon />
-            </IconButton>
-          </Box>
-
-          <Box display="flex" alignItems="center">
-            <Typography variant="body1" sx={{ color: '#333', fontWeight: 'bold', mr: 2 }}>
-              $930.56
-            </Typography>
-            <IconButton sx={{ color: '#333' }}>
-              <ShoppingCartIcon />
-            </IconButton>
-            <IconButton sx={{ color: '#333' }}>
-              <AccountCircleIcon />
-            </IconButton>
-          </Box>
-        </Toolbar>
-
-        {/* Navigation Links and Contact Section */}
-        <Box sx={{ backgroundColor: '#5341f9', py: 1 }}>
-          <Toolbar sx={{ justifyContent: 'space-between', px: 2 }}>
-            {/* Navigation Links */}
-            <Box display="flex" alignItems="center">
-              <Button sx={{ color: '#ffffff', textTransform: 'none' }}>All Categories</Button>
-              <Button sx={{ color: '#ffffff', textTransform: 'none' }}>Home</Button>
-              <Button sx={{ color: '#ffffff', textTransform: 'none' }}>Promotions</Button>
-              <Button sx={{ color: '#ffffff', textTransform: 'none' }}>Price Change</Button>
-              <Button sx={{ color: '#ffffff', textTransform: 'none' }}>Abbreviations</Button>
-            </Box>
-
-            {/* Contact Info */}
-            <Box display="flex" alignItems="center">
-              <PhoneIcon sx={{ color: '#ffffff', mr: 1 }} />
-              <Typography variant="body1" sx={{ color: '#ffffff' }}>
+      <AppBar position="static" sx={{ backgroundColor: '#ffffff', boxShadow: 'none', pt: 0 }}>
+        {/* Header Top Section */}
+        <Box
+          display="flex"
+          alignItems="center"
+          sx={{
+            pb: 0,
+            pl: 3,
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            borderBottom: '1px solid #bcbdc1',
+            color: '#ffffff',
+            background: '#2277f5',
+          }}
+        >
+          <Stack direction="row" spacing={2}>
+            <Box display="flex" alignItems="start">
+              <PhoneIcon sx={{ mr: '2px', color: '#ffffff', fontSize: '20px' }} />
+              <Typography variant="h6" sx={{ color: '#ffffff' }}>
                 (732) 454-8888
               </Typography>
             </Box>
-          </Toolbar>
+          </Stack>
+          <Typography variant="h6" sx={{ fontSize: '12px', color: '#ffffff', fontWeight: '500' }}>
+            Welcome To UNLEASH POS LLC
+          </Typography>
+          <Stack direction="row" spacing={2}>
+            <Link to={'/'}>
+              <IconButton>
+                <DashboardIcon sx={{ mr: '2px', fontSize: '20px', color: '#ffffff' }} />
+                <Typography variant="h5" sx={{ textAlign: 'center', color: '#ffffff' }}>
+                  Dashboard
+                </Typography>
+              </IconButton>
+              <IconButton sx={{ color: '#ffffff' }}>
+                <AccountCircleIcon />
+              </IconButton>
+            </Link>
+          </Stack>
         </Box>
+
+        {/* Main Toolbar */}
+        <Toolbar
+          sx={{ justifyContent: 'space-between', px: 0, mt: 2, borderBottom: '1px solid #bcbdc1' }}
+        >
+          <Box display="flex" alignItems="center" sx={{ pb: 2 }}>
+            <img src={logo} alt="Unleash POS Logo" style={{ width: '80%', marginRight: '16px' }} />
+          </Box>
+          <Box>
+            <Container>
+              <Toolbar sx={{ justifyContent: 'space-between', px: 2 }}>
+                <Box display="flex" alignItems="center" sx={{ fontWeight: '600', color: 'black' }}>
+                  <Button>All Categories</Button>
+                  <Button>Home</Button>
+                  <Button>Promotions</Button>
+                  <Button>Price Change</Button>
+                  <Button>Abbreviations</Button>
+                </Box>
+              </Toolbar>
+            </Container>
+          </Box>
+          <Stack direction="row" spacing={2}>
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                backgroundColor: '#f4f4f4',
+                borderRadius: 1,
+                px: 2,
+                width: '60%',
+              }}
+            >
+              <InputBase
+                placeholder="Search Product..."
+                sx={{ ml: 1, flex: 1, color: '#333' }}
+                inputProps={{ 'aria-label': 'search product' }}
+              />
+              <IconButton type="submit" sx={{ p: 1, color: '#333' }} aria-label="search">
+                <SearchIcon />
+              </IconButton>
+            </Box>
+
+            {/* Cart Icon with Drawer */}
+            <Box display="flex" alignItems="center">
+              <IconButton aria-label="cart" onClick={toggleDrawer(true)}>
+                <StyledBadge badgeContent={4} color="secondary">
+                  <ShoppingCartIcon />
+                </StyledBadge>
+              </IconButton>
+              <Drawer anchor="right" open={isDrawerOpen} onClose={toggleDrawer(false)}>
+                <Box sx={{ width: 400, p: 2 }} role="presentation">
+                  <Typography variant="h6" sx={{ mb: 2 }}>
+                    Shopping Cart
+                  </Typography>
+
+                  <Box sx={{ mb: 2 }}>
+                    <Grid container spacing={2} alignItems="center">
+                      <Grid item xs={4}>
+                        <Box
+                          component="img"
+                          src={logo}
+                          alt="Product"
+                          sx={{
+                            width: '100%',
+                            height: 'auto',
+                            borderRadius: 1,
+                            objectFit: 'contain',
+                          }}
+                        />
+                      </Grid>
+                      <Grid item xs={5}>
+                        <Typography variant="body1" fontWeight="bold">
+                          Product Name
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          $19.99
+                        </Typography>
+                        <Typography variant="body2" sx={{ mt: 1 }}>
+                          Qty: 2
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={3}>
+                        <Button variant="outlined" color="secondary" size="small" fullWidth>
+                          Remove
+                        </Button>
+                      </Grid>
+                    </Grid>
+                  </Box>
+
+                  {/* Add more items in similar structure if needed */}
+
+                  {/* Total and Checkout Button */}
+                  <Box sx={{ mt: 2 }}>
+                    <Typography variant="h6" fontWeight="bold">
+                      Total: $39.98
+                    </Typography>
+                    <Button variant="contained" color="primary" sx={{ mt: 2 }} fullWidth>
+                      Checkout
+                    </Button>
+                  </Box>
+                </Box>
+              </Drawer>
+            </Box>
+          </Stack>
+        </Toolbar>
+
+        {/* Bottom Navigation Links */}
       </AppBar>
     </Box>
   );

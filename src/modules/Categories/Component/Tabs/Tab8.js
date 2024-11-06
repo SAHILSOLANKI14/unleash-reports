@@ -18,7 +18,6 @@ const Tab8 = ({ handlePrev, handleNext }) => {
         {/* <Grid item xs={12}>
                   <h2>Review your Details and Submit</h2>
                 </Grid> */}
-
         {/* Checkboxes */}
         <Grid item xs={12} md={12}>
           <FormGroup>
@@ -33,7 +32,6 @@ const Tab8 = ({ handlePrev, handleNext }) => {
             <FormControlLabel control={<Checkbox sx={{ color: '#2277f5' }} />} label="Private" />
           </FormGroup>
         </Grid>
-
         {/* Hide From Customer Group */}
         <Grid item xs={12}>
           <FormControl component="fieldset">
@@ -47,19 +45,17 @@ const Tab8 = ({ handlePrev, handleNext }) => {
             </FormGroup>
           </FormControl>
         </Grid>
-
         {/* Product Tags */}
         <Grid item xs={12}>
           <InputLabel>Product Tags</InputLabel>
           <TextField label="" variant="outlined" fullWidth size="small" />
         </Grid>
-
         {/* Package Quantity */}
         <Grid item xs={12}>
           <InputLabel>Package Quantity</InputLabel>
           <TextField label="" variant="outlined" fullWidth size="small" />
         </Grid>
-        <Grid item xs={12} md={2} sx={{ mt: 3 }}>
+        {/* <Grid item xs={12} md={2} sx={{ mt: 3 }}>
           <Button
             variant="contained"
             color="primary"
@@ -91,10 +87,19 @@ const Tab8 = ({ handlePrev, handleNext }) => {
           >
             Next Step
           </Button>
-        </Grid>
-        {/* Submit Button */}
+        </Grid> */}
         <Grid item xs={12}>
-          <Button variant="contained" color="primary" fullWidth>
+          <Button
+            variant="contained"
+            color="primary"
+            fullWidth
+            sx={{
+              color: 'white',
+              background: '#2277f5',
+              fontSize: '16px',
+              fontWeight: '600',
+            }}
+          >
             Submit
           </Button>
         </Grid>

@@ -24,7 +24,7 @@ function AutoImageSlider() {
     <Box
       sx={{
         width: '100%',
-        maxWidth: '1440px',
+        maxWidth: '100%',
         mx: 'auto',
         position: 'relative',
         textAlign: 'center',
@@ -65,13 +65,20 @@ function AutoImageSlider() {
         ))}
       </Box>
 
-      <Box sx={{ display: 'flex', justifyContent: 'center', mt: 1 }}>
+      <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
         {images.map((_, index) => (
           <FiberManualRecordIcon
             key={index}
             fontSize="small"
-            color={currentIndex === index ? 'primary' : 'disabled'}
-            sx={{ cursor: 'pointer', mx: 0.5 }}
+            color={currentIndex === index ? '#2277f5' : 'disabled'}
+            sx={{
+              cursor: 'pointer',
+              mx: 0.5,
+              border: currentIndex === index ? '2px solid #2277f5' : '1px solid #cccccc',
+              borderRadius: '25px',
+              fontSize: '12px',
+              color: currentIndex === index ? '#2277f5' : '#cccccc',
+            }}
             onClick={() => setCurrentIndex(index)}
           />
         ))}

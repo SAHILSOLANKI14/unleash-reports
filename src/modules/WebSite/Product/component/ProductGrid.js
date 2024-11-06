@@ -1,23 +1,33 @@
 // src/ProductPage.js
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import {
-  Container,
-  Typography,
-  Grid,
+  Button,
   Card,
+  CardActions,
   CardContent,
   CardMedia,
-  Button,
+  Grid,
   Stack,
+  Typography,
+  TextField,
 } from '@mui/material';
+import Rating from '@mui/material/Rating';
+import { useEffect, useState } from 'react';
 import { fetchproductData } from '../../../Categories/API/ProductsApi';
 import noimg from '../../../Categories/images/no_image.png';
 
 const ProductPage = () => {
   const [products, setProducts] = useState([]);
+  const [value, setValue] = useState(2);
+  const [count, setCount] = useState(1);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const handleIncrement = () => {
+    setCount(count + 1);
+  };
+
+  const handleDecrement = () => {
+    if (count > 1) setCount(count - 1); // Prevent going below 1
+  };
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -61,7 +71,7 @@ const ProductPage = () => {
           <Grid item key={product.id} xs={12} sm={8} md={3} sx={{ mb: 2 }}>
             <Card
               sx={{
-                height: '320px',
+                height: 'auto',
                 width: '80%',
               }}
             >
@@ -82,17 +92,17 @@ const ProductPage = () => {
               <CardContent
                 sx={{
                   display: 'flex',
-                  justifyContent: 'space-evenly',
+                  justifyContent: 'center',
                   alignItems: 'center',
                   flexDirection: 'column',
                 }}
               >
                 <Stack
                   direction="column"
-                  spacing={1}
+                  spacing={0}
                   sx={{
                     display: 'flex',
-                    justifyContent: 'space-evenly',
+                    justifyContent: 'center',
                     alignItems: 'center',
                     flexDirection: 'column',
                   }}
@@ -100,13 +110,61 @@ const ProductPage = () => {
                   <Typography variant="h5" sx={{ fontWeight: '600', textAlign: 'center' }}>
                     {product.name}
                   </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    {product.description}
-                  </Typography>
-                  <Typography variant="h6" sx={{ fontWeight: '600', textAlign: 'center' }}>
+                  <Typography
+                    variant="h6"
+                    sx={{
+                      fontWeight: '600',
+                      fontSize: '16px',
+                      textAlign: 'center',
+                      p: 1,
+                      color: '#2277f5',
+                    }}
+                  >
                     ${product.price}{' '}
                   </Typography>
+                  <Stack direction="row" spacing={2} alignItems="center" sx={{ mb: '-8px' }}>
+                    <Button
+                      onClick={handleDecrement}
+                      variant="outlined"
+                      sx={{
+                        minWidth: '30px',
+                        minHeight: '30px',
+                        borderRadius: '50%',
+                        bgcolor: '#f4f4f4',
+                      }}
+                    >
+                      -
+                    </Button>
+
+                    <TextField
+                      value={count}
+                      variant="outlined"
+                      inputProps={{
+                        style: {
+                          textAlign: 'center',
+                          width: '40px',
+                          padding: '5px ',
+                        },
+                        readOnly: true,
+                      }}
+                    />
+
+                    <Button
+                      onClick={handleIncrement}
+                      variant="outlined"
+                      sx={{
+                        minWidth: '30px',
+                        minHeight: '30px',
+                        borderRadius: '50%',
+                        bgcolor: '#f4f4f4',
+                      }}
+                    >
+                      +
+                    </Button>
+                  </Stack>
                 </Stack>
+              </CardContent>
+              <CardActions sx={{ display: 'flex', justifyContent: 'center', pb: 2 }}>
                 <Button
                   variant="contained"
                   color="primary"
@@ -119,7 +177,7 @@ const ProductPage = () => {
                 >
                   Add to Cart
                 </Button>
-              </CardContent>
+              </CardActions>
             </Card>
           </Grid>
         ))}

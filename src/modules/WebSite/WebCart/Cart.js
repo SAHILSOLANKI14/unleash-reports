@@ -23,6 +23,11 @@ const Cart = () => {
   const handleDecrement = (id) => {
     dispatch(decrementQuantity(id));
   };
+
+  const totalPrice = cartItems.reduce((total, item) => {
+    return total + item.price * item.quantity;
+  }, 0);
+
   return (
     <Box sx={{ width: 350, p: 2 }} role="presentation">
       <Typography variant="h4" sx={{ mb: 2, fontWeight: '600' }}>
@@ -54,7 +59,7 @@ const Cart = () => {
                 color="text.secondary"
                 sx={{ mt: 1, mb: 1, textAlign: 'center' }}
               >
-                ${item.price}
+                ${(item.price * item.quantity).toFixed(2)}
               </Typography>
               <Stack
                 direction="row"
@@ -117,7 +122,7 @@ const Cart = () => {
       ))}
       <Box sx={{ mt: 2 }}>
         <Typography variant="h6" fontWeight="bold">
-          Total: $0
+          Total: ${totalPrice}
         </Typography>
         <Button variant="contained" color="primary" sx={{ mt: 2 }} fullWidth>
           Checkout

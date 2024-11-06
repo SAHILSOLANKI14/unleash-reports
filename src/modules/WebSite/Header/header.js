@@ -1,36 +1,26 @@
-import React, { useState } from 'react';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import DashboardIcon from '@mui/icons-material/Dashboard';
+import PhoneIcon from '@mui/icons-material/Phone';
+import SearchIcon from '@mui/icons-material/Search';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import {
   AppBar,
-  Toolbar,
-  Typography,
+  Badge,
   Box,
   Button,
+  Container,
+  Drawer,
   IconButton,
   InputBase,
   Stack,
-  Container,
-  Badge,
-  Drawer,
-  Grid,
-  TextField,
+  Toolbar,
+  Typography,
 } from '@mui/material';
-import SearchIcon from '@mui/icons-material/Search';
-import PhoneIcon from '@mui/icons-material/Phone';
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import DashboardIcon from '@mui/icons-material/Dashboard';
-import logo from '../../../assets/images/unleash-logo.png';
-import noimg from '../../../modules/Categories/images/no_image.png';
-import { Link } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
-import DeleteIcon from '@mui/icons-material/Delete';
+import { useState } from 'react';
 import { useSelector } from 'react-redux';
-import {
-  incrementQuantity,
-  decrementQuantity,
-  removeFromCart,
-} from '../Product/Store/productSlice';
-import { useDispatch } from 'react-redux';
+import { Link } from 'react-router-dom';
+import logo from '../../../assets/images/unleash-logo.png';
 import Cart from '../WebCart/Cart';
 
 const StyledBadge = styled(Badge)(({ theme }) => ({
@@ -43,6 +33,7 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
 }));
 
 function CustomHeader() {
+  const [searchparam, setSearchparam] = useState('');
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const cartItems = useSelector((state) => state.cart.items);
 
@@ -50,6 +41,9 @@ function CustomHeader() {
     setIsDrawerOpen(open);
   };
 
+  const handleInputChange = (e) => {
+    // setSearchparam(e.target.value);
+  };
   return (
     <Box>
       <AppBar position="static" sx={{ backgroundColor: '#ffffff', boxShadow: 'none', pt: 0 }}>
@@ -126,6 +120,7 @@ function CustomHeader() {
                 placeholder="Search Product..."
                 sx={{ ml: 1, flex: 1, color: '#333' }}
                 inputProps={{ 'aria-label': 'search product' }}
+                onChange={handleInputChange()}
               />
               <IconButton type="submit" sx={{ p: 1, color: '#333' }} aria-label="search">
                 <SearchIcon />

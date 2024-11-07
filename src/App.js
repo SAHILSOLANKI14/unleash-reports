@@ -15,8 +15,8 @@ import { restoreSession } from 'src/modules/auth/store/authActions';
 import { useLocation } from 'react-router-dom';
 
 // Define your website routes
-const websiteRoutes = ['/home', '/about', '/contact']; // Add your website routes here
-
+const websiteRoutes = ['/home', '/about'];
+// Add your website routes here
 function App({ ...props }) {
   const dispatch = useDispatch();
   const location = useLocation();

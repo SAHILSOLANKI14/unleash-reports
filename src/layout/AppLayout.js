@@ -16,7 +16,7 @@ function AppLayout({ children, ...props }) {
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [isClosing, setIsClosing] = React.useState(false);
 
-  const pagesWithoutSidebar = ['/pos','/home']; // add any other paths
+  const pagesWithoutSidebar = ['/pos', '/home', '/login']; // add any other paths
 
   const handleDrawerToggle = () => {
     if (!isClosing) {

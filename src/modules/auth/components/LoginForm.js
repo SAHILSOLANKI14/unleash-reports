@@ -11,10 +11,26 @@ function LoginForm() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+
   const handleSubmit = async (data, form) => {
-    navigate('/');
+    setLoading(true);
     return new Promise((resolve, reject) => {
-      return dispatch(login(data, resolve, reject), dispatch(sessionData(data)));
+      dispatch(
+        login(
+          data,
+          (response) => {
+            console.log('Login successful:', response);
+            setLoading(false); // Stop loading on success
+            navigate('/');
+            resolve(response);
+          },
+          (error) => {
+            console.log('Login error:', error);
+            setLoading(false); // Stop loading on error
+            reject(error);
+          },
+        ),
+      );
     });
   };
 
@@ -33,10 +49,15 @@ function LoginForm() {
         password: Yup.string().required('Please enter your password!'),
       })}
       onSubmit={async (values, form) => {
-        setLoading(true);
-        const res = await handleSubmit(values, form);
-        console.log('res', res);
-        return setLoading(false);
+        try {
+          setLoading(true);
+          const res = await handleSubmit(values, form);
+          console.log('res', res);
+        } catch (error) {
+          console.error('Error during form submission:', error);
+        } finally {
+          setLoading(false); // Ensure loading is stopped after submit completes
+        }
       }}
     >
       {(props) => {
@@ -45,7 +66,7 @@ function LoginForm() {
             onSubmit={(e) => {
               e.preventDefault();
               props.submitForm();
-
+              navigate('/');
               return false;
             }}
             noValidate

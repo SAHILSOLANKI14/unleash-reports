@@ -7,6 +7,7 @@ import CategoriesReducer from 'src/modules/Categories/Store/productsReducer';
 import PurchaseReducer from 'src/modules/Purchase/Store/PurchaseReducer';
 // import productReducer from 'src/modules/POS/Store/POSReducer';
 import cartreducer from 'src/modules/WebSite/Product/Store/productSlice';
+import authReducer from 'src/modules/WebSite/Auth/Store/authslice';
 const createRootReducer = () =>
   combineReducers({
     // router: connectRouter(),
@@ -17,6 +18,7 @@ const createRootReducer = () =>
     suppliers: supplierReducer,
     purchases: PurchaseReducer,
     cart: cartreducer,
+    WebAuth: authReducer,
     // POSproductReducer: productReducer,
   });
 

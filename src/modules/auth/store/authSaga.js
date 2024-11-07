@@ -9,61 +9,60 @@ import { push } from 'connected-react-router';
 
 function* handleLogin({ data, resolve, reject }) {
   try {
+    console.log('Handling login in saga...');
     const res = yield call(authApi.loginUser, {
       ...data,
       identity: data.email,
       password: data.password,
     });
-    console.log('response :', res.data);
+
     const Response = res.data;
-    console.log('data :', data);
-    if (Response.company_id) {
+
+    if (Response.company_id && Response.user_id) {
       localStorage.setItem('company_id', Response.company_id);
-      console.log('company_id stored: ', Response.company_id);
+      localStorage.setItem('user_id', Response.user_id);
+      storage.set('TOKEN', JSON.stringify(Response.token));
+      console.log('company_id stored:', Response.company_id);
+
+      yield put({ type: authTypes.LOGIN, data: Response });
+      resolve(Response);
     } else {
-      console.log('company_id not found in response');
+      yield put({ type: authTypes.LOGOUT });
+      toast.error('Company ID not found. Login failed.');
+      reject(new Error('Company ID not found'));
     }
-    // if (res.token) {
-    //   console.log('tokennnnn :', res.token);
-    //   storage.set('TOKEN', JSON.stringify(res.token));
-    //   console.log('token', res.token);
-    // } else {
-    //   toast.error('Error occured! Please try again.');
-    // }
   } catch (error) {
-    console.log(error);
+    console.log('Error in login saga:', error);
+    // yield put({ type: authTypes.LOGOUT });
     storage.del('TOKEN');
-    reject(error);
+    // reject(error);
   }
 }
 
 function* restoreSession({ data, resolve, reject }) {
   try {
     yield put(setAppLoading(true));
+
     const token = storage.get('TOKEN');
-    const userId = localStorage.getItem('company_id');
-    // const userIdObj = JSON.parse(token);
-    const userIdObj = JSON.parse(userId);
-    console.log(userIdObj, 'TOKEN');
-    console.log(userIdObj, 'company_id');
-    if (userId && userId !== '') {
-      const res = yield call(authApi.getProfile, { ...data, token, company_id: userId });
-      console.log('getProfileRes :', res);
-      resolve(res);
+    const companyId = localStorage.getItem('user_id');
+
+    if (companyId) {
+      const res = yield call(authApi.getProfile, { company_id: companyId });
+      yield put({ type: authTypes.RESTORE_SESSION, data: res.data });
+      resolve(res.data);
     } else {
-      toast.error('User ID not found in local storage');
+      // If no valid session, log the user out
+      yield put({ type: authTypes.LOGOUT });
+      storage.del('TOKEN');
+      // localStorage.removeItem('company_id');
+      // reject(new Error('Session not found'));
     }
-    if (userIdObj && userIdObj !== '') {
-      const res = yield call(authApi.getProfile, { ...data, token: userIdObj });
-      console.log('getProfileRes :', res);
-      if (userIdObj === '') {
-        toast.error('User ID not found in local storage');
-      }
-    }
-    yield put(setAppLoading(false));
   } catch (error) {
-    // console.log();
-    console.log('error', error);
+    // yield put({ type: authTypes.LOGOUT });
+    storage.del('TOKEN');
+    // localStorage.removeItem('company_id');
+    // reject(error);
+  } finally {
     yield put(setAppLoading(false));
   }
 }

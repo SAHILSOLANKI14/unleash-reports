@@ -1,4 +1,3 @@
-
 import * as authTypes from './authTypes';
 
 export const STATUS = Object.freeze({
@@ -9,8 +8,9 @@ export const STATUS = Object.freeze({
 const initialState = {
   token: '',
   isAuthenticated: false,
-  status: STATUS,
-  data:{},
+  loading: false,
+  data: {},
+  error: null,
 };
 
 export default (state = initialState, { type, ...payload }) => {
@@ -18,7 +18,11 @@ export default (state = initialState, { type, ...payload }) => {
     case authTypes.LOGIN:
       return { ...state, isAuthenticated: true, status: STATUS.success, data: payload.data };
     case authTypes.RESTORE_SESSION:
-      return { ...state, isAuthenticated: true, status: STATUS.success, data:payload.data};
+      return { ...state, isAuthenticated: true, status: STATUS.success, data: payload.data };
+    case authTypes.LOGOUT:
+      return { ...state, isAuthenticated: false, data: {}, token: '', loading: false };
+    case authTypes.SET_LOADING:
+      return { ...state, loading: payload.loading };
     default:
       return state;
   }

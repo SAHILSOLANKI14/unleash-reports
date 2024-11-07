@@ -11,6 +11,7 @@ import POS from 'src/modules/POS/Container/POSContainer';
 import AddProductContainer from 'src/modules/Categories/Container/AddProductContainer';
 import AddCustomer from 'src/modules/Sales/components/AddCustomer';
 import WebHome from 'src/modules/WebSite/WebHome/Container/HomeDash';
+import LoginForm from 'src/modules/WebSite/Auth/Component/LoginForm';
 export default [
   {
     title: 'dashboard',
@@ -100,6 +101,13 @@ export default [
     title: 'Home',
     component: WebHome,
     url: '/home',
+    exact: true,
+    auth: false,
+  },
+  {
+    title: 'LoginForm',
+    component: LoginForm,
+    url: '/login',
     exact: true,
     auth: false,
   },

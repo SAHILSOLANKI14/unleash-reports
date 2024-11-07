@@ -22,7 +22,8 @@ import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import logo from '../../../assets/images/unleash-logo.png';
 import Cart from '../WebCart/Cart';
-
+import LogoutIcon from '@mui/icons-material/Logout';
+import LoginIcon from '@mui/icons-material/Login';
 const StyledBadge = styled(Badge)(({ theme }) => ({
   '& .MuiBadge-badge': {
     right: -3,
@@ -36,6 +37,8 @@ function CustomHeader() {
   const [searchparam, setSearchparam] = useState('');
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const cartItems = useSelector((state) => state.cart.items);
+
+  const isAuthenticated = useSelector((state) => state.WebAuth.isAuthenticated);
 
   const toggleDrawer = (open) => () => {
     setIsDrawerOpen(open);
@@ -72,17 +75,44 @@ function CustomHeader() {
             Welcome To UNLEASH POS LLC
           </Typography>
           <Stack direction="row" spacing={2}>
-            <Link to={'/'}>
-              <IconButton>
-                <DashboardIcon sx={{ mr: '2px', fontSize: '20px', color: '#ffffff' }} />
-                <Typography variant="h5" sx={{ textAlign: 'center', color: '#ffffff' }}>
-                  Dashboard
-                </Typography>
-              </IconButton>
-              <IconButton sx={{ color: '#ffffff' }}>
-                <AccountCircleIcon />
-              </IconButton>
-            </Link>
+            {isAuthenticated ? (
+              <>
+                <Link to={'/'}>
+                  <IconButton>
+                    <DashboardIcon sx={{ mr: '2px', fontSize: '20px', color: '#ffffff' }} />
+                    <Typography variant="h5" sx={{ textAlign: 'center', color: '#ffffff' }}>
+                      Dashboard
+                    </Typography>
+                  </IconButton>
+                </Link>
+                <Link to={'/login'}>
+                  <IconButton
+                    sx={{ color: '#ffffff' }}
+                    onClick={localStorage.removeItem('company_id')}
+                  >
+                    <LogoutIcon />
+                    <Typography
+                      variant="h5"
+                      sx={{ textAlign: 'center', color: '#ffffff', mr: 1, ml: 1 }}
+                    >
+                      Logout
+                    </Typography>
+                  </IconButton>
+                </Link>
+              </>
+            ) : (
+              <Link to={'/login'}>
+                <IconButton sx={{ color: '#ffffff' }}>
+                  <LoginIcon />
+                  <Typography
+                    variant="h5"
+                    sx={{ textAlign: 'center', color: '#ffffff', mr: 1, ml: 1 }}
+                  >
+                    Login
+                  </Typography>
+                </IconButton>
+              </Link>
+            )}
           </Stack>
         </Box>
 

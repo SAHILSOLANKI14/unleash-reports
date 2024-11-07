@@ -2,6 +2,7 @@ import api from 'src/api';
 import { objectToQueryString } from '../../../utils/helper';
 export const loginUser = (data) => {
   const qs = objectToQueryString(data);
+  // console.log('Calling login API with query:', qs); // Add this line
   return api(`/api/v1/login?api-key=kccw48o08c8kk0448scwcg8swgg8g04w4ccwsgos&${qs}`, null, 'get');
 };
 

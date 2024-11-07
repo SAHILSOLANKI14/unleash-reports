@@ -6,6 +6,10 @@ export const login = (data, resolve, reject) => ({
   resolve,
   reject,
 });
+export const setLoading = (loading) => ({
+  type: authTypes.SET_LOADING,
+  loading,
+});
 export const sessionData = (data, resolve, reject) => ({
   type: authTypes.RESTORE_SESSION,
   data,
@@ -16,4 +20,3 @@ export const sessionData = (data, resolve, reject) => ({
 export const restoreSession = () => ({ type: authTypes.RESTORE_SESSION });
 
 export const setAuthUser = (user) => ({ type: authTypes.SET_AUTH_USER, user });
-

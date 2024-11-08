@@ -8,6 +8,7 @@ import PurchaseReducer from 'src/modules/Purchase/Store/PurchaseReducer';
 // import productReducer from 'src/modules/POS/Store/POSReducer';
 import cartreducer from 'src/modules/WebSite/Product/Store/productSlice';
 import authReducer from 'src/modules/WebSite/Auth/Store/authslice';
+import checkoutReducer from 'src/modules/WebSite/WebCart/Store/CheckoutReducer';
 const createRootReducer = () =>
   combineReducers({
     // router: connectRouter(),
@@ -16,9 +17,10 @@ const createRootReducer = () =>
     sales: salesReducer,
     product: CategoriesReducer,
     suppliers: supplierReducer,
-    purchases: PurchaseReducer,
+    purchase: PurchaseReducer,
     cart: cartreducer,
     WebAuth: authReducer,
+    checkout: checkoutReducer,
     // POSproductReducer: productReducer,
   });
 

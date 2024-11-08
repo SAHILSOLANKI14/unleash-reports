@@ -12,10 +12,11 @@ import { SnackbarProvider } from 'notistack';
 import theme from 'src/config/theme';
 import { authPages } from 'src/config';
 import { restoreSession } from 'src/modules/auth/store/authActions';
+import { webrestoreSession } from './modules/WebSite/Auth/Store/authslice';
 import { useLocation } from 'react-router-dom';
 
 // Define your website routes
-const websiteRoutes = ['/home', '/about'];
+const websiteRoutes = ['/home', '/about', '/checkout'];
 // Add your website routes here
 function App({ ...props }) {
   const dispatch = useDispatch();
@@ -23,6 +24,7 @@ function App({ ...props }) {
 
   useEffect(() => {
     dispatch(restoreSession());
+    dispatch(webrestoreSession());
   }, [dispatch]);
 
   const loading = useSelector((state) => state.app.appLoading);

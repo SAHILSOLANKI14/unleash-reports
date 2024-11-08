@@ -23,7 +23,7 @@ const ProductPage = () => {
   const [count, setCount] = useState(1);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
+  const [limit, setLimit] = useState(8);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -46,25 +46,26 @@ const ProductPage = () => {
     navigate('/login');
   };
   //increase the products limit
-  const productScroll = () => {};
+  const handleAddMore = () => {
+    setLimit((prevLimit) => prevLimit + 8);
+  };
+  const fetchProducts = async () => {
+    try {
+      const data = {
+        start: 1,
+        limit: limit,
+      };
+      const response = await fetchproductData(data);
+      setProducts(response.data);
+    } catch (error) {
+      setError('Failed to fetch products');
+    } finally {
+      setLoading(false);
+    }
+  };
   useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const data = {
-          start: 1,
-          limit: 8,
-        };
-        const response = await fetchproductData(data);
-        setProducts(response.data);
-      } catch (error) {
-        setError('Failed to fetch products');
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchProducts();
-  }, []);
+  }, [limit]);
 
   if (loading) {
     return <Typography variant="h6">Loading...</Typography>;
@@ -84,9 +85,17 @@ const ProductPage = () => {
         Latest Product
       </Typography>
       <hr></hr>
-      <Grid container spacing={4} sx={{ mt: 0 }}>
+      <Grid
+        container
+        spacing={4}
+        sx={{
+          mt: 0,
+          maxHeight: products.length > 12 ? '800px' : 'auto',
+          overflowY: products.length > 12 ? 'auto' : 'visible',
+        }}
+      >
         {products.map((product) => (
-          <Grid item key={product.id} xs={12} sm={8} md={3} sx={{ mb: 0 }}>
+          <Grid item key={product.id} xs={12} sm={4} md={3} sx={{ mb: 0 }}>
             <Card
               sx={{
                 height: '360px',
@@ -235,6 +244,7 @@ const ProductPage = () => {
             paddingLeft: '30px',
             paddingRight: '30px',
           }}
+          onClick={handleAddMore}
         >
           Add More
         </Button>

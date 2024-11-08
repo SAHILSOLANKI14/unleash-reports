@@ -21,7 +21,7 @@ import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import logo from '../../../assets/images/unleash-logo.png';
-import Cart from '../WebCart/Cart';
+import Cart from '../WebCart/Component/Cart';
 import LogoutIcon from '@mui/icons-material/Logout';
 import LoginIcon from '@mui/icons-material/Login';
 const StyledBadge = styled(Badge)(({ theme }) => ({

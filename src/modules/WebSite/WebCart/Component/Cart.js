@@ -1,12 +1,12 @@
 import { Box, Button, Grid, IconButton, Stack, TextField, Typography } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import ClearIcon from '@mui/icons-material/Clear';
-import noimg from '../../../modules/Categories/images/no_image.png';
+import noimg from '../../../../modules/Categories/images/no_image.png';
 import {
   decrementQuantity,
   incrementQuantity,
   removeFromCart,
-} from '../Product/Store/productSlice';
+} from '../../Product/Store/productSlice';
 
 const Cart = () => {
   const cartItems = useSelector((state) => state.cart.items);

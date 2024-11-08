@@ -1,28 +1,50 @@
-import { PURCHASE_REQUEST, PURCHASE_SUCCESS, PURCHASE_FAILURE } from '../Store/PurchaseTypes';
+import {
+  FETCH_PURCHASE_DATA_REQUEST,
+  FETCH_PURCHASE_DATA_SUCCESS,
+  FETCH_PURCHASE_DATA_FAILURE,
+  FETCH_DETAIL_DATA_REQUEST,
+  FETCH_DETAIL_DATA_SUCCESS,
+  FETCH_DETAIL_DATA_FAILURE,
+} from '../Store/PurchaseAction';
 
 const initialState = {
-  data: [],
-  error: null,
+  purchaseData: [],
+  total: 0,
+  detailData: null,
+  addressData: {},
   loading: false,
+  error: null,
 };
 
-const PurchaseReducer = (state = initialState, action) => {
+const purchaseReducer = (state = initialState, action) => {
   switch (action.type) {
-    case PURCHASE_REQUEST:
+    case FETCH_PURCHASE_DATA_REQUEST:
+    case FETCH_DETAIL_DATA_REQUEST:
       return { ...state, loading: true, error: null };
-    case PURCHASE_SUCCESS:
+
+    case FETCH_PURCHASE_DATA_SUCCESS:
       return {
         ...state,
-        data: action.payload,
         loading: false,
-        error: null,
+        purchaseData: action.payload.data,
+        total: action.payload.total,
       };
 
-    case PURCHASE_FAILURE:
+    case FETCH_DETAIL_DATA_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        detailData: action.payload.detailData,
+        addressData: action.payload.addressData,
+      };
+
+    case FETCH_PURCHASE_DATA_FAILURE:
+    case FETCH_DETAIL_DATA_FAILURE:
       return { ...state, loading: false, error: action.payload };
 
     default:
       return state;
   }
 };
-export default PurchaseReducer;
+
+export default purchaseReducer;

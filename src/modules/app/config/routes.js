@@ -12,6 +12,7 @@ import AddProductContainer from 'src/modules/Categories/Container/AddProductCont
 import AddCustomer from 'src/modules/Sales/components/AddCustomer';
 import WebHome from 'src/modules/WebSite/WebHome/Container/HomeDash';
 import LoginForm from 'src/modules/WebSite/Auth/Component/LoginForm';
+import Checkout from 'src/modules/WebSite/WebCart/Component/Checkout';
 export default [
   {
     title: 'dashboard',
@@ -108,6 +109,13 @@ export default [
     title: 'LoginForm',
     component: LoginForm,
     url: '/login',
+    exact: true,
+    auth: false,
+  },
+  {
+    title: 'Checkout',
+    component: Checkout,
+    url: '/checkout',
     exact: true,
     auth: false,
   },

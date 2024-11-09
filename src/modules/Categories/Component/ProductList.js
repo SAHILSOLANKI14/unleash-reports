@@ -36,7 +36,7 @@ const ProductList = () => {
   const dispatch = useDispatch();
   const [productdetail, setProductdetail] = useState('');
   const [openPopup, setOpenPopup] = useState(false);
-  const [selectedRowData, setSelectedRowData] = useState(null); // Initialize as null
+  const [selectedRowData, setSelectedRowData] = useState(null);
 
   const fetchProduct = async (pageNo, perPage, search = '', DATA) => {
     // console.log('Fetching products for:', { pageNo, perPage, search });

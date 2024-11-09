@@ -7,9 +7,11 @@ import { loginUser } from 'src/modules/auth/api/authApi';
 export const login = createAsyncThunk('/login', async (credentials, { rejectWithValue }) => {
   try {
     const response = await loginUser(credentials);
-    if (response.data.company_id) {
-      localStorage.setItem('company_id', response.data.company_id);
-      localStorage.setItem('token', response.data.token); // Save token to local storage
+    console.log('response', response);
+    const Response = response.data;
+    if (Response.company_id) {
+      localStorage.setItem('Company_id', Response.company_id);
+      localStorage.setItem('token', Response.token); // Save token to local storage
       return response.data;
     } else {
       return rejectWithValue('Company ID not found');

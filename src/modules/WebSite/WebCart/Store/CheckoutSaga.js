@@ -1,16 +1,17 @@
-import { call, put, takeLatest } from 'redux-saga/effects';
 import axios from 'axios';
-import { CHECKOUT_REQUEST, checkoutSuccess, checkoutFailure } from '../Store/CheckoutAction';
-import api from 'src/api';
+import { call, put, takeLatest } from 'redux-saga/effects';
+import { CHECKOUT_REQUEST, checkoutFailure, checkoutSuccess } from '../Store/CheckoutAction';
+
 function* handleCheckout(action) {
   try {
     const response = yield call(
       axios.post,
-      `https://dev.unleashpos.com/api/v1/sales?api-key=kccw48o08c8kk0448scwcg8swgg8g04w4ccwsgos`,
+      `https://dev.unleashpos.com/api/v1/sales`, 
       action.payload,
-    ); // Replace with your API endpoint
+    );
+
+    // Dispatch success action with the order data
     yield put(checkoutSuccess(response.data));
-    console.log('first');
   } catch (error) {
     yield put(checkoutFailure(error.message || 'Checkout failed.'));
   }

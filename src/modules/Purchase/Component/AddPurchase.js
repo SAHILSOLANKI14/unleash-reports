@@ -32,13 +32,6 @@ import { debounce } from 'lodash';
 import { submitPurchaseData } from '../api/AddPurchaseapi';
 import Breadcrumbs from 'src/components/shared/BreadCrumbs/Breadcrumb';
 
-function sleep(duration) {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve();
-    }, duration);
-  });
-}
 const AddPurchase = () => {
   const [open, setOpen] = React.useState(false);
   const [formState, setFormState] = useState(() => {
@@ -327,7 +320,7 @@ const AddPurchase = () => {
             <FormControl size="small" fullWidth>
               <Autocomplete
                 options={unitOptions}
-                size='small'
+                size="small"
                 getOptionLabel={(option) => {
                   switch (option.unit_id) {
                     case '9':
@@ -459,7 +452,7 @@ const AddPurchase = () => {
   };
   return (
     <Box>
-     <Breadcrumbs />
+      <Breadcrumbs />
       <Paper sx={{ p: 2 }}>
         <Grid container spacing={2}>
           {/* Date Field */}

@@ -2,6 +2,7 @@ import { CHECKOUT_REQUEST, CHECKOUT_SUCCESS, CHECKOUT_FAILURE } from '../Store/C
 
 const initialState = {
   order: null,
+  addressData: null,
   loading: false,
   error: null,
 };

@@ -7,6 +7,7 @@ import {
   incrementQuantity,
   removeFromCart,
 } from '../../Product/Store/productSlice';
+import { Link } from 'react-router-dom';
 
 const Cart = () => {
   const cartItems = useSelector((state) => state.cart.items);
@@ -146,18 +147,20 @@ const Cart = () => {
             Total: ${totalPrice.toFixed(2)}
           </Typography>
         </Stack>
-        <Button
-          sx={{
-            mt: 2,
-            border: '1px solid #2277f5',
-            fontWeight: '600',
-            color: '#2277f5',
-            fontFamily: 'sans-serif',
-          }}
-          fullWidth
-        >
-          Checkout
-        </Button>
+        <Link to={'/checkout'}>
+          <Button
+            sx={{
+              mt: 2,
+              border: '1px solid #2277f5',
+              fontWeight: '600',
+              color: '#2277f5',
+              fontFamily: 'sans-serif',
+            }}
+            fullWidth
+          >
+            Checkout
+          </Button>
+        </Link>
       </Box>
     </Box>
   );

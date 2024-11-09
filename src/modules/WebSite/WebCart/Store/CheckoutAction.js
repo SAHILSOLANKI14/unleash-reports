@@ -16,3 +16,4 @@ export const checkoutFailure = (error) => ({
   type: CHECKOUT_FAILURE,
   payload: error,
 });
+

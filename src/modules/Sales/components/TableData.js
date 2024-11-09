@@ -32,8 +32,8 @@ const TableData = () => {
   const [SALEDATA, setSaleDatas] = useState([]);
   const [pageNo, setPageNo] = useState(0);
   const [perPage, setPerPage] = useState(10);
-  const [total, setTotal] = useState(0); // Initialize as number
-  const [selectedRowData, setSelectedRowData] = useState(null); // Initialize as null
+  const [total, setTotal] = useState(0); 
+  const [selectedRowData, setSelectedRowData] = useState(null);
   const [openPopup, setOpenPopup] = useState(false);
   const [status, setStatus] = useState('');
   const [detailData, setDetailData] = useState([]);
@@ -66,7 +66,6 @@ const TableData = () => {
     }
   };
 
-  // Handle row click
   const handleRowClick = async (rowData) => {
     setSelectedRowData(rowData);
     setOpenPopup(true);

@@ -119,9 +119,15 @@ function CustomHeader() {
         <Toolbar
           sx={{ justifyContent: 'space-between', px: 0, mt: 2, borderBottom: '1px solid #bcbdc1' }}
         >
-          <Box display="flex" alignItems="center" sx={{ pb: 2 }}>
-            <img src={logo} alt="Unleash POS Logo" style={{ width: '80%', marginRight: '16px' }} />
-          </Box>
+          <Link to={'/home'}>
+            <Box display="flex" alignItems="center" sx={{ pb: 2 }}>
+              <img
+                src={logo}
+                alt="Unleash POS Logo"
+                style={{ width: '80%', marginRight: '16px' }}
+              />
+            </Box>
+          </Link>
           <Box>
             <Container>
               <Toolbar sx={{ justifyContent: 'space-between', px: 2 }}>
@@ -164,7 +170,7 @@ function CustomHeader() {
                 </StyledBadge>
               </IconButton>
               <Drawer anchor="right" open={isDrawerOpen} onClose={toggleDrawer(false)}>
-                <Cart />
+                <Cart onClose={toggleDrawer(false)} />
               </Drawer>
             </Box>
           </Stack>

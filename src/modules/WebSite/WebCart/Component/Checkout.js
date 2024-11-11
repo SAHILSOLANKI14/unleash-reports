@@ -1,20 +1,48 @@
 import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { checkoutRequest } from '../Store/CheckoutAction';
-import { TextField, Button, CircularProgress, Typography, Paper, Grid } from '@mui/material';
+import {
+  TextField,
+  Button,
+  CircularProgress,
+  Typography,
+  Paper,
+  Grid,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  FormControlLabel,
+  Checkbox,
+  Container,
+  Box,
+  IconButton,
+  Stack,
+  Divider,
+} from '@mui/material';
 import { fetchDetailDataRequest } from '../Store/Addaction';
+import noimg from '../../../../modules/Categories/images/no_image.png';
+import { checkoutRequest } from '../Store/CheckoutAction';
+import { useDispatch, useSelector } from 'react-redux';
 
-const Checkout = () => {
+const CheckoutPage = () => {
   const dispatch = useDispatch();
   const { loading, error, order } = useSelector((state) => state.checkout);
   const { addressData } = useSelector((state) => state.address);
+  const cartItems = useSelector((state) => state.cart.items);
+
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     address: '',
     'api-key': 'kccw48o08c8kk0448scwcg8swgg8g04w4ccwsgos',
     paymentMethod: '',
+    city: '',
+    province: '',
+    postalCode: '',
+    Phone: '',
   });
+
+  const [selectedAddress, setSelectedAddress] = useState(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(true);
 
   const handleChange = (e) => {
     setFormData({
@@ -22,9 +50,27 @@ const Checkout = () => {
       [e.target.name]: e.target.value,
     });
   };
+
+  const handleAddressSelect = (address) => {
+    setSelectedAddress(address);
+    const formattedAddress = `${address.line1}, ${address.line2 || ''}, ${address.city}, ${
+      address.state
+    }, ${address.postal_code}`;
+
+    setFormData({
+      ...formData,
+      address: formattedAddress,
+      city: address.city,
+      state: address.state,
+      postalCode: address.postal_code,
+      Phone: address.phone,
+    });
+
+    setIsDialogOpen(false);
+  };
+
   useEffect(() => {
-    // Assuming `reference_no` is available for fetching the address
-    const reference_no = '2'; // Replace with actual reference number
+    const reference_no = '2';
     dispatch(fetchDetailDataRequest({ reference_no }));
   }, [dispatch]);
 
@@ -33,86 +79,215 @@ const Checkout = () => {
     dispatch(checkoutRequest(formData));
   };
 
+  const calculateSubtotal = () => {
+    return cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
+  };
+
+  const calculateTotal = () => {
+    const subtotal = calculateSubtotal();
+    return subtotal;
+  };
+
   return (
-    <div style={{ padding: '2rem' }}>
-      <Typography variant="h4" gutterBottom>
-        Checkout
-      </Typography>
+    <Grid container spacing={4} style={{ padding: '2rem' }}>
       {loading && <CircularProgress />}
       {error && <Typography color="error">{error}</Typography>}
       {order && (
-        <Typography color="primary">Order placed successfully! Order ID: {order.id}</Typography>
+        <Typography sx={{ textAlign: 'center' }} color="primary">
+          Order placed successfully! Order ID: {order.id}
+        </Typography>
       )}
 
-      <Grid container spacing={2}>
-        <Grid item xs={12} md={6}>
-          <form
-            onSubmit={handleSubmit}
-            style={{ display: 'flex', flexDirection: 'column', gap: '1rem', maxWidth: '400px' }}
-          >
-            <TextField
-              name="name"
-              label="Name"
-              variant="outlined"
-              fullWidth
-              value={formData.name}
-              onChange={handleChange}
-              required
-            />
-            <TextField
-              name="email"
-              label="Email"
-              variant="outlined"
-              fullWidth
-              value={formData.email}
-              onChange={handleChange}
-              required
-            />
-            <TextField
-              name="address"
-              label="Address"
-              variant="outlined"
-              fullWidth
-              value={formData.address}
-              onChange={handleChange}
-              required
-            />
-            <TextField
-              name="paymentMethod"
-              label="Payment Method"
-              variant="outlined"
-              fullWidth
-              value={formData.paymentMethod}
-              onChange={handleChange}
-              required
-            />
+      <Grid item xs={12} md={8}>
+        <Paper style={{ padding: '2rem' }}>
+          <Typography variant="h6" gutterBottom>
+            Shipping Address
+          </Typography>
+          <Grid container spacing={2}>
+            <Grid item xs={6}>
+              <TextField
+                name="firstName"
+                label="First Name"
+                fullWidth
+                required
+                value={formData.firstName}
+                onChange={handleChange}
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <TextField
+                name="lastName"
+                label="Last Name"
+                fullWidth
+                required
+                value={formData.lastName}
+                onChange={handleChange}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                name="address"
+                label="Address"
+                value={formData.address}
+                onChange={handleChange}
+                fullWidth
+                required
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField label="phone" fullWidth value={formData.Phone} onChange={handleChange} />
+            </Grid>
+            <Grid item xs={6}>
+              <TextField
+                name="City"
+                label="City"
+                fullWidth
+                required
+                value={formData.city}
+                onChange={handleChange}
+              />
+            </Grid>
+            <Grid item xs={3}>
+              <TextField
+                name="state"
+                label="state"
+                fullWidth
+                required
+                value={formData.state || ''}
+                onChange={handleChange}
+              />
+            </Grid>
+            <Grid item xs={3}>
+              <TextField
+                name="Postal Code"
+                label="Postal Code"
+                fullWidth
+                required
+                value={formData.postalCode}
+                onChange={handleChange}
+              />
+            </Grid>
+          </Grid>
 
-            <Button type="submit" variant="contained" color="primary" disabled={loading}>
-              {loading ? 'Processing...' : 'Place Order'}
-            </Button>
-          </form>
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <Paper style={{ padding: '1rem' }}>
-            <Typography variant="h6">Shipping Address</Typography>
-            {addressData ? (
-              <div>
-                <Typography variant="body1">
-                  Street: {addressData[0]?.line1 + addressData[0]?.line2}
-                </Typography>
-                <Typography variant="body1">City: {addressData[0]?.city}</Typography>
-                <Typography variant="body1">State: {addressData[0]?.state}</Typography>
-                <Typography variant="body1">Postal Code: {addressData[0]?.postalCode}</Typography>
-                {/* Add other address fields as necessary */}
-              </div>
+          <Typography variant="h6" style={{ marginTop: '1rem' }}>
+            Shipping Method
+          </Typography>
+          <Typography variant="body2">
+            Enter a shipping address to see accurate shipping options for your order.
+          </Typography>
+
+          <Typography variant="h6" style={{ marginTop: '1rem' }}>
+            Gift Options
+          </Typography>
+          <FormControlLabel control={<Checkbox />} label="This is a gift" />
+          <Typography variant="body2">
+            We'll hide the prices and print your personal message on the packing slip if you include
+            one.
+          </Typography>
+        </Paper>
+      </Grid>
+
+      <Grid item xs={12} md={4}>
+        <Paper style={{ padding: '2rem' }}>
+          <Typography variant="h6" gutterBottom>
+            Order Summary
+          </Typography>
+          <Divider style={{ margin: '1rem 0' }} />
+          <Grid container justifyContent="space-between">
+            <Typography>Subtotal</Typography>
+            <Typography>{calculateSubtotal()}</Typography>
+          </Grid>
+          <Grid container justifyContent="space-between">
+            <Typography>Taxes</Typography>
+            <Typography>—</Typography>
+          </Grid>
+          <Grid container justifyContent="space-between">
+            <Typography>Shipping (2 items)</Typography>
+            <Typography>—</Typography>
+          </Grid>
+          <Divider style={{ margin: '1rem 0' }} />
+          <Grid container justifyContent="space-between">
+            <Typography>Total</Typography>
+            <Typography>{calculateTotal()}</Typography>
+          </Grid>
+          <Button
+            variant="outlined"
+            fullWidth
+            style={{ marginTop: '1rem', border: '2px solid black' }}
+          >
+            Apply a Promo Code or Discount
+          </Button>
+
+          <Typography variant="h6" style={{ marginTop: '1.5rem' }}>
+            Bag Summary
+          </Typography>
+          <Typography variant="body2" color="primary">
+            Arrives in 4-7 days
+          </Typography>
+          <div style={{ marginTop: '1rem' }}>
+            {cartItems.map((item, index) => (
+              <Box sx={{ mb: 2, borderBottom: '1px solid #bcbdc1' }} key={index}>
+                <Grid container spacing={2}>
+                  <Grid item xs={4}>
+                    <img src={noimg} alt="Product" style={{ width: '60%' }} />
+                  </Grid>
+                  <Grid item xs={8}>
+                    <Typography variant="body1">{item.name}</Typography>
+                    <Typography variant="body2">{item.sku}</Typography>
+                    <Typography variant="body2" color="textSecondary">
+                      {item.size}
+                    </Typography>
+                    <Typography
+                      variant="body2"
+                      style={{ textDecoration: 'line-through' }}
+                    ></Typography>
+                    <Typography variant="body2" color="error">
+                      ${item.price} × {item.quantity}
+                    </Typography>
+                    <Button color="primary" size="small">
+                      Edit
+                    </Button>
+                    <Button color="primary" size="small">
+                      Remove
+                    </Button>
+                  </Grid>
+                </Grid>
+              </Box>
+            ))}
+          </div>
+        </Paper>
+        <Dialog open={isDialogOpen} onClose={() => setIsDialogOpen(false)}>
+          <DialogTitle>Select Shipping Address</DialogTitle>
+          <DialogContent>
+            {addressData && addressData.length > 0 ? (
+              addressData.map((address, index) => (
+                <FormControlLabel
+                  key={index}
+                  control={
+                    <Checkbox
+                      checked={selectedAddress === address}
+                      onChange={() => handleAddressSelect(address)}
+                      color="primary"
+                    />
+                  }
+                  label={`${address.line1}, ${address.line2 || ''}, ${address.city}, ${
+                    address.state
+                  }, ${address.postalCode}`}
+                />
+              ))
             ) : (
               <Typography variant="body1">No address data available.</Typography>
             )}
-          </Paper>
-        </Grid>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setIsDialogOpen(false)} color="primary">
+              Cancel
+            </Button>
+          </DialogActions>
+        </Dialog>
       </Grid>
-    </div>
+    </Grid>
   );
 };
 
-export default Checkout;
+export default CheckoutPage;

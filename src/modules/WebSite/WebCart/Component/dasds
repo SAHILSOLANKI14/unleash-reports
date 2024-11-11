@@ -1,0 +1,202 @@
+import React, { useEffect, useState } from 'react';
+import {
+TextField,
+Button,
+CircularProgress,
+Typography,
+Paper,
+Grid,
+Dialog,
+DialogTitle,
+DialogContent,
+DialogActions,
+FormControlLabel,
+Checkbox,
+Container,
+Box,
+IconButton,
+Stack,
+Divider,
+} from '@mui/material';
+import { fetchDetailDataRequest } from '../Store/Addaction';
+import noimg from '../../../../modules/Categories/images/no_image.png';
+
+const CheckoutPage = () => {
+const dispatch = useDispatch();
+const { loading, error, order } = useSelector((state) => state.checkout);
+const { addressData } = useSelector((state) => state.address);
+const [formData, setFormData] = useState({
+name: '',
+email: '',
+address: '',
+'api-key': 'kccw48o08c8kk0448scwcg8swgg8g04w4ccwsgos',
+paymentMethod: '',
+});
+const [selectedAddress, setSelectedAddress] = useState(null);
+const [isDialogOpen, setIsDialogOpen] = useState(true);
+const cartItems = useSelector((state) => state.cart.items);
+const handleChange = (e) => {
+setFormData({
+...formData,
+[e.target.name]: e.target.value,
+});
+};
+
+const handleAddressSelect = (address) => {
+setSelectedAddress(address);
+const formattedAddress = `${address.line1}, ${address.line2 || ''}, ${address.city}, ${
+      address.state
+    }, ${address.postalCode}`;
+setFormData({
+...formData,
+address: formattedAddress,
+});
+setIsDialogOpen(false); // Close the dialog after selecting an address
+};
+
+useEffect(() => {
+const reference_no = '2'; // Replace with actual reference number
+dispatch(fetchDetailDataRequest({ reference_no }));
+}, [dispatch]);
+
+const handleSubmit = (e) => {
+e.preventDefault();
+dispatch(checkoutRequest(formData));
+};
+return (
+{loading && <CircularProgress />}
+{error && <Typography color="error">{error}</Typography>}
+{order && (
+<Typography sx={{ textAlign: 'center' }} color="primary">
+Order placed successfully! Order ID: {order.id}
+</Typography>
+)}
+<Grid container spacing={4} style={{ padding: '2rem' }}>
+{/_ Shipping Section _/}
+<Grid item xs={12} md={8}>
+<Paper style={{ padding: '2rem' }}>
+<Typography variant="h6" gutterBottom>
+Shipping Address
+</Typography>
+
+          <Grid container spacing={2}>
+            <Grid item xs={6}>
+              <TextField label="First Name" fullWidth required />
+            </Grid>
+            <Grid item xs={6}>
+              <TextField label="Last Name" fullWidth required />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField  name="address"
+              label="Address" value={formData.address}
+              onChange={handleChange} fullWidth required />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField label="Apt / Suite / Unit (Optional)" fullWidth />
+            </Grid>
+            <Grid item xs={6}>
+              <TextField label="City" fullWidth required />
+            </Grid>
+            <Grid item xs={3}>
+              <TextField label="Province" fullWidth required />
+            </Grid>
+            <Grid item xs={3}>
+              <TextField label="Postal Code" fullWidth required />
+            </Grid>
+          </Grid>
+
+          <Typography variant="h6" style={{ marginTop: '1rem' }}>
+            Shipping Method
+          </Typography>
+          <Typography variant="body2">
+            Enter a shipping address to see accurate shipping options for your order.
+          </Typography>
+
+          <Typography variant="h6" style={{ marginTop: '1rem' }}>
+            Gift Options
+          </Typography>
+          <FormControlLabel control={<Checkbox />} label="This is a gift" />
+          <Typography variant="body2">
+            We'll hide the prices and print your personal message on the packing slip if you include
+            one.
+          </Typography>
+        </Paper>
+      </Grid>
+
+      {/* Order Summary Section */}
+      <Grid item xs={12} md={4}>
+        <Paper style={{ padding: '2rem' }}>
+          <Typography variant="h6" gutterBottom>
+            Order Summary
+          </Typography>
+          <Divider style={{ margin: '1rem 0' }} />
+          <Grid container justifyContent="space-between">
+            <Typography>Subtotal</Typography>
+            <Typography>$74.98 CDN</Typography>
+          </Grid>
+          <Grid container justifyContent="space-between">
+            <Typography>Taxes</Typography>
+            <Typography>—</Typography>
+          </Grid>
+          <Grid container justifyContent="space-between">
+            <Typography>Shipping (2 items)</Typography>
+            <Typography>—</Typography>
+          </Grid>
+          <Divider style={{ margin: '1rem 0' }} />
+          <Grid container justifyContent="space-between">
+            <Typography>Total</Typography>
+            <Typography>$74.98 CDN</Typography>
+          </Grid>
+          <Button variant="outlined" fullWidth style={{ marginTop: '1rem' }}>
+            Apply a Promo Code or Discount
+          </Button>
+
+          <Typography variant="h6" style={{ marginTop: '1.5rem' }}>
+            Bag Summary
+          </Typography>
+          <Typography variant="body2" color="primary">
+            Arrives in 4-7 days
+          </Typography>
+          <div style={{ marginTop: '1rem' }}>
+           {cartItems.map((item, index) => (
+            <Box sx={{ mb: 2, borderBottom: '1px solid #bcbdc1' }}>
+            <Grid container spacing={2}>
+              {/* Item 1 */}
+              <Grid item xs={4}>
+                <img
+                  src={noimg} // Placeholder image, replace with actual URL
+                  alt="Product 1"
+                  style={{ width: '100%' }}
+                />
+              </Grid>
+              <Grid item xs={8}>
+                <Typography variant="body1">Men's UA Hustle Fleece Hoodie</Typography>
+                <Typography variant="body2">1300123-025-XL</Typography>
+                <Typography variant="body2" color="textSecondary">
+                  True Gray Heather, XL
+                </Typography>
+                <Typography variant="body2" style={{ textDecoration: 'line-through' }}>
+                  $49.99 CDN
+                </Typography>
+                <Typography variant="body2" color="error">
+                  $37.49 CDN × 1
+                </Typography>
+                <Button color="primary" size="small">
+                  Edit
+                </Button>
+                <Button color="primary" size="small">
+                  Remove
+                </Button>
+              </Grid>
+
+))}
+
+          </div>
+        </Paper>
+      </Grid>
+    </Grid>
+
+);
+};
+
+export default CheckoutPage;

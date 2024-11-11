@@ -420,18 +420,19 @@ export default function AddOrders() {
 
   const handleSubmit = async () => {
     try {
-      const company_id = localStorage.getItem('company_id');
+      const company_id = localStorage.getItem('Company_id');
       const responses = await axios.post(`https://dev.unleashpos.com/api/v1/companies`, {
         'api-key': 'kccw48o08c8kk0448scwcg8swgg8g04w4ccwsgos',
         company_id: company_id,
       });
       const sale = responses.data;
-      console.log('address', sale.data[1]);
+      // console.log('address', sale.data[0]);
       const Datas = sale.data[1];
       const submittedItems = formState.items.map((item) => ({
         quantity: item.Quantity,
         id: item.id,
       }));
+      const Add = '2';
       const data = {
         items: submittedItems,
         customer_id: formState.customer,
@@ -440,8 +441,7 @@ export default function AddOrders() {
         total_items: formState.total_items,
         total: formState.total,
         company_id: company_id,
-        // address_id: Datas.line1,
-        address_id: '853',
+        address_id: Add,
         'api-key': 'kccw48o08c8kk0448scwcg8swgg8g04w4ccwsgos',
       };
 

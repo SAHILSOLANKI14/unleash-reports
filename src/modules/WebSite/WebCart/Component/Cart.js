@@ -9,7 +9,7 @@ import {
 } from '../../Product/Store/productSlice';
 import { Link } from 'react-router-dom';
 
-const Cart = () => {
+const Cart = ({ onClose }) => {
   const cartItems = useSelector((state) => state.cart.items);
 
   const dispatch = useDispatch();
@@ -157,6 +157,7 @@ const Cart = () => {
               fontFamily: 'sans-serif',
             }}
             fullWidth
+            onClick={onClose}
           >
             Checkout
           </Button>

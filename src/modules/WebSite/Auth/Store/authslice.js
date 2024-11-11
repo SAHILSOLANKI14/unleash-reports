@@ -27,8 +27,8 @@ export const webrestoreSession = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const token = localStorage.getItem('token');
-      const companyId = localStorage.getItem('company_id');
-      console.log('Restoring session:', { token, companyId }); // Check values here
+      const companyId = localStorage.getItem('Company_id');
+      console.log('Restoring session:', { token, companyId });
 
       if (token && companyId) {
         return { token, company_id: companyId };
@@ -75,13 +75,16 @@ const authSlice = createSlice({
       .addCase(webrestoreSession.fulfilled, (state, action) => {
         state.loading = false;
         state.user = action.payload;
-        // state.token = action.payload.token;
+        state.token = action.payload.token;
         state.isAuthenticated = true;
       })
       .addCase(webrestoreSession.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
-        state.isAuthenticated = false;
+        // Do not set isAuthenticated to false if company_id exists in localStorage
+        if (!localStorage.getItem('Company_id')) {
+          state.isAuthenticated = false;
+        }
       });
   },
 });

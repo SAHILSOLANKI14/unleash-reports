@@ -12,15 +12,19 @@ import {
 } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { addToCart, incrementQuantity, decrementQuantity } from '../Store/productSlice';
+import {
+  addToCartRequest,
+  removeFromCartRequest,
+  incrementQuantityRequest,
+  decrementQuantityRequest,
+} from '../../WebCart/Store/CartAction';
 import { fetchproductData } from '../../../Categories/API/ProductsApi';
 import noimg from '../../../Categories/images/no_image.png';
 import { useNavigate } from 'react-router-dom';
 
 const ProductPage = () => {
   const [products, setProducts] = useState([]);
-  const [value, setValue] = useState(2);
-  const [count, setCount] = useState(1);
+  const [productQuantities, setProductQuantities] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [limit, setLimit] = useState(8);
@@ -29,26 +33,62 @@ const ProductPage = () => {
 
   // Check if the user is authenticated
   const isAuthenticated = useSelector((state) => state.WebAuth.isAuthenticated);
-  //for increase the product quantity
-  const handleIncrement = (id) => {
-    dispatch(incrementQuantity(id));
+  const cartItems = useSelector((state) => state.cart.items);
+  // Increment product quantity in state
+  const handleIncrement = (productId, product) => {
+    const currentQuantity = productQuantities[productId] || 0;
+    setProductQuantities((prevQuantities) => ({
+      ...prevQuantities,
+      [productId]: currentQuantity + 1,
+    }));
+    if (currentQuantity === 0) {
+      dispatch(addToCartRequest({ ...product, quantity: 1 }));
+    } else {
+      dispatch(incrementQuantityRequest(productId));
+    }
   };
-  //for decrease the product quantity
-  const handleDecrement = (id) => {
-    dispatch(decrementQuantity(id));
+  useEffect(() => {
+    const quantities = {};
+    cartItems.forEach((item) => {
+      quantities[item.id] = item.quantity;
+    });
+    setProductQuantities(quantities);
+  }, [cartItems]);
+
+  // Decrement product quantity in state
+  const handleDecrement = (productId) => {
+    const currentQuantity = productQuantities[productId];
+    if (currentQuantity > 1) {
+      setProductQuantities((prevQuantities) => ({
+        ...prevQuantities,
+        [productId]: currentQuantity - 1,
+      }));
+      dispatch(decrementQuantityRequest(productId));
+    } else {
+      setProductQuantities((prevQuantities) => ({
+        ...prevQuantities,
+        [productId]: 1,
+      }));
+      dispatch(decrementQuantityRequest(productId));
+    }
   };
-  //Add to cart
+
+  // Add product to cart
   const handleAddToCart = (product) => {
-    dispatch(addToCart(product));
+    dispatch(addToCartRequest({ ...product, quantity: productQuantities[product.id] || 1 }));
   };
+
   // Redirect to the login page
   const handleLoginRedirect = () => {
     navigate('/login');
   };
-  //increase the products limit
+
+  // Increase the products limit
   const handleAddMore = () => {
     setLimit((prevLimit) => prevLimit + 8);
   };
+
+  // Fetch products
   const fetchProducts = async () => {
     try {
       const data = {
@@ -63,6 +103,7 @@ const ProductPage = () => {
       setLoading(false);
     }
   };
+
   useEffect(() => {
     fetchProducts();
   }, [limit]);
@@ -84,16 +125,8 @@ const ProductPage = () => {
       <Typography variant="h2" color="primary" sx={{ mt: 4, mb: 2 }}>
         Latest Product
       </Typography>
-      <hr></hr>
-      <Grid
-        container
-        spacing={4}
-        sx={{
-          mt: 0,
-          maxHeight: products.length > 12 ? '800px' : 'auto',
-          overflowY: products.length > 12 ? 'auto' : 'visible',
-        }}
-      >
+      <hr />
+      <Grid container spacing={4} sx={{ mt: 0 }}>
         {products.map((product) => (
           <Grid item key={product.id} xs={12} sm={4} md={3} sx={{ mb: 0 }}>
             <Card
@@ -152,7 +185,7 @@ const ProductPage = () => {
                           color: '#2277f5',
                         }}
                       >
-                        ${product.price}{' '}
+                        ${product.price}
                       </Typography>
                       <Stack direction="row" spacing={2} alignItems="center" sx={{ mb: '-8px' }}>
                         <Button
@@ -169,20 +202,16 @@ const ProductPage = () => {
                         </Button>
 
                         <TextField
-                          value={count}
+                          value={productQuantities[product.id] || 1}
                           variant="outlined"
                           inputProps={{
-                            style: {
-                              textAlign: 'center',
-                              width: '40px',
-                              padding: '5px ',
-                            },
+                            style: { textAlign: 'center', width: '40px', padding: '5px ' },
                             readOnly: true,
                           }}
                         />
 
                         <Button
-                          onClick={() => handleIncrement(product.id)}
+                          onClick={() => handleIncrement(product.id, product)}
                           variant="outlined"
                           sx={{
                             minWidth: '30px',

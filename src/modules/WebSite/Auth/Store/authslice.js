@@ -14,13 +14,23 @@ export const login = createAsyncThunk('/login', async (credentials, { rejectWith
       localStorage.setItem('token', Response.token); // Save token to local storage
       return response.data;
     } else {
-      return rejectWithValue('Company ID not found');
+      return console.log('Company ID not found');
     }
   } catch (error) {
     return rejectWithValue(error.message || 'Login failed');
   }
 });
 
+// Async action for logout
+export const logout = createAsyncThunk('/logout', async (_, { rejectWithValue }) => {
+  try {
+    localStorage.removeItem('Company_id');
+    localStorage.removeItem('token');
+    return {}; // Return an empty object on success
+  } catch (error) {
+    return rejectWithValue(error.message || 'Logout failed');
+  }
+});
 // Async action for restoring session
 export const webrestoreSession = createAsyncThunk(
   'auth/restoreSession',

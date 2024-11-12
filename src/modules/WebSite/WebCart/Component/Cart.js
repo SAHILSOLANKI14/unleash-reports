@@ -3,10 +3,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import ClearIcon from '@mui/icons-material/Clear';
 import noimg from '../../../../modules/Categories/images/no_image.png';
 import {
-  decrementQuantity,
-  incrementQuantity,
-  removeFromCart,
-} from '../../Product/Store/productSlice';
+  addToCartRequest,
+  removeFromCartRequest,
+  incrementQuantityRequest,
+  decrementQuantityRequest,
+} from '../Store/CartAction';
 import { Link } from 'react-router-dom';
 
 const Cart = ({ onClose }) => {
@@ -14,15 +15,15 @@ const Cart = ({ onClose }) => {
 
   const dispatch = useDispatch();
 
-  const handleRemove = (id) => {
-    dispatch(removeFromCart(id));
+  const handleRemove = (productId) => {
+    dispatch(removeFromCartRequest(productId));
   };
-  const handleIncrement = (id) => {
-    dispatch(incrementQuantity(id));
+  const handleIncrement = (productId) => {
+    dispatch(incrementQuantityRequest(productId));
   };
 
-  const handleDecrement = (id) => {
-    dispatch(decrementQuantity(id));
+  const handleDecrement = (productId) => {
+    dispatch(decrementQuantityRequest(productId));
   };
 
   const totalPrice = cartItems.reduce((total, item) => {
@@ -37,7 +38,7 @@ const Cart = ({ onClose }) => {
       <hr></hr>
       {cartItems.map((item, index) => (
         <Box sx={{ mb: 2, borderBottom: '1px solid #bcbdc1' }}>
-          <Grid container spacing={2} alignItems="center">
+          <Grid container spacing={2} alignItems="center" key={item.id}>
             <Grid item xs={3}>
               <Box
                 component="img"

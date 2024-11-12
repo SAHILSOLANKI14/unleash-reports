@@ -24,6 +24,8 @@ import logo from '../../../assets/images/unleash-logo.png';
 import Cart from '../WebCart/Component/Cart';
 import LogoutIcon from '@mui/icons-material/Logout';
 import LoginIcon from '@mui/icons-material/Login';
+import { logout } from '../Auth/Store/authslice';
+import { useDispatch } from 'react-redux';
 const StyledBadge = styled(Badge)(({ theme }) => ({
   '& .MuiBadge-badge': {
     right: -3,
@@ -37,13 +39,15 @@ function CustomHeader() {
   const [searchparam, setSearchparam] = useState('');
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const cartItems = useSelector((state) => state.cart.items);
-
+  const dispatch = useDispatch();
   const isAuthenticated = useSelector((state) => state.WebAuth.isAuthenticated);
 
   const toggleDrawer = (open) => () => {
     setIsDrawerOpen(open);
   };
-
+  const logoutsession = () => {
+    dispatch(logout());
+  };
   const handleInputChange = (e) => {
     // setSearchparam(e.target.value);
   };
@@ -85,20 +89,17 @@ function CustomHeader() {
                     </Typography>
                   </IconButton>
                 </Link>
-                <Link to={'/login'}>
-                  <IconButton
-                    sx={{ color: '#ffffff' }}
-                    onClick={localStorage.removeItem('company_id')}
+                {/* <Link to={'/login'}> */}
+                <IconButton sx={{ color: '#ffffff' }} onClick={logoutsession}>
+                  <LogoutIcon />
+                  <Typography
+                    variant="h5"
+                    sx={{ textAlign: 'center', color: '#ffffff', mr: 1, ml: 1 }}
                   >
-                    <LogoutIcon />
-                    <Typography
-                      variant="h5"
-                      sx={{ textAlign: 'center', color: '#ffffff', mr: 1, ml: 1 }}
-                    >
-                      Logout
-                    </Typography>
-                  </IconButton>
-                </Link>
+                    Logout
+                  </Typography>
+                </IconButton>
+                {/* / */}
               </>
             ) : (
               <Link to={'/login'}>

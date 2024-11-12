@@ -10,6 +10,7 @@ import cartreducer from 'src/modules/WebSite/Product/Store/productSlice';
 import authReducer from 'src/modules/WebSite/Auth/Store/authslice';
 import checkoutReducer from 'src/modules/WebSite/WebCart/Store/CheckoutReducer';
 import addressReducer from 'src/modules/WebSite/WebCart/Store/AddReducer';
+import { cartReducer } from 'src/modules/WebSite/WebCart/Store/CartReducer';
 const createRootReducer = () =>
   combineReducers({
     // router: connectRouter(),
@@ -19,10 +20,11 @@ const createRootReducer = () =>
     product: CategoriesReducer,
     suppliers: supplierReducer,
     purchase: PurchaseReducer,
-    cart: cartreducer,
+    // cart: cartreducer,
     WebAuth: authReducer,
     checkout: checkoutReducer,
     address: addressReducer,
+    cart: cartReducer,
     // POSproductReducer: productReducer,
   });
 

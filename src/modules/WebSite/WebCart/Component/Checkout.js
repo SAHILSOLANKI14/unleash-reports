@@ -28,15 +28,16 @@ const CheckoutPage = () => {
   const { loading, error, order } = useSelector((state) => state.checkout);
   const { addressData } = useSelector((state) => state.address);
   const cartItems = useSelector((state) => state.cart.items);
-
+  const address_id = localStorage.getItem('Company_id');
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     address: '',
+    // address_id: '2',
     'api-key': 'kccw48o08c8kk0448scwcg8swgg8g04w4ccwsgos',
     paymentMethod: '',
     city: '',
-    province: '',
+    state: '',
     postalCode: '',
     Phone: '',
   });
@@ -92,11 +93,6 @@ const CheckoutPage = () => {
     <Grid container spacing={4} style={{ padding: '2rem' }}>
       {loading && <CircularProgress />}
       {error && <Typography color="error">{error}</Typography>}
-      {order && (
-        <Typography sx={{ textAlign: 'center' }} color="primary">
-          Order placed successfully! Order ID: {order.id}
-        </Typography>
-      )}
 
       <Grid item xs={12} md={8}>
         <Paper style={{ padding: '2rem' }}>
@@ -168,8 +164,12 @@ const CheckoutPage = () => {
               />
             </Grid>
           </Grid>
-
-          <Typography variant="h6" style={{ marginTop: '1rem' }}>
+          {order && (
+            <Typography sx={{ textAlign: 'center', mt: 3 }} color="primary">
+              Order placed successfully! Order ID: {order.id}
+            </Typography>
+          )}
+          {/* <Typography variant="h6" style={{ marginTop: '1rem' }}>
             Shipping Method
           </Typography>
           <Typography variant="body2">
@@ -183,7 +183,7 @@ const CheckoutPage = () => {
           <Typography variant="body2">
             We'll hide the prices and print your personal message on the packing slip if you include
             one.
-          </Typography>
+          </Typography> */}
         </Paper>
       </Grid>
 
@@ -194,28 +194,31 @@ const CheckoutPage = () => {
           </Typography>
           <Divider style={{ margin: '1rem 0' }} />
           <Grid container justifyContent="space-between">
-            <Typography>Subtotal</Typography>
+            <Typography variant="h4" sx={{ fontWeight: '600', fontSize: '15px' }}>
+              Subtotal
+            </Typography>
             <Typography>{calculateSubtotal()}</Typography>
           </Grid>
           <Grid container justifyContent="space-between">
-            <Typography>Taxes</Typography>
+            <Typography sx={{ fontWeight: '600', fontSize: '15px' }}>Taxes</Typography>
             <Typography>—</Typography>
           </Grid>
           <Grid container justifyContent="space-between">
-            <Typography>Shipping (2 items)</Typography>
+            <Typography sx={{ fontWeight: '600', fontSize: '15px' }}>Shipping (2 items)</Typography>
             <Typography>—</Typography>
           </Grid>
           <Divider style={{ margin: '1rem 0' }} />
           <Grid container justifyContent="space-between">
-            <Typography>Total</Typography>
+            <Typography sx={{ fontWeight: '600', fontSize: '15px' }}>Total</Typography>
             <Typography>{calculateTotal()}</Typography>
           </Grid>
           <Button
             variant="outlined"
             fullWidth
             style={{ marginTop: '1rem', border: '2px solid black' }}
+            onClick={handleSubmit}
           >
-            Apply a Promo Code or Discount
+            Buy Now
           </Button>
 
           <Typography variant="h6" style={{ marginTop: '1.5rem' }}>
@@ -226,14 +229,23 @@ const CheckoutPage = () => {
           </Typography>
           <div style={{ marginTop: '1rem' }}>
             {cartItems.map((item, index) => (
-              <Box sx={{ mb: 2, borderBottom: '1px solid #bcbdc1' }} key={index}>
+              <Box sx={{ mb: 2 }} key={index}>
                 <Grid container spacing={2}>
                   <Grid item xs={4}>
-                    <img src={noimg} alt="Product" style={{ width: '60%' }} />
+                    <img
+                      src={noimg}
+                      alt="Product"
+                      style={{
+                        width: '60%',
+                        border: '1px solid lightgray',
+                        background: 'lightgray',
+                        padding: 3,
+                      }}
+                    />
                   </Grid>
                   <Grid item xs={8}>
-                    <Typography variant="body1">{item.name}</Typography>
-                    <Typography variant="body2">{item.sku}</Typography>
+                    <Typography variant="h5">{item.name}</Typography>
+                    <Typography variant="h5">{item.sku}</Typography>
                     <Typography variant="body2" color="textSecondary">
                       {item.size}
                     </Typography>
@@ -241,15 +253,17 @@ const CheckoutPage = () => {
                       variant="body2"
                       style={{ textDecoration: 'line-through' }}
                     ></Typography>
-                    <Typography variant="body2" color="error">
+                    <Typography variant="body2" sx={{ color: '#2277f5', p: 1 }}>
                       ${item.price} × {item.quantity}
                     </Typography>
-                    <Button color="primary" size="small">
-                      Edit
-                    </Button>
-                    <Button color="primary" size="small">
-                      Remove
-                    </Button>
+                    <Stack direction={'row'} spacing={2}>
+                      <Button color="primary" size="small" sx={{ border: '1px solid lightgray' }}>
+                        Edit
+                      </Button>
+                      <Button color="primary" size="small" sx={{ border: '1px solid lightgray' }}>
+                        Remove
+                      </Button>
+                    </Stack>
                   </Grid>
                 </Grid>
               </Box>

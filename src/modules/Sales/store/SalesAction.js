@@ -1,20 +1,32 @@
-// SalesAction.js
-import { SALES_SUCCESS, SALES_FAILURE, SALES_REQUEST } from './SalesTypes';
+// actions.js
+import * as types from '../store/SalesTypes';
 
-// Action creator for loading state
-export const setSalesDataLoading = (loading) => ({
-  type: SALES_REQUEST,
-  payload: loading,
+export const fetchSalesRequest = (status, pageNo, perPage) => ({
+  type: types.FETCH_SALES_REQUEST,
+  payload: { status, pageNo, perPage },
 });
 
-// Action creator for successful data fetch
-export const setSalesData = (data) => ({
-  type: SALES_SUCCESS,
+export const fetchSalesSuccess = (data, total) => ({
+  type: types.FETCH_SALES_SUCCESS,
+  payload: { data, total },
+});
+
+export const fetchSalesFailure = (error) => ({
+  type: types.FETCH_SALES_FAILURE,
+  payload: error,
+});
+
+export const fetchDetailRequest = (reference) => ({
+  type: types.FETCH_DETAIL_REQUEST,
+  payload: { reference },
+});
+
+export const fetchDetailSuccess = (data) => ({
+  type: types.FETCH_DETAIL_SUCCESS,
   payload: data,
 });
 
-// Action creator for failed data fetch
-export const fetchSalesDataFailure = (error) => ({
-  type: SALES_FAILURE,
+export const fetchDetailFailure = (error) => ({
+  type: types.FETCH_DETAIL_FAILURE,
   payload: error,
 });

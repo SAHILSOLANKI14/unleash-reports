@@ -1,31 +1,44 @@
-// salesReducer.js
-import { SALES_SUCCESS, SALES_FAILURE, SALES_REQUEST } from './SalesTypes';
+// reducers.js
+import { LoadingContainer } from 'src/layout/AppLoader';
+import * as types from '../store/SalesTypes';
 
 const initialState = {
-  data: [],
+  salesData: [],
+  total: 0,
+  detailData: [],
   error: null,
-  loading: false,
 };
 
-const salesReducer = (state = initialState, action) => {
-  if (!action || !action.type) {
-    console.error('Invalid action:', action);
-    return state;
-  }
+export const salesReducer = (state = initialState, action) => {
   switch (action.type) {
-    case SALES_REQUEST:
-      return { ...state, loading: action.payload };
-    case SALES_SUCCESS:
+    case types.FETCH_SALES_SUCCESS:
       return {
         ...state,
-        data: action.payload,
-        loading: false,
+        salesData: action.payload.data,
+        Loading: false,
+        total: action.payload.total,
       };
-    case SALES_FAILURE:
-      return { ...state, loading: false, error: action.payload };
+    case types.FETCH_SALES_FAILURE:
+      return {
+        ...state,
+        salesData: [],
+        Loading: false,
+        total: 0,
+
+        error: action.payload,
+      };
+    case types.FETCH_DETAIL_SUCCESS:
+      return {
+        ...state,
+        detailData: action.payload,
+      };
+    case types.FETCH_DETAIL_FAILURE:
+      return {
+        ...state,
+        detailData: [],
+        error: action.payload,
+      };
     default:
       return state;
   }
 };
-
-export default salesReducer;

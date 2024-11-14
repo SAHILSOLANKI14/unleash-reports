@@ -1,64 +1,58 @@
-import React, { useState, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { Link } from 'react-router-dom';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import DashboardIcon from '@mui/icons-material/Dashboard';
+import PhoneIcon from '@mui/icons-material/Phone';
+import SearchIcon from '@mui/icons-material/Search';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import {
   AppBar,
+  Badge,
   Box,
-  Toolbar,
+  Button,
+  Container,
+  Drawer,
   IconButton,
+  InputBase,
+  Toolbar,
   Typography,
   Stack,
   Menu,
   MenuItem,
   Collapse,
-  InputBase,
-  Button,
 } from '@mui/material';
-import {
-  Dashboard as DashboardIcon,
-  Phone as PhoneIcon,
-  Search as SearchIcon,
-  ShoppingCart as ShoppingCartIcon,
-  Menu as MenuIcon,
-  ExpandLess as ExpandLessIcon,
-  ExpandMore as ExpandMoreIcon,
-} from '@mui/icons-material';
-import { fetchCategoriesRequest } from '../Category/store/categoriesAction';
-import { logout } from '../Auth/Store/authslice';
+import { styled } from '@mui/material/styles';
+import { useState } from 'react';
+import { useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
 import logo from '../../../assets/images/unleash-logo.png';
+import Cart from '../WebCart/Component/Cart';
 import LogoutIcon from '@mui/icons-material/Logout';
 import LoginIcon from '@mui/icons-material/Login';
+import { logout } from '../Auth/Store/authslice';
+import { useDispatch } from 'react-redux';
+const StyledBadge = styled(Badge)(({ theme }) => ({
+  '& .MuiBadge-badge': {
+    right: -3,
+    top: 13,
+    border: `2px solid ${theme.palette.background.paper}`,
+    padding: '0 4px',
+  },
+}));
 
 function CustomHeader() {
-  const [anchorEl, setAnchorEl] = useState(null);
-  const [openCategories, setOpenCategories] = useState({});
-
-  const isAuthenticated = useSelector((state) => state.WebAuth.isAuthenticated);
+  const [searchparam, setSearchparam] = useState('');
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const cartItems = useSelector((state) => state.cart.items);
   const dispatch = useDispatch();
-  const { categories = [], loading } = useSelector((state) => ({
-    categories: state.category.categories || [],
-    loading: state.category.loading,
-  }));
+  const isAuthenticated = useSelector((state) => state.WebAuth.isAuthenticated);
 
-  useEffect(() => {
-    dispatch(fetchCategoriesRequest());
-  }, [dispatch]);
-
-  const handleCategoryMenuOpen = (event) => {
-    setAnchorEl(event.currentTarget);
+  const toggleDrawer = (open) => () => {
+    setIsDrawerOpen(open);
   };
   const logoutsession = () => {
     dispatch(logout());
   };
-  const handleCategoryMenuClose = () => {
-    setAnchorEl(null);
-  };
-
-  const handleCategoryClick = (categoryId) => {
-    setOpenCategories((prevOpen) => ({
-      ...prevOpen,
-      [categoryId]: !prevOpen[categoryId],
-    }));
+  const handleInputChange = (e) => {
+    // setSearchparam(e.target.value);
   };
 
   return (
@@ -138,54 +132,19 @@ function CustomHeader() {
               />
             </Box>
           </Link>
-
-          {/* All Categories Menu Button */}
           <Box>
-            <Button color="primary" onClick={handleCategoryMenuOpen} startIcon={<MenuIcon />}>
-              All Categories
-            </Button>
-            <Menu
-              anchorEl={anchorEl}
-              open={Boolean(anchorEl)}
-              onClose={handleCategoryMenuClose}
-              PaperProps={{
-                style: {
-                  maxHeight: 400,
-                  width: '250px',
-                },
-              }}
-            >
-              {loading ? (
-                <MenuItem>Loading...</MenuItem>
-              ) : (
-                categories.map((category) => (
-                  <div key={category.id}>
-                    <MenuItem onClick={() => handleCategoryClick(category.id)}>
-                      {category.name}
-                      {openCategories[category.id] ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-                    </MenuItem>
-                    {category.child && (
-                      <Collapse in={openCategories[category.id]} timeout="auto" unmountOnExit>
-                        <Box pl={2}>
-                          {category.child.map((child) => (
-                            <MenuItem key={child.id}>{child.name}</MenuItem>
-                          ))}
-                        </Box>
-                      </Collapse>
-                    )}
-                  </div>
-                ))
-              )}
-            </Menu>
+            <Container>
+              <Toolbar sx={{ justifyContent: 'space-between', px: 2 }}>
+                <Box display="flex" alignItems="center" sx={{ fontWeight: '600', color: 'black' }}>
+                  <Button>All Categories</Button>
+                  <Button>Home</Button>
+                  <Button>Promotions</Button>
+                  <Button>Price Change</Button>
+                  <Button>Abbreviations</Button>
+                </Box>
+              </Toolbar>
+            </Container>
           </Box>
-          <Button color="primary">Home</Button>
-          <Button color="primary">Promotion</Button>
-          <Button color="primary">Price change</Button>
-          <Button color="primary">Abbreviation</Button>
-          <Button color="primary"></Button>
-          <Button color="primary"></Button>
-
-          {/* Search Bar */}
           <Stack direction="row" spacing={2}>
             <Box
               sx={{
@@ -197,14 +156,27 @@ function CustomHeader() {
                 width: '60%',
               }}
             >
-              <InputBase placeholder="Search Product..." sx={{ ml: 1, flex: 1, color: '#333' }} />
+              <InputBase
+                placeholder="Search Product..."
+                sx={{ ml: 1, flex: 1, color: '#333' }}
+                inputProps={{ 'aria-label': 'search product' }}
+                onChange={handleInputChange()}
+              />
               <IconButton type="submit" sx={{ p: 1, color: '#333' }} aria-label="search">
                 <SearchIcon />
               </IconButton>
             </Box>
-            <IconButton aria-label="cart">
-              <ShoppingCartIcon />
-            </IconButton>
+
+            <Box display="flex" alignItems="center">
+              <IconButton aria-label="cart" onClick={toggleDrawer(true)}>
+                <StyledBadge badgeContent={cartItems.length} color="secondary">
+                  <ShoppingCartIcon />
+                </StyledBadge>
+              </IconButton>
+              <Drawer anchor="right" open={isDrawerOpen} onClose={toggleDrawer(false)}>
+                <Cart onClose={toggleDrawer(false)} />
+              </Drawer>
+            </Box>
           </Stack>
         </Toolbar>
       </AppBar>

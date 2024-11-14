@@ -21,6 +21,7 @@ import {
 import { fetchproductData } from '../../../Categories/API/ProductsApi';
 import noimg from '../../../Categories/images/no_image.png';
 import { useNavigate } from 'react-router-dom';
+import { fetchCategoriesRequest } from '../../Category/store/categoriesAction';
 
 const ProductPage = () => {
   const [products, setProducts] = useState([]);
@@ -30,6 +31,10 @@ const ProductPage = () => {
   const [limit, setLimit] = useState(8);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    dispatch(fetchCategoriesRequest());
+  }, [dispatch]);
 
   // Check if the user is authenticated
   const isAuthenticated = useSelector((state) => state.WebAuth.isAuthenticated);

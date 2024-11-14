@@ -11,6 +11,7 @@ import authReducer from 'src/modules/WebSite/Auth/Store/authslice';
 import checkoutReducer from 'src/modules/WebSite/WebCart/Store/CheckoutReducer';
 import addressReducer from 'src/modules/WebSite/WebCart/Store/AddReducer';
 import { cartReducer } from 'src/modules/WebSite/WebCart/Store/CartReducer';
+import categoryReducer from 'src/modules/WebSite/Category/store/CategoriesReducer';
 const createRootReducer = () =>
   combineReducers({
     // router: connectRouter(),
@@ -20,7 +21,7 @@ const createRootReducer = () =>
     product: CategoriesReducer,
     suppliers: supplierReducer,
     purchase: PurchaseReducer,
-    // cart: cartreducer,
+    category: categoryReducer,
     WebAuth: authReducer,
     checkout: checkoutReducer,
     address: addressReducer,

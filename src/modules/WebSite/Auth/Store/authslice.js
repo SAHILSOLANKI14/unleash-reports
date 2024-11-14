@@ -26,6 +26,8 @@ export const logout = createAsyncThunk('/logout', async (_, { rejectWithValue })
   try {
     localStorage.removeItem('Company_id');
     localStorage.removeItem('token');
+    localStorage.removeItem('cartItems');
+    window.location.reload();
     return {}; // Return an empty object on success
   } catch (error) {
     return rejectWithValue(error.message || 'Logout failed');

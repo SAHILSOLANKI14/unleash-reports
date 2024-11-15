@@ -20,7 +20,13 @@ import {
   Collapse,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import {
+  Menu as MenuIcon,
+  ExpandLess as ExpandLessIcon,
+  ExpandMore as ExpandMoreIcon,
+} from '@mui/icons-material';
+import { fetchCategoriesRequest } from '../Category/store/categoriesAction';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import logo from '../../../assets/images/unleash-logo.png';
@@ -41,6 +47,8 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
 function CustomHeader() {
   const [searchparam, setSearchparam] = useState('');
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [openCategories, setOpenCategories] = useState({});
   const cartItems = useSelector((state) => state.cart.items);
   const dispatch = useDispatch();
   const isAuthenticated = useSelector((state) => state.WebAuth.isAuthenticated);
@@ -48,11 +56,31 @@ function CustomHeader() {
   const toggleDrawer = (open) => () => {
     setIsDrawerOpen(open);
   };
+  const { categories = [], loading } = useSelector((state) => ({
+    categories: state.category.categories || [],
+    loading: state.category.loading,
+  }));
+
+  useEffect(() => {
+    dispatch(fetchCategoriesRequest());
+  }, [dispatch]);
+
+  const handleCategoryMenuOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
   const logoutsession = () => {
     dispatch(logout());
   };
-  const handleInputChange = (e) => {
-    // setSearchparam(e.target.value);
+  const handleInputChange = (e) => {};
+  const handleCategoryMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleCategoryClick = (categoryId) => {
+    setOpenCategories((prevOpen) => ({
+      ...prevOpen,
+      [categoryId]: !prevOpen[categoryId],
+    }));
   };
 
   return (
@@ -136,7 +164,50 @@ function CustomHeader() {
             <Container>
               <Toolbar sx={{ justifyContent: 'space-between', px: 2 }}>
                 <Box display="flex" alignItems="center" sx={{ fontWeight: '600', color: 'black' }}>
-                  <Button>All Categories</Button>
+                  <Button color="primary" onClick={handleCategoryMenuOpen} startIcon={<MenuIcon />}>
+                    All Categories
+                  </Button>
+                  <Menu
+                    anchorEl={anchorEl}
+                    open={Boolean(anchorEl)}
+                    onClose={handleCategoryMenuClose}
+                    PaperProps={{
+                      style: {
+                        maxHeight: 400,
+                        width: '250px',
+                      },
+                    }}
+                  >
+                    {loading ? (
+                      <MenuItem>Loading...</MenuItem>
+                    ) : (
+                      categories.map((category) => (
+                        <div key={category.id}>
+                          <MenuItem
+                            sx={{ fontSize: '14px', fontWeight: '600' }}
+                            onClick={() => handleCategoryClick(category.id)}
+                          >
+                            {category.name}
+                            {openCategories[category.id] ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+                          </MenuItem>
+                          {category.child && (
+                            <Collapse in={openCategories[category.id]} timeout="auto" unmountOnExit>
+                              <Box pl={2}>
+                                {category.child.map((child) => (
+                                  <MenuItem
+                                    sx={{ fontSize: '14px', fontWeight: '600' }}
+                                    key={child.id}
+                                  >
+                                    {child.name}
+                                  </MenuItem>
+                                ))}
+                              </Box>
+                            </Collapse>
+                          )}
+                        </div>
+                      ))
+                    )}
+                  </Menu>
                   <Button>Home</Button>
                   <Button>Promotions</Button>
                   <Button>Price Change</Button>

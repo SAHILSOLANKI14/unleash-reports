@@ -32,14 +32,9 @@ const ProductPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    dispatch(fetchCategoriesRequest());
-  }, [dispatch]);
-
-  // Check if the user is authenticated
   const isAuthenticated = useSelector((state) => state.WebAuth.isAuthenticated);
   const cartItems = useSelector((state) => state.cart.items);
-  // Increment product quantity in state
+
   const handleIncrement = (productId, product) => {
     const currentQuantity = productQuantities[productId] || 0;
     setProductQuantities((prevQuantities) => ({
@@ -60,7 +55,6 @@ const ProductPage = () => {
     setProductQuantities(quantities);
   }, [cartItems]);
 
-  // Decrement product quantity in state
   const handleDecrement = (productId) => {
     const currentQuantity = productQuantities[productId];
     if (currentQuantity > 1) {
@@ -78,22 +72,18 @@ const ProductPage = () => {
     }
   };
 
-  // Add product to cart
   const handleAddToCart = (product) => {
     dispatch(addToCartRequest({ ...product, quantity: productQuantities[product.id] || 1 }));
   };
 
-  // Redirect to the login page
   const handleLoginRedirect = () => {
     navigate('/login');
   };
 
-  // Increase the products limit
   const handleAddMore = () => {
     setLimit((prevLimit) => prevLimit + 8);
   };
 
-  // Fetch products
   const fetchProducts = async () => {
     try {
       const data = {

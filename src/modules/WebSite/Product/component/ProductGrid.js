@@ -20,8 +20,10 @@ import {
 } from '../../WebCart/Store/CartAction';
 import { fetchproductData } from '../../../Categories/API/ProductsApi';
 import noimg from '../../../Categories/images/no_image.png';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { fetchCategoriesRequest } from '../../Category/store/categoriesAction';
+import { fetchProductSaga } from '../Store/productSaga';
+import { fetchProductRequest } from '../Store/productAction';
 
 const ProductPage = () => {
   const [products, setProducts] = useState([]);
@@ -98,7 +100,10 @@ const ProductPage = () => {
       setLoading(false);
     }
   };
-
+  const handleProductClick = async (slug) => {
+    dispatch(fetchProductRequest(`${slug}`));
+    navigate(`/product/${slug}`);
+  };
   useEffect(() => {
     fetchProducts();
   }, [limit]);
@@ -165,9 +170,18 @@ const ProductPage = () => {
                     flexDirection: 'column',
                   }}
                 >
-                  <Typography variant="h5" sx={{ fontWeight: '600', textAlign: 'center' }}>
-                    {product.name}
-                  </Typography>
+                  <Link
+                    to={`/product/${product.slug}`}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleProductClick(product.slug);
+                    }}
+                  >
+                    <Typography variant="h5" sx={{ fontWeight: '600', textAlign: 'center' }}>
+                      {product.name}
+                    </Typography>
+                  </Link>
+
                   {isAuthenticated ? (
                     <>
                       <Typography

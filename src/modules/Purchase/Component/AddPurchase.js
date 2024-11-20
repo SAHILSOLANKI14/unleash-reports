@@ -420,7 +420,7 @@ const AddPurchase = () => {
   };
   const handleSubmit = async () => {
     try {
-      const company_id = localStorage.getItem('company_id');
+      const company_id = localStorage.getItem('Company_id');
       const responses = await axios.post(`https://dev.unleashpos.com/api/v1/companies`, {
         'api-key': 'kccw48o08c8kk0448scwcg8swgg8g04w4ccwsgos',
         company_id: company_id,
@@ -434,7 +434,7 @@ const AddPurchase = () => {
       }));
       const data = {
         items: submittedItems,
-        customer_id: formState.Supplier_id,
+        supplier_id: formState.Supplier_id,
         payment_status: formState.Status,
         total_items: formState.total_items,
         total: formState.total,

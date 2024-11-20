@@ -180,7 +180,7 @@ const CheckoutPage = () => {
                   label="Postal Code"
                   fullWidth
                   required
-                  value={formData.postalCode || ''}
+                  value={formData.postal_code || ''}
                   onChange={handleChange}
                 />
               </Grid>

@@ -16,7 +16,7 @@ import { webrestoreSession } from './modules/WebSite/Auth/Store/authslice';
 import { useLocation } from 'react-router-dom';
 
 // Define your website routes
-const websiteRoutes = ['/home', '/about', '/checkout'];
+const websiteRoutes = ['/home', '/about', '/checkout', '/product/:id'];
 // Add your website routes here
 function App({ ...props }) {
   const dispatch = useDispatch();
@@ -33,8 +33,10 @@ function App({ ...props }) {
 
   // Determine layout to use based on the current route
   const isAuthPage = authPages.includes(location.pathname);
-  const isWebsitePage = websiteRoutes.includes(location.pathname);
-
+  const isWebsitePage = websiteRoutes.some((route) => {
+    const dynamicRouteRegex = new RegExp(`^${route.replace(/:\w+/g, '[a-zA-Z0-9-]+')}$`);
+    return dynamicRouteRegex.test(location.pathname);
+  });
   return (
     <SnackbarProvider maxSnack={3}>
       <ThemeProvider theme={theme}>

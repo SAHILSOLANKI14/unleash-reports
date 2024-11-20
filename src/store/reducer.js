@@ -12,6 +12,7 @@ import checkoutReducer from 'src/modules/WebSite/WebCart/Store/CheckoutReducer';
 import addressReducer from 'src/modules/WebSite/WebCart/Store/AddReducer';
 import { cartReducer } from 'src/modules/WebSite/WebCart/Store/CartReducer';
 import categoryReducer from 'src/modules/WebSite/Category/store/CategoriesReducer';
+import { productReducer } from 'src/modules/WebSite/Product/Store/productReducer';
 const createRootReducer = () =>
   combineReducers({
     // router: connectRouter(),
@@ -26,6 +27,7 @@ const createRootReducer = () =>
     checkout: checkoutReducer,
     address: addressReducer,
     cart: cartReducer,
+    singlepage: productReducer,
     // POSproductReducer: productReducer,
   });
 

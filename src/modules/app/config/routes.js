@@ -13,6 +13,7 @@ import AddCustomer from 'src/modules/Sales/components/AddCustomer';
 import WebHome from 'src/modules/WebSite/WebHome/Container/HomeDash';
 import LoginForm from 'src/modules/WebSite/Auth/Component/LoginForm';
 import Checkout from 'src/modules/WebSite/WebCart/Component/Checkout';
+import SingleProductPage from 'src/modules/WebSite/Product/component/SingleProductPage';
 export default [
   {
     title: 'dashboard',
@@ -116,6 +117,13 @@ export default [
     title: 'Checkout',
     component: Checkout,
     url: '/checkout',
+    exact: true,
+    auth: false,
+  },
+  {
+    title: 'productpage',
+    component: SingleProductPage,
+    url: '/product/:id',
     exact: true,
     auth: false,
   },

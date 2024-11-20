@@ -28,7 +28,7 @@ import {
 } from '@mui/icons-material';
 import { fetchCategoriesRequest } from '../Category/store/categoriesAction';
 import { useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import logo from '../../../assets/images/unleash-logo.png';
 import Cart from '../WebCart/Component/Cart';
 import LogoutIcon from '@mui/icons-material/Logout';
@@ -51,8 +51,8 @@ function CustomHeader() {
   const [openCategories, setOpenCategories] = useState({});
   const cartItems = useSelector((state) => state.cart.items);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const isAuthenticated = useSelector((state) => state.WebAuth.isAuthenticated);
-
   const toggleDrawer = (open) => () => {
     setIsDrawerOpen(open);
   };
@@ -81,6 +81,7 @@ function CustomHeader() {
       ...prevOpen,
       [categoryId]: !prevOpen[categoryId],
     }));
+    // navigate(`/category/${categoryId}`);
   };
 
   return (
@@ -208,7 +209,9 @@ function CustomHeader() {
                       ))
                     )}
                   </Menu>
-                  <Button>Home</Button>
+                  <Link to={'/home'}>
+                    <Button>Home</Button>
+                  </Link>
                   <Button>Promotions</Button>
                   <Button>Price Change</Button>
                   <Button>Abbreviations</Button>

@@ -5,8 +5,7 @@ import { Box, Typography, Grid, CircularProgress, Container } from '@mui/materia
 import { useSelector } from 'react-redux';
 import noimg from 'src/modules/Categories/images/no_image.png';
 const SingleProductPage = () => {
-  const { slug } = useParams(); // Get slug from URL
-  // const [product, setProduct] = useState(null);
+  const { slug } = useParams(); 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -74,27 +73,33 @@ const SingleProductPage = () => {
 
           {/* Product Details Section */}
           <Grid item xs={12} sm={6}>
-            <Typography variant="h3" gutterBottom>
+            <Typography variant="h3" gutterBottom sx={{ color: 'black', fontWeight: '600' }}>
               {product.name || 'Product Name'}
             </Typography>
-
-            <Typography variant="body1" paragraph>
-              <strong>Product Code:</strong> {product.code || 'N/A'}
-            </Typography>
-            <Typography variant="body1" paragraph>
-              <strong>Category:</strong> {product.category || 'N/A'}
-            </Typography>
-            <Typography variant="body1" paragraph>
-              <strong>Sub-Category:</strong> {product.subCategory || 'N/A'}
-            </Typography>
-            <Typography variant="body1" paragraph>
-              <strong>Pack Size:</strong> {product.packSize || 'N/A'}
-            </Typography>
-            <Typography variant="h4" paragraph>
-              <strong>Tax method:</strong> {product.tax_method || 'N/A'}
-            </Typography>
-
-            {/* If there are more details you want to show, add them here */}
+            <Grid xs={12}>
+              <Grid item xs={6}>
+                <Typography variant="body1" paragraph>
+                  Price: {product.price || 'N/A'}
+                </Typography>
+                <Typography variant="body1" paragraph>
+                  Category: {product.category_id || 'N/A'}
+                </Typography>
+                <Typography variant="body1" paragraph>
+                  Unit: {product.category_id || 'N/A'}
+                </Typography>
+                <Typography variant="body1" paragraph>
+                  Sub-Category: {product.subcategory_id || 'N/A'}
+                </Typography>
+              </Grid>
+              <Grid item xs={6}>
+                <Typography variant="body1" paragraph>
+                  Pack Size: {product.packSize || 'N/A'}
+                </Typography>
+                <Typography variant="h4" paragraph>
+                  Tax method: {product.tax_method || 'N/A'}
+                </Typography>
+              </Grid>
+            </Grid>
           </Grid>
         </Grid>
       </Box>

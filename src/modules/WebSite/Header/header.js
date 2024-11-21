@@ -35,6 +35,8 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import LoginIcon from '@mui/icons-material/Login';
 import { logout } from '../Auth/Store/authslice';
 import { useDispatch } from 'react-redux';
+import GoogleMaps from './productSearch';
+import ProductSearch from './productSearch';
 const StyledBadge = styled(Badge)(({ theme }) => ({
   '& .MuiBadge-badge': {
     right: -3,
@@ -150,7 +152,7 @@ function CustomHeader() {
         </Box>
 
         <Toolbar
-          sx={{ justifyContent: 'space-between', px: 0, mt: 2, borderBottom: '1px solid #bcbdc1' }}
+          sx={{ justifyContent: 'space-evenly', px: 0, mt: 2, borderBottom: '1px solid #bcbdc1' }}
         >
           <Link to={'/home'}>
             <Box display="flex" alignItems="center" sx={{ pb: 2 }}>
@@ -162,75 +164,76 @@ function CustomHeader() {
             </Box>
           </Link>
           <Box>
-            <Container>
-              <Toolbar sx={{ justifyContent: 'space-between', px: 2 }}>
-                <Box display="flex" alignItems="center" sx={{ fontWeight: '600', color: 'black' }}>
-                  <Button color="primary" onClick={handleCategoryMenuOpen} startIcon={<MenuIcon />}>
-                    All Categories
-                  </Button>
-                  <Menu
-                    anchorEl={anchorEl}
-                    open={Boolean(anchorEl)}
-                    onClose={handleCategoryMenuClose}
-                    PaperProps={{
-                      style: {
-                        maxHeight: 400,
-                        width: '250px',
-                      },
-                    }}
-                  >
-                    {loading ? (
-                      <MenuItem>Loading...</MenuItem>
-                    ) : (
-                      categories.map((category) => (
-                        <div key={category.id}>
-                          <MenuItem
-                            sx={{ fontSize: '14px', fontWeight: '600' }}
-                            onClick={() => handleCategoryClick(category.id)}
-                          >
-                            {category.name}
-                            {openCategories[category.id] ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-                          </MenuItem>
-                          {category.child && (
-                            <Collapse in={openCategories[category.id]} timeout="auto" unmountOnExit>
-                              <Box pl={2}>
-                                {category.child.map((child) => (
-                                  <MenuItem
-                                    sx={{ fontSize: '14px', fontWeight: '600' }}
-                                    key={child.id}
-                                  >
-                                    {child.name}
-                                  </MenuItem>
-                                ))}
-                              </Box>
-                            </Collapse>
-                          )}
-                        </div>
-                      ))
-                    )}
-                  </Menu>
-                  <Link to={'/home'}>
-                    <Button>Home</Button>
-                  </Link>
-                  <Button>Promotions</Button>
-                  <Button>Price Change</Button>
-                  <Button>Abbreviations</Button>
-                </Box>
-              </Toolbar>
-            </Container>
+            {/* <Container> */}
+            <Toolbar sx={{ justifyContent: 'space-between', px: 2 }}>
+              <Box display="flex" alignItems="center" sx={{ fontWeight: '600', color: 'black' }}>
+                <Button color="primary" onClick={handleCategoryMenuOpen} startIcon={<MenuIcon />}>
+                  All Categories
+                </Button>
+                <Menu
+                  anchorEl={anchorEl}
+                  open={Boolean(anchorEl)}
+                  onClose={handleCategoryMenuClose}
+                  PaperProps={{
+                    style: {
+                      maxHeight: 400,
+                      width: '250px',
+                    },
+                  }}
+                >
+                  {loading ? (
+                    <MenuItem>Loading...</MenuItem>
+                  ) : (
+                    categories.map((category) => (
+                      <div key={category.id}>
+                        <MenuItem
+                          sx={{ fontSize: '14px', fontWeight: '600' }}
+                          onClick={() => handleCategoryClick(category.id)}
+                        >
+                          {category.name}
+                          {openCategories[category.id] ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+                        </MenuItem>
+                        {category.child && (
+                          <Collapse in={openCategories[category.id]} timeout="auto" unmountOnExit>
+                            <Box pl={2}>
+                              {category.child.map((child) => (
+                                <MenuItem
+                                  sx={{ fontSize: '14px', fontWeight: '600' }}
+                                  key={child.id}
+                                >
+                                  {child.name}
+                                </MenuItem>
+                              ))}
+                            </Box>
+                          </Collapse>
+                        )}
+                      </div>
+                    ))
+                  )}
+                </Menu>
+                <Link to={'/home'}>
+                  <Button>Home</Button>
+                </Link>
+                <Button>Promotions</Button>
+                <Button>Price Change</Button>
+                <Button>Abbreviations</Button>
+              </Box>
+            </Toolbar>
+            {/* </Container> */}
           </Box>
           <Stack direction="row" spacing={2}>
-            <Box
+            {/* <Box
               sx={{
                 display: 'flex',
                 alignItems: 'center',
                 backgroundColor: '#f4f4f4',
                 borderRadius: 1,
                 px: 2,
-                width: '60%',
+                width: '100%',
               }}
-            >
-              <InputBase
+            > */}
+            {/* <InputBase
+                fullWidth
                 placeholder="Search Product..."
                 sx={{ ml: 1, flex: 1, color: '#333' }}
                 inputProps={{ 'aria-label': 'search product' }}
@@ -238,9 +241,9 @@ function CustomHeader() {
               />
               <IconButton type="submit" sx={{ p: 1, color: '#333' }} aria-label="search">
                 <SearchIcon />
-              </IconButton>
             </Box>
-
+              </IconButton> */}
+            <ProductSearch />
             <Box display="flex" alignItems="center">
               <IconButton aria-label="cart" onClick={toggleDrawer(true)}>
                 <StyledBadge badgeContent={cartItems.length} color="secondary">

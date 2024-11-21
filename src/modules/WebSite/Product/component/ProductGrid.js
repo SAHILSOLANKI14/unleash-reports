@@ -100,8 +100,8 @@ const ProductPage = () => {
       setLoading(false);
     }
   };
-  const handleProductClick = async (slug) => {
-    dispatch(fetchProductRequest(`${slug}`));
+  const handleProductClick = async (code, slug) => {
+    dispatch(fetchProductRequest(`${code}`));
     navigate(`/product/${slug}`);
   };
   useEffect(() => {
@@ -174,10 +174,13 @@ const ProductPage = () => {
                     to={`/product/${product.slug}`}
                     onClick={(e) => {
                       e.preventDefault();
-                      handleProductClick(product.slug);
+                      handleProductClick(product.code, product.slug);
                     }}
                   >
-                    <Typography variant="h5" sx={{ fontWeight: '600', textAlign: 'center' }}>
+                    <Typography
+                      variant="h5"
+                      sx={{ fontWeight: '600', textAlign: 'center', textDecoration: 'none' }}
+                    >
                       {product.name}
                     </Typography>
                   </Link>

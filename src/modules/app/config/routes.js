@@ -14,6 +14,9 @@ import WebHome from 'src/modules/WebSite/WebHome/Container/HomeDash';
 import LoginForm from 'src/modules/WebSite/Auth/Component/LoginForm';
 import Checkout from 'src/modules/WebSite/WebCart/Component/Checkout';
 import SingleProductPage from 'src/modules/WebSite/Product/component/SingleProductPage';
+import categoryContainer from 'src/modules/WebSite/Category/container.js/categoryContainer';
+import AbbreviationsContainer from 'src/modules/WebSite/Abbreviation/Component/AbbreviationsContainer';
+import PromotionContainer from 'src/modules/WebSite/Promotion/Container/PromotionContainer';
 export default [
   {
     title: 'dashboard',
@@ -124,6 +127,27 @@ export default [
     title: 'productpage',
     component: SingleProductPage,
     url: '/product/:id',
+    exact: true,
+    auth: false,
+  },
+  {
+    title: 'category',
+    component: categoryContainer,
+    url: '/category/:id',
+    exact: true,
+    auth: false,
+  },
+  {
+    title: 'abbreviations',
+    component: AbbreviationsContainer,
+    url: '/abbreviations',
+    exact: true,
+    auth: false,
+  },
+  {
+    title: 'promotion',
+    component: PromotionContainer,
+    url: '/promotion',
     exact: true,
     auth: false,
   },

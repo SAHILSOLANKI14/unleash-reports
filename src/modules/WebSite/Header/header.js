@@ -19,13 +19,13 @@ import {
   MenuItem,
   Collapse,
 } from '@mui/material';
-import { styled } from '@mui/material/styles';
 import { useEffect, useState } from 'react';
 import {
   Menu as MenuIcon,
   ExpandLess as ExpandLessIcon,
   ExpandMore as ExpandMoreIcon,
 } from '@mui/icons-material';
+import { styled } from '@mui/material/styles';
 import { fetchCategoriesRequest } from '../Category/store/categoriesAction';
 import { useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
@@ -37,6 +37,9 @@ import { logout } from '../Auth/Store/authslice';
 import { useDispatch } from 'react-redux';
 import GoogleMaps from './productSearch';
 import ProductSearch from './productSearch';
+import { fetchproductData } from 'src/modules/Categories/API/ProductsApi';
+import { fetchproductCategoryData } from '../Category/api';
+import CategoryMenu from '../Category/Component';
 const StyledBadge = styled(Badge)(({ theme }) => ({
   '& .MuiBadge-badge': {
     right: -3,
@@ -45,7 +48,6 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
     padding: '0 4px',
   },
 }));
-
 function CustomHeader() {
   const [searchparam, setSearchparam] = useState('');
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -73,17 +75,14 @@ function CustomHeader() {
   const logoutsession = () => {
     dispatch(logout());
   };
-  const handleInputChange = (e) => {};
+  // const handleInputChange = (e) => {};
   const handleCategoryMenuClose = () => {
     setAnchorEl(null);
   };
-
-  const handleCategoryClick = (categoryId) => {
-    setOpenCategories((prevOpen) => ({
-      ...prevOpen,
-      [categoryId]: !prevOpen[categoryId],
-    }));
-    // navigate(`/category/${categoryId}`);
+  const handleCategoryClick = async (categoryId) => {
+    const requestPayload = { category_id: categoryId };
+    const res = await fetchproductData(requestPayload);
+    navigate(`/category/${categoryId}`);
   };
 
   return (
@@ -167,82 +166,27 @@ function CustomHeader() {
             {/* <Container> */}
             <Toolbar sx={{ justifyContent: 'space-between', px: 2 }}>
               <Box display="flex" alignItems="center" sx={{ fontWeight: '600', color: 'black' }}>
-                <Button color="primary" onClick={handleCategoryMenuOpen} startIcon={<MenuIcon />}>
-                  All Categories
-                </Button>
-                <Menu
-                  anchorEl={anchorEl}
-                  open={Boolean(anchorEl)}
-                  onClose={handleCategoryMenuClose}
-                  PaperProps={{
-                    style: {
-                      maxHeight: 400,
-                      width: '250px',
-                    },
-                  }}
+                <CategoryMenu />
+                <Link
+                  to={'/home'}
+                  style={{ padding: '0 10px', textDecoration: 'none', color: 'black' }}
                 >
-                  {loading ? (
-                    <MenuItem>Loading...</MenuItem>
-                  ) : (
-                    categories.map((category) => (
-                      <div key={category.id}>
-                        <MenuItem
-                          sx={{ fontSize: '14px', fontWeight: '600' }}
-                          onClick={() => handleCategoryClick(category.id)}
-                        >
-                          {category.name}
-                          {openCategories[category.id] ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-                        </MenuItem>
-                        {category.child && (
-                          <Collapse in={openCategories[category.id]} timeout="auto" unmountOnExit>
-                            <Box pl={2}>
-                              {category.child.map((child) => (
-                                <MenuItem
-                                  sx={{ fontSize: '14px', fontWeight: '600' }}
-                                  key={child.id}
-                                >
-                                  {child.name}
-                                </MenuItem>
-                              ))}
-                            </Box>
-                          </Collapse>
-                        )}
-                      </div>
-                    ))
-                  )}
-                </Menu>
-                <Link to={'/home'}>
                   <Button>Home</Button>
                 </Link>
-                <Button>Promotions</Button>
-                <Button>Price Change</Button>
-                <Button>Abbreviations</Button>
+                <Link to={'/promotion'}   style={{ padding: '0 10px', textDecoration: 'none', color: 'black' }}>
+                  <Button>Promotions</Button>
+                </Link>
+                <Link to={'#'}   style={{ padding: '0 10px', textDecoration: 'none', color: 'black' }}>
+                  <Button>Price Change</Button>
+                </Link>
+                <Link to={'/abbreviations'}   style={{ padding: '0 10px', textDecoration: 'none', color: 'black' }}>
+                  <Button>Abbreviations</Button>
+                </Link>
               </Box>
             </Toolbar>
             {/* </Container> */}
           </Box>
           <Stack direction="row" spacing={2}>
-            {/* <Box
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                backgroundColor: '#f4f4f4',
-                borderRadius: 1,
-                px: 2,
-                width: '100%',
-              }}
-            > */}
-            {/* <InputBase
-                fullWidth
-                placeholder="Search Product..."
-                sx={{ ml: 1, flex: 1, color: '#333' }}
-                inputProps={{ 'aria-label': 'search product' }}
-                onChange={handleInputChange()}
-              />
-              <IconButton type="submit" sx={{ p: 1, color: '#333' }} aria-label="search">
-                <SearchIcon />
-            </Box>
-              </IconButton> */}
             <ProductSearch />
             <Box display="flex" alignItems="center">
               <IconButton aria-label="cart" onClick={toggleDrawer(true)}>

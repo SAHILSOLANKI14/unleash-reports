@@ -16,7 +16,15 @@ import { webrestoreSession } from './modules/WebSite/Auth/Store/authslice';
 import { useLocation } from 'react-router-dom';
 
 // Define your website routes
-const websiteRoutes = ['/home', '/about', '/checkout', '/product/:id'];
+const websiteRoutes = [
+  '/home',
+  '/about',
+  '/checkout',
+  '/product/:id',
+  '/category/:id',
+  '/promotion',
+  '/abbreviations',
+];
 // Add your website routes here
 function App({ ...props }) {
   const dispatch = useDispatch();

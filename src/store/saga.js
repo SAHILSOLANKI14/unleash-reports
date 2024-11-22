@@ -7,6 +7,7 @@ import cartSaga from 'src/modules/WebSite/WebCart/Store/CartSaga';
 import SalesSaga from 'src/modules/Sales/store/SalesSaga';
 import { watchFetchCategories } from 'src/modules/WebSite/Category/store/categoriesSaga';
 import { productWatcherSaga } from 'src/modules/WebSite/Product/Store/productSaga';
+import { CateproductWatcherSaga } from 'src/modules/WebSite/Product/Store/productSaga';
 function* rootSaga() {
   yield all([
     AuthSagas(),
@@ -17,6 +18,7 @@ function* rootSaga() {
     SalesSaga(),
     watchFetchCategories(),
     productWatcherSaga(),
+    CateproductWatcherSaga(),
   ]);
 }
 

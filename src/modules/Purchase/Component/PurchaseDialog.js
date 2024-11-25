@@ -1,6 +1,6 @@
 import PrintIcon from '@mui/icons-material/Print';
 import SettingsIcon from '@mui/icons-material/Settings';
-import { Stack } from '@mui/material';
+import { Stack, IconButton } from '@mui/material';
 import Box from '@mui/material/Box';
 import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
@@ -217,7 +217,7 @@ export default function PopupComponent({ open, handleClose, detailData, address 
               </Typography>
               <Stack direction={'column'}>
                 <Typography variant="h5" className={classes.typography}>
-                  Date:  {detaildata.date}
+                  Date: {detaildata.date}
                 </Typography>
                 <Typography variant="h5" className={classes.typography}>
                   Invoice No:

@@ -71,7 +71,7 @@ const CheckoutPage = () => {
   };
 
   useEffect(() => {
-    const reference_no = '2';
+    const reference_no = localStorage.getItem('Company_id');
     dispatch(fetchDetailDataRequest({ reference_no }));
   }, [dispatch]);
 
@@ -106,6 +106,11 @@ const CheckoutPage = () => {
   return (
     <>
       <h1>
+        {order && (
+          <Typography sx={{ textAlign: 'center', mt: 3 }} color="primary">
+            Order placed successfully! Order ID: {order.id}
+          </Typography>
+        )}
         {loading && <Typography>Loading..</Typography>}
         {error && <Typography color="error">{error}</Typography>}
       </h1>
@@ -274,43 +279,8 @@ const CheckoutPage = () => {
               Buy Now
             </Button>
           </Paper>
-          {/* <Dialog open={isDialogOpen} onClose={() => setIsDialogOpen(false)}>
-            <DialogTitle>Select Shipping Address</DialogTitle>
-            <DialogContent>
-              {addressData && addressData.length > 0 ? (
-                addressData.map((address, index) => (
-                  <FormControlLabel
-                    key={index}
-                    control={
-                      <Checkbox
-                        checked={selectedAddress === address}
-                        onChange={() => handleAddressSelect(address)}
-                        color="primary"
-                      />
-                    }
-                    label={`${address.line1}, ${address.line2 || ''}, ${address.city}, ${
-                      address.state
-                    }, ${address.postalCode}`}
-                  />
-                ))
-              ) : (
-                <Typography variant="body1">No address data available.</Typography>
-              )}
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={() => setIsDialogOpen(false)} color="primary">
-                Cancel
-              </Button>
-            </DialogActions>
-          </Dialog> */}
         </Grid>
-        <Grid item xs={12} md={4}>
-          {order && (
-            <Typography sx={{ textAlign: 'center', mt: 3 }} color="primary">
-              Order placed successfully! Order ID: {order.id}
-            </Typography>
-          )}
-        </Grid>
+        <Grid item xs={12} md={4}></Grid>
       </Grid>
     </>
   );

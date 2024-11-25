@@ -8,6 +8,7 @@ import {
   Button,
   CircularProgress,
   FormControl,
+  IconButton,
   Stack,
   TextField,
   Typography,
@@ -27,6 +28,7 @@ import ProductGrid from '../Component/ProductGrid';
 import POSFooter from './POSFooter';
 import { useRef } from 'react';
 import Calc from './Calculator';
+import DialogContent from './DialogContent';
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: '#fff',
@@ -41,6 +43,7 @@ const Item = styled(Paper)(({ theme }) => ({
 
 export default function AddOrders() {
   const customerInputRef = useRef(null);
+  const [open, setOpen] = useState(false);
   const ProductInputRef = useRef(null);
   const [formState, setFormState] = useState(() => {
     const savedState = localStorage.getItem('POS-Data');
@@ -344,6 +347,12 @@ export default function AddOrders() {
     Subtotal: item.subtotal || '$0.00',
   }));
 
+  const handleOpen = () => {
+    setOpen(true);
+  };
+  const handleClose = () => {
+    setOpen(false);
+  };
   return (
     <Box sx={{ width: '100%', flexGrow: 1 }}>
       <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }} sx={{ mb: 2 }}>
@@ -387,7 +396,6 @@ export default function AddOrders() {
                       variant="contained"
                       color="secondary"
                       sx={{ mr: 2, borderRadius: '5px', width: '40%' }}
-                      // onClick={handleSubmit}
                     >
                       NO Balance Invoice
                     </Button>
@@ -461,7 +469,10 @@ export default function AddOrders() {
                       />
                     </Grid>
                     <Grid item xs={1}>
-                      <AddCircleIcon />
+                      <IconButton onClick={handleOpen}>
+                        <AddCircleIcon />
+                      </IconButton>
+                      <DialogContent open={open} onClose={handleClose} />
                     </Grid>
                     {/* </Stack> */}
                     <Grid item xs={3}>

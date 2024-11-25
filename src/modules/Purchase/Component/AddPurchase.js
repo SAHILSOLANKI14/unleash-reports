@@ -11,6 +11,7 @@ import {
   Stack,
   Switch,
   Button,
+  IconButton,
 } from '@mui/material';
 
 import React, { useCallback, useEffect, useState } from 'react';
@@ -31,6 +32,7 @@ import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { debounce } from 'lodash';
 import { submitPurchaseData } from '../api/AddPurchaseapi';
 import Breadcrumbs from 'src/components/shared/BreadCrumbs/Breadcrumb';
+import SupplierProductListDialog from './SupplierProductListDialog';
 
 const AddPurchase = () => {
   const [open, setOpen] = React.useState(false);
@@ -450,6 +452,13 @@ const AddPurchase = () => {
       console.error('Submission failed:', error);
     }
   };
+  const handleOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
   return (
     <Box>
       <Breadcrumbs />
@@ -530,9 +539,17 @@ const AddPurchase = () => {
                 {/* {!formState.customer && <FormHelperText>This field is required</FormHelperText>} */}
               </FormControl>
               <PersonIcon />
-              <ViewListIcon />
+              <IconButton onClick={handleOpen}>
+                <ViewListIcon />
+              </IconButton>
               <AddCircleIcon />
             </Stack>
+            <SupplierProductListDialog
+              open={open}
+              onClose={handleClose}
+              onAddProduct={handleAddProduct}
+              onRemove={handleRemoveProduct}
+            />
           </Grid>
           <Grid item xs={12} md={4}>
             <InputLabel>Status *</InputLabel>
@@ -549,7 +566,6 @@ const AddPurchase = () => {
             </FormControl>
           </Grid>
           <Grid item xs={12} md={4} alignItems="center">
-            {/* Tax Paid Toggle */}
             <Grid item>
               <Grid container direction="row" alignItems="center" spacing={1}>
                 <Grid item>

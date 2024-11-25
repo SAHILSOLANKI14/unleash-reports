@@ -7,8 +7,7 @@ import Breadcrumbs from 'src/components/shared/BreadCrumbs/Breadcrumb';
 const HomeDash = () => {
   return (
     <>
-      <Container>
-       
+      <Container>    
         <FullWidthImageSlider />
         <ProductContainer />
       </Container>

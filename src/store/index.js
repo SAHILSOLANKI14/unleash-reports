@@ -12,7 +12,7 @@ const rootReducer = createRootReducer();
 const persistConfig = {
   key: 'root',
   storage,
-  whitelist: ['singlepage'], // Specify reducers to persist (e.g., `cart`, `auth`)
+  whitelist: [''], // Specify reducers to persist (e.g., `cart`, `auth`)
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

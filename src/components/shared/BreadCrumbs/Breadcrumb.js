@@ -10,7 +10,7 @@ function Breadcrumbs() {
 
   // Mapping paths to user-friendly names
   const routeTitleMap = {
-    '': 'Home',
+    '': '',
     products: 'Products',
     sales: 'Sales',
     purchases: 'Purchases',
@@ -30,7 +30,7 @@ function Breadcrumbs() {
     <MUIBreadcrumbs
       aria-label="breadcrumb"
       separator={<span style={{ fontSize: '20px', color: '#2277f5' }}>›</span>}
-      sx={{ padding: 1, background: '#bcbdc1' }}
+      sx={{ padding: 1 }}
     >
       <Link to="/" style={{ textDecoration: 'none', color: '#2277f5', fontSize: '13px' }}>
         {routeTitleMap['']}

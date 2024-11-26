@@ -1,31 +1,26 @@
-import React, { useEffect, useState } from 'react';
 import {
-  TextField,
-  Button,
-  CircularProgress,
-  Typography,
-  Paper,
-  Grid,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  FormControlLabel,
-  Checkbox,
-  Container,
+  Alert,
   Box,
-  IconButton,
-  Stack,
+  Button,
+  Checkbox,
   Divider,
+  FormControlLabel,
+  Grid,
+  Paper,
+  Snackbar,
+  Stack,
+  TextField,
+  Typography,
 } from '@mui/material';
-import { fetchDetailDataRequest } from '../Store/Addaction';
-import noimg from '../../../../modules/Categories/images/no_image.png';
-import { checkoutRequest } from '../Store/CheckoutAction';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { fetchDetailDataRequest } from '../Store/Addaction';
+import { checkoutRequest } from '../Store/CheckoutAction';
 
 const CheckoutPage = () => {
   const dispatch = useDispatch();
   const { loading, error, order } = useSelector((state) => state.checkout);
+  const [successMessage, setSuccessMessage] = useState(null);
   const { addressData } = useSelector((state) => state.address);
   const cartItems = useSelector((state) => state.cart.items);
   const address_id = localStorage.getItem('Company_id');
@@ -92,6 +87,7 @@ const CheckoutPage = () => {
     }));
 
     dispatch(checkoutRequest({ ...formData, items: cartData }));
+    setSuccessMessage(`Order placed successfully! Order ID: ${formData.email}`);
   };
 
   const calculateSubtotal = () => {
@@ -102,15 +98,45 @@ const CheckoutPage = () => {
     const subtotal = calculateSubtotal();
     return subtotal;
   };
-
+  const handleSnackbarClose = () => {
+    setSuccessMessage(null);
+  };
   return (
     <>
+      {successMessage && (
+        <Snackbar
+          open={Boolean(successMessage)}
+          autoHideDuration={3000}
+          onClose={handleSnackbarClose}
+          anchorOrigin={{
+            vertical: 'top',
+            horizontal: 'right',
+            display: 'flex',
+            justifyContent: 'center',
+            flexDirection: 'row',
+            alignItems: 'center',
+          }}
+        >
+          <Alert
+            onClose={handleSnackbarClose}
+            severity="success"
+            sx={{
+              width: '100%',
+              fontSize: '12px',
+              display: 'flex',
+              justifyContent: 'center',
+              flexDirection: 'row',
+              alignItems: 'center',
+            }}
+          >
+            {successMessage}
+          </Alert>
+          {/* <Alert onClose={handleSnackbarClose} severity="error" sx={{ width: '100%' }}>
+            {successMessage}
+          </Alert> */}
+        </Snackbar>
+      )}
       <h1>
-        {order && (
-          <Typography sx={{ textAlign: 'center', mt: 3 }} color="primary">
-            Order placed successfully! Order ID: {order.id}
-          </Typography>
-        )}
         {loading && <Typography>Loading..</Typography>}
         {error && <Typography color="error">{error}</Typography>}
       </h1>
@@ -122,7 +148,8 @@ const CheckoutPage = () => {
             </Typography>
             <Grid container spacing={2}>
               <Grid item xs={6}>
-                <TextField
+                <TextField 
+                  size='small'
                   name="firstName"
                   label="First Name"
                   fullWidth
@@ -133,6 +160,7 @@ const CheckoutPage = () => {
               </Grid>
               <Grid item xs={6}>
                 <TextField
+                   size='small'
                   name="lastName"
                   label="Last Name"
                   fullWidth
@@ -141,8 +169,28 @@ const CheckoutPage = () => {
                   onChange={handleChange}
                 />
               </Grid>
+
+              <Grid item xs={6}>
+                <TextField
+                   size='small'
+                  label="Email"
+                  fullWidth
+                  value={formData.email || ''}
+                  onChange={handleChange}
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <TextField
+                   size='small'
+                  label="phone"
+                  fullWidth
+                  value={formData.Phone || ''}
+                  onChange={handleChange}
+                />
+              </Grid>
               <Grid item xs={12}>
                 <TextField
+                   size='small'
                   name="address"
                   label="Address"
                   value={formData.address || ''}
@@ -151,16 +199,9 @@ const CheckoutPage = () => {
                   required
                 />
               </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  label="phone"
-                  fullWidth
-                  value={formData.Phone || ''}
-                  onChange={handleChange}
-                />
-              </Grid>
               <Grid item xs={6}>
                 <TextField
+                   size='small'
                   name="City"
                   label="City"
                   fullWidth
@@ -171,6 +212,7 @@ const CheckoutPage = () => {
               </Grid>
               <Grid item xs={3}>
                 <TextField
+                   size='small'
                   name="state"
                   label="state"
                   fullWidth
@@ -181,6 +223,7 @@ const CheckoutPage = () => {
               </Grid>
               <Grid item xs={3}>
                 <TextField
+                   size='small'
                   name="Postal Code"
                   label="Postal Code"
                   fullWidth

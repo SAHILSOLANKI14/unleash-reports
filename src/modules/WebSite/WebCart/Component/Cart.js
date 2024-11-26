@@ -12,6 +12,7 @@ import { Link } from 'react-router-dom';
 
 const Cart = ({ onClose }) => {
   const cartItems = useSelector((state) => state.cart.items);
+  
 
   const dispatch = useDispatch();
 

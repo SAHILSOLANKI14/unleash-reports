@@ -50,29 +50,24 @@ const Footer = () => {
                 >
                   Home
                 </Link>
-                <Link
-                  href="/about"
-                  color="inherit"
-                  underline="none"
-                  sx={{ mb: 1, fontSize: '14px' }}
-                >
-                  About Us
+                <Link href="/#" color="inherit" underline="none" sx={{ mb: 1, fontSize: '14px' }}>
+                  Price Change
                 </Link>
                 <Link
-                  href="/Shop"
+                  href="/promotion"
                   color="inherit"
                   underline="none"
                   sx={{ mb: 1, fontSize: '14px' }}
                 >
-                  Products
+                  Promotion
                 </Link>
                 <Link
-                  href="/contact"
+                  href="/abbreviations"
                   color="inherit"
                   underline="none"
                   sx={{ mb: 1, fontSize: '14px' }}
                 >
-                  Contact
+                  Abbreviations
                 </Link>
               </Box>
             </Grid>

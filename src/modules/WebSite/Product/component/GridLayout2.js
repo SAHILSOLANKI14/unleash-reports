@@ -24,7 +24,8 @@ import {
 } from '../../WebCart/Store/CartAction';
 import { fetchProductCateRequest, fetchProductRequest } from '../Store/productAction';
 import { palette } from 'src/config/theme';
-const ProductPage = ({ page, limit }) => {
+
+const GridLayout2 = ({ page, limit }) => {
   const product = useSelector((state) => state.cateProduct.product || { total: 0, data: [] });
   const isAuthenticated = useSelector((state) => state.WebAuth.isAuthenticated);
   const cartItems = useSelector((state) => state.cart.items);
@@ -163,165 +164,163 @@ const ProductPage = ({ page, limit }) => {
             {successMessage}
           </Alert>
           {/* <Alert onClose={handleSnackbarClose} severity="error" sx={{ width: '100%' }}>
-            {successMessage}
-          </Alert> */}
+              {successMessage}
+            </Alert> */}
         </Snackbar>
       )}
       <Grid container spacing={4} sx={{ mt: 0 }}>
         {Array.isArray(products) && products.length > 0 ? (
           products.map((product) => (
-            <>
-              <Grid item key={product.id} xs={12} sm={4} md={3} lg={3} sx={{ mb: 0 }}>
-                <Card
+            <Grid item key={product.id} xs={12} sm={12} md={12} lg={6}>
+              <Card
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  padding: 2,
+                  boxShadow: 1,
+                }}
+              >
+                {/* Product Image */}
+                <CardMedia
+                  component="img"
+                  image={product?.imageUrl || noimg}
+                  alt={product.name}
                   sx={{
-                    height: '100%',
-                    width: '100%',
+                    height: '100px',
+                    width: '100px',
+                    objectFit: 'contain',
+                  }}
+                />
+                <CardContent
+                  sx={{
                     display: 'flex',
                     flexDirection: 'column',
-                    justifyContent: 'space-between',
+                    justifyContent: 'center',
+                    alignItems: 'center',
                   }}
                 >
-                  <CardMedia
-                    component="img"
-                    sx={{
-                      objectFit: 'contain',
-                      height: 'auto',
-                      width: '50%',
-                      alignSelf: 'center',
-                      display: 'flex',
-                      justifySelf: 'center',
-                      p: 2,
-                    }}
-                    image={product?.imageUrl || noimg}
-                  />
-                  <CardContent
-                    sx={{
-                      display: 'flex',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      flexDirection: 'column',
-                    }}
-                  >
-                    <Stack
-                      direction="column"
-                      spacing={0}
-                      sx={{
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        flexDirection: 'column',
+                  {/* Product Info */}
+                  <Stack direction={'column'}>
+                    <Link
+                      to={`/product/${product.slug}`}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        handleProductClick(product.code, product.slug);
                       }}
+                      style={{ padding: '0 10px', textDecoration: 'none', color: 'black' }}
                     >
-                      <Link
-                        to={`/product/${product.slug}`}
-                        onClick={(e) => {
-                          e.preventDefault();
-                          handleProductClick(product.code, product.slug);
-                        }}
-                        style={{ padding: '0 10px', textDecoration: 'none', color: 'black' }}
-                      >
-                        <Typography
-                          variant="h5"
-                          sx={{ fontWeight: '600', textAlign: 'center', textDecoration: 'none' }}
-                        >
-                          {product.name}
-                        </Typography>
-                      </Link>
-
-                      {isAuthenticated ? (
-                        <>
-                          <Typography
-                            variant="h6"
-                            sx={{
-                              fontWeight: '600',
-                              fontSize: '16px',
-                              textAlign: 'center',
-                              p: 1,
-                              color: palette.secondary.main,
-                            }}
-                          >
-                            ${product.price}
-                          </Typography>
-                          <Stack
-                            direction="row"
-                            spacing={2}
-                            alignItems="center"
-                            sx={{ mb: '-8px' }}
-                          >
-                            <Button
-                              onClick={() => handleDecrement(product.id)}
-                              variant="outlined"
-                              sx={{
-                                minWidth: '30px',
-                                minHeight: '30px',
-                                borderRadius: '50%',
-                                bgcolor: '#f4f4f4',
-                              }}
-                            >
-                              -
-                            </Button>
-
-                            <TextField
-                              value={productQuantities[product.id] || 1}
-                              variant="outlined"
-                              inputProps={{
-                                style: { textAlign: 'center', width: '40px', padding: '5px ' },
-                                readOnly: true,
-                              }}
-                            />
-
-                            <Button
-                              onClick={() => handleIncrement(product.id, product)}
-                              variant="outlined"
-                              sx={{
-                                minWidth: '30px',
-                                minHeight: '30px',
-                                borderRadius: '50%',
-                                bgcolor: '#f4f4f4',
-                              }}
-                            >
-                              +
-                            </Button>
-                          </Stack>
-                        </>
-                      ) : (
-                        <Button
-                          variant="contained"
-                          color="primary"
-                          onClick={handleLoginRedirect}
-                          sx={{
-                            fontWeight: '600',
-                            textAlign: 'center',
-                            background: '#5341f9',
-                            color: '#fff',
-                            mt: 1,
-                          }}
-                        >
-                          Login to Preview
-                        </Button>
-                      )}
-                    </Stack>
-                  </CardContent>
-                  {isAuthenticated && (
-                    <CardActions sx={{ display: 'flex', justifyContent: 'center', pb: 2 }}>
-                      <Button
-                        variant="contained"
-                        color="primary"
+                      <Typography
+                        variant="h6"
                         sx={{
                           fontWeight: '600',
                           textAlign: 'center',
-                          background: palette.secondary.main,
-                          color: '#fff',
+                          mb: 1,
+                          width: '150px',
                         }}
-                        onClick={() => handleAddToCart(product)}
                       >
-                        Add to Cart
+                        {product.name}
+                      </Typography>
+                    </Link>
+                    {/* Quantity Selector */}
+                    <Typography
+                      variant="h6"
+                      sx={{
+                        fontWeight: '600',
+                        fontSize: '16px',
+                        textAlign: 'center',
+                        p: 1,
+                        color: palette.secondary.main,
+                      }}
+                    >
+                      ${product.price}
+                    </Typography>
+                  </Stack>
+                  {isAuthenticated ? (
+                    <Stack
+                      direction="row"
+                      spacing={2}
+                      alignItems="center"
+                      sx={{
+                        mb: '-8px',
+                        display: 'flex',
+                        flexDirection: 'row',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                      }}
+                    >
+                      <Button
+                        onClick={() => handleDecrement(product.id)}
+                        variant="outlined"
+                        sx={{
+                          minWidth: '30px',
+                          minHeight: '30px',
+                          borderRadius: '50%',
+                          bgcolor: '#f4f4f4',
+                        }}
+                      >
+                        -
                       </Button>
-                    </CardActions>
+
+                      <TextField
+                        value={productQuantities[product.id] || 1}
+                        variant="outlined"
+                        inputProps={{
+                          style: { textAlign: 'center', width: '40px', padding: '5px ' },
+                          readOnly: true,
+                        }}
+                      />
+
+                      <Button
+                        onClick={() => handleIncrement(product.id, product)}
+                        variant="outlined"
+                        sx={{
+                          minWidth: '30px',
+                          minHeight: '30px',
+                          borderRadius: '50%',
+                          bgcolor: '#f4f4f4',
+                        }}
+                      >
+                        +
+                      </Button>
+                    </Stack>
+                  ) : (
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={handleLoginRedirect}
+                      sx={{
+                        fontWeight: '600',
+                        textAlign: 'center',
+                        background: '#5341f9',
+                        color: '#fff',
+                        mt: 1,
+                      }}
+                    >
+                      Login to Preview
+                    </Button>
                   )}
-                </Card>
-              </Grid>
-            </>
+                </CardContent>
+                {isAuthenticated && (
+                  <CardActions sx={{ display: 'flex', justifyContent: 'center' }}>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      sx={{
+                        fontWeight: '600',
+                        textAlign: 'center',
+                        background: palette.secondary.main,
+                        color: '#fff',
+                      }}
+                      onClick={() => handleAddToCart(product)}
+                    >
+                      Add to Cart
+                    </Button>
+                  </CardActions>
+                )}
+              </Card>
+            </Grid>
           ))
         ) : (
           <Typography variant="h6">No products available</Typography>
@@ -331,4 +330,4 @@ const ProductPage = ({ page, limit }) => {
   );
 };
 
-export default ProductPage;
+export default GridLayout2;

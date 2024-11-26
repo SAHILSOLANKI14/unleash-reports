@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import ProductGrid from 'src/modules/WebSite/Product/component/ProductGrid';
 import { Button, Box, Typography } from '@mui/material';
-
+import { palette } from 'src/config/theme';
 const ProductContainer = () => {
   const [limit, setLimit] = useState(8);
 

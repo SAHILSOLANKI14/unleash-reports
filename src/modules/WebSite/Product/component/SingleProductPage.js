@@ -10,6 +10,8 @@ import {
   Stack,
   Button,
   TextField,
+  Snackbar,
+  Alert,
 } from '@mui/material';
 import { useSelector } from 'react-redux';
 import noimg from 'src/modules/Categories/images/no_image.png';
@@ -19,6 +21,8 @@ import {
   incrementQuantityRequest,
 } from '../../WebCart/Store/CartAction';
 import { useDispatch } from 'react-redux';
+import { palette } from 'src/config/theme';
+import SingleproductFooter from './SingleproductFooter';
 const SingleProductPage = () => {
   const { slug } = useParams();
   const [loading, setLoading] = useState(true);
@@ -27,6 +31,8 @@ const SingleProductPage = () => {
   const isAuthenticated = useSelector((state) => state.WebAuth.isAuthenticated);
   const cartItems = useSelector((state) => state.cart.items);
   const [productQuantities, setProductQuantities] = useState({});
+  const [successMessage, setSuccessMessage] = useState(null);
+
   const dispatch = useDispatch();
   const { product } = useSelector((state) => state.singlepage);
   const Unit = product?.unit[0] || [];
@@ -83,6 +89,7 @@ const SingleProductPage = () => {
   };
   const handleAddToCart = (product) => {
     dispatch(addToCartRequest({ ...product, quantity: productQuantities[product.id] || 1 }));
+    setSuccessMessage(`${product.name} has been added to your cart.`);
   };
 
   const renderUnitLabel = (unitId) => {
@@ -120,9 +127,45 @@ const SingleProductPage = () => {
       </Typography>
     );
   }
+  const handleSnackbarClose = () => {
+    setSuccessMessage(null);
+  };
 
   return (
     <Container>
+      {successMessage && (
+        <Snackbar
+          open={Boolean(successMessage)}
+          autoHideDuration={3000}
+          onClose={handleSnackbarClose}
+          anchorOrigin={{
+            vertical: 'top',
+            horizontal: 'right',
+            display: 'flex',
+            justifyContent: 'center',
+            flexDirection: 'row',
+            alignItems: 'center',
+          }}
+        >
+          <Alert
+            onClose={handleSnackbarClose}
+            severity="success"
+            sx={{
+              width: '100%',
+              fontSize: '12px',
+              display: 'flex',
+              justifyContent: 'center',
+              flexDirection: 'row',
+              alignItems: 'center',
+            }}
+          >
+            {successMessage}
+          </Alert>
+          {/* <Alert onClose={handleSnackbarClose} severity="error" sx={{ width: '100%' }}>
+            {successMessage}
+          </Alert> */}
+        </Snackbar>
+      )}
       <Box sx={{ mt: 4 }}>
         <Grid container spacing={4}>
           <Grid item xs={12} sm={6} display="flex" justifyContent="center">
@@ -141,7 +184,7 @@ const SingleProductPage = () => {
                 component="img"
                 alt={product.name || 'Product Image'}
                 src={noimg || noimg}
-                sx={{ width: '100%', height: 'auto', maxWidth: 300 }}
+                sx={{ width: '100%', height: '400px', maxWidth: 300 }}
               />
             </Box>
           </Grid>
@@ -178,59 +221,61 @@ const SingleProductPage = () => {
                 </Typography>
               </Grid>
             </Grid>
-            <Stack direction="row" spacing={2} alignItems="center" sx={{ mb: '-8px' }}>
-              <Button
-                onClick={() => handleDecrement(product.id)}
-                variant="outlined"
-                sx={{
-                  minWidth: '30px',
-                  minHeight: '30px',
-                  borderRadius: '50%',
-                  bgcolor: '#f4f4f4',
-                }}
-              >
-                -
-              </Button>
 
-              <TextField
-                value={productQuantities[product.id] || 1}
-                variant="outlined"
-                inputProps={{
-                  style: { textAlign: 'center', width: '40px', padding: '5px ' },
-                  readOnly: true,
-                }}
-              />
-
-              <Button
-                onClick={() => handleIncrement(product.id, product)}
-                variant="outlined"
-                sx={{
-                  minWidth: '30px',
-                  minHeight: '30px',
-                  borderRadius: '50%',
-                  bgcolor: '#f4f4f4',
-                }}
-              >
-                +
-              </Button>
-            </Stack>
             {isAuthenticated && (
-              <Box sx={{ p: 2 }}>
+              <Stack direction="row" spacing={2} alignItems="center" sx={{ mb: '-8px' }}>
                 <Button
-                  variant="contained"
-                  color="primary"
+                  onClick={() => handleDecrement(product.id)}
+                  variant="outlined"
                   sx={{
-                    fontWeight: '600',
-                    textAlign: 'center',
-                    background: '#5341f9',
-                    color: '#fff',
+                    minWidth: '30px',
+                    minHeight: '30px',
+                    borderRadius: '50%',
+                    bgcolor: '#f4f4f4',
                   }}
-                  onClick={() => handleAddToCart(product)}
                 >
-                  Add to Cart
+                  -
                 </Button>
-              </Box>
+
+                <TextField
+                  value={productQuantities[product.id] || 1}
+                  variant="outlined"
+                  inputProps={{
+                    style: { textAlign: 'center', width: '40px', padding: '5px ' },
+                    readOnly: true,
+                  }}
+                />
+
+                <Button
+                  onClick={() => handleIncrement(product.id, product)}
+                  variant="outlined"
+                  sx={{
+                    minWidth: '30px',
+                    minHeight: '30px',
+                    borderRadius: '50%',
+                    bgcolor: '#f4f4f4',
+                  }}
+                >
+                  +
+                </Button>
+                <Box sx={{ p: 2 }}>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    sx={{
+                      fontWeight: '600',
+                      textAlign: 'center',
+                      background: palette.secondary.main,
+                      color: '#fff',
+                    }}
+                    onClick={() => handleAddToCart(product)}
+                  >
+                    Add to Cart
+                  </Button>
+                </Box>
+              </Stack>
             )}
+            {/* <SingleproductFooter /> */}
           </Grid>
         </Grid>
       </Box>
